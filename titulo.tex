@@ -1,0 +1,64 @@
+\documentclass[11pt,a4paper]{report}
+
+\usepackage[spanish]{babel}
+\usepackage[math,light]{iwona}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amsthm}
+\usepackage{amsfonts, amssymb, latexsym}
+\usepackage{enumerate}
+\usepackage[usenames, dvipsnames]{color}
+\usepackage{graphics,graphicx, float} %para incluir imágenes y colocarlas
+\usepackage{colortbl}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage[top=4cm]{geometry}
+\usepackage{cite}
+\usepackage[official]{eurosym}
+\usepackage{cancel}
+\usepackage{subfigure}
+
+\theoremstyle{plain}
+\newtheorem{exe}{Ejercicio} % reset theorem numbering for each chapter
+
+\theoremstyle{definition}
+\newtheorem{sol}{Solución}
+
+\usepackage[bookmarks=true,
+            bookmarksnumbered=false, % true means bookmarks in
+                                     % left window are numbered
+            bookmarksopen=false,     % true means only level 1
+                                     % are displayed.
+            colorlinks=true,
+            linkcolor=webblue,
+            citecolor=red]{hyperref}
+\definecolor{webgreen}{rgb}{0, 0.5, 0} % less intense green
+\definecolor{webblue}{rgb}{0, 0, 0.5}  % less intense blue
+\definecolor{webred}{rgb}{0.5, 0, 0}   % less intense red
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\begin{document}
+
+\input{./title.tex}
+
+\tableofcontents
+
+% Descripción de sistemas "privativos"
+
+\input{./privativos.tex}
+
+% Descripción de sistemas "libres"
+
+\input{./libres.tex}
+
+% Descripción del sistema
+
+\input{./descripcion.tex}
+
+%% Bibliografía y referencias
+\bibliography{bibliografia.bib} %archivo citas.bib que contiene las entradas 
+\bibliographystyle{siam} % hay varias formas de citar
+\end{document}
