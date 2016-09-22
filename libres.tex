@@ -82,3 +82,5 @@ Para ejecutar el algoritmo, tiene que ser bajo una distribución Linux, y se rea
 \end{figure}
 
 Tras modificar los parámetros del algoritmo y pulsar el botón \textit{Submit}, estos datos se escriben en el fichero \textit{variables.csv} para el algoritmo genético de \textit{ga.cpp} y en \textit{labVariables.csv} para el algoritmo de \textit{labGa.cpp} y se comienza a ejecutar el $script$ en Python \texttt{labConflictsGen.py} que genera un CSV con las incompatibilidades que pueda haber en las aulas.
+
+A continuación, se ejecuta el algoritmo genético. La variante \texttt{labGa} comienza con un horario inicial de entrada, dando pie al algoritmo genético, a diferencia de \texttt{ga}, que comienza sin un horario de entrada. Al finalizar, ambos muestran por la terminal la solución encontrada, y el coste de esta, siendo a su vez escrito en un fichero.
