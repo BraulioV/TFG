@@ -1,0 +1,39 @@
+\begin{thebibliography}{1}
+
+\bibitem{plan}
+{\sc adamcik}, {\em Plan, a timetable generator for ntnu students}.
+\newblock \textit{Disponible en \url{https://github.com/adamcik/plan}}.
+\newblock Consultado el 21/09/2016.
+
+\bibitem{lantiv}
+{\sc Lantiv}, {\em Getting started}.
+\newblock \textit{Disponible en
+  \url{http://wiki.schedulingstudio.com/wiki7/index.php?title=Studio-Getting\_Started&useskin=lantiv75}}.
+\newblock Consultado el 11/09/2016.
+
+\bibitem{mimosa}
+{\sc Mimosa}, {\em Product page}.
+\newblock \textit{Disponible en
+  \url{http://www.mimosasoftware.com/mimosa.html}}.
+\newblock Consultado el 11/09/2016.
+
+\bibitem{timetabler}
+{\sc Timetabler}, {\em 4 steps using timetabler}.
+\newblock \textit{Disponible en
+  \url{http://www.timetabler.com/images/Video-4-Steps-in-TimeTabler.html}}.
+\newblock Consultado el 12/09/2016.
+
+\bibitem{unitime}
+{\sc A.~F. y~otros}, {\em University timetabling. comprehensive academic
+  scheduling solutions}.
+\newblock \textit{Disponible en \url{https://github.com/UniTime}}.
+\newblock Consultado el 21/09/2016.
+
+\bibitem{timetableGenerator}
+{\sc zeus9}, {\em Timetable generator. generates a timetable for my university
+  using a genetic algorithm.}
+\newblock \textit{Disponible en
+  \url{https://github.com/zeus9/timetable_generator}}.
+\newblock Consultado el 21/09/2016.
+
+\end{thebibliography}

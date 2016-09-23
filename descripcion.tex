@@ -4,12 +4,21 @@
 
 La idea general del sistema es ofrecer una forma automatizada de hacer los horarios de una escuela o facultad en base a restricciones tales como el profesorado y su disponibilidad, las aulas disponibles teniendo en cuenta su capacidad y el equipo del que disponen, el número de alumnos de una asignatura, bloques horarios, etc. 
 
-Con este sistema podrán estudiarse distintas propuestas de horarios para maximizar el uso de las aulas y el rendimiento de todo el equipo de una facultad. 
+Con este sistema podrán estudiarse distintas propuestas de horarios para maximizar el uso de las aulas, el rendimiento de todo el equipo de una facultad y facilitar el trabajo que supone la creación de un horario para cada nuevo curso.
 
-% \section{Objetivos principales del sistema}
+\section{Objetivos principales del sistema}
 
-% \begin{enumerate}[OBJ-1]
-%     \item Poder conectarse a las bases de datos de la universidad de forma que el usuario introduzca la menor información posible.
-%     \item Poder crear un horario válido desde cero usando los datos disponibles.
-%     \item Una vez hecha una propuesta de horario, realizar modificaciones sobre la misma de forma que se obtenga un horario válido.
-% \end{enumerate}
+\begin{enumerate}[OBJ-1]
+    \item El usuario debe introducir la menor información posible para que le resulte más cómodo y sencillo hacer uso del sistema. Esto sería posible si la mayoría de información necesaria para la generación del horario fuera posible obtenerla de la base de datos de la escuela o de la UGR, para evitar que el usuario tenga que realizar ninguna entrada desde ficheros o similares.
+    
+    \item Tener la posibilidad de realizar un nuevo horario desde cero a partir de los datos disponibles, y la posibilidad de, a partir de uno ya generado, generar uno nuevo a partir de modificaciones.
+
+    \item Sobre la solución del sistema, existen dos opciones:
+    \begin{enumerate}[a)]
+        \item Ofrecer una única solución y ofrecer la posibilidad de realizar modificaciones sobre esta de forma interactiva y que el sistema avise de posibles conflictos.
+        \item Ofrecer como salida un parapeto de soluciones que haya encontrado el sistema y que el usuario final elija entre las soluciones que más le interesen.
+    \end{enumerate}
+    % \item Poder conectarse a las bases de datos de la universidad de forma que el usuario introduzca la menor información posible.
+    % \item Poder crear un horario válido desde cero usando los datos disponibles.
+    % \item Una vez hecha una propuesta de horario, realizar modificaciones sobre la misma de forma que se obtenga un horario válido.
+\end{enumerate}
