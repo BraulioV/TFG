@@ -22,3 +22,19 @@ Con este sistema podrán estudiarse distintas propuestas de horarios para maximi
     % \item Poder crear un horario válido desde cero usando los datos disponibles.
     % \item Una vez hecha una propuesta de horario, realizar modificaciones sobre la misma de forma que se obtenga un horario válido.
 \end{enumerate}
+
+\section{Requisitos del sistema}
+
+\begin{enumerate}[REQ-1]
+    \item No pueden solaparse dos asignaturas el mismo día y a la misma hora en el mismo aula.
+    \item Cómo máximo hay tres subgrupos de prácticas. Puede haber asignaturas en las que haya dos subgrupos y otras en las que haya sólo uno.
+    \item Para cada grupo se debe de decidir de forma manual su franja horaria y el aula de teoría.
+    \item No puede haber más de tres grupos de teoría asignados al mismo aula en el mismo turno (mañana o tarde). 
+    \item Se debe saber de antemano el número de horas de teoría y prácticas de cada asignatura.
+    \item Si el número de horas de teoría o prácticas de una asignatura es impar, se agrupará con otra asignatura.
+    \item Para cada asignatura, dar la posibilidad de dar las horas de teoría seguidas o en días distintos. Debe haber al menos dos asignaturas que quieran dar sus horas de teoría en días separados para que pueda hacerse ésto.
+    \item El horario obtenido para cada grupo no debe de contener huecos, es decir, debe ser lo más compacto posible.
+    \item Las distintas especialidades tienen su horario en paralelo para no favorecer ninguna especialidad sobre otra.
+    \item Se debe registrar el equipamiento disponible en cada laboratorio y el equipamiento que cada asignatura necesita para llevar a cabo sus prácticas para que el sistema realice la asignación a laboratorios de forma automática.
+    \item Se debe poder elegir el número de días y la franja horaria para cada titulación por separado. 
+\end{enumerate}
