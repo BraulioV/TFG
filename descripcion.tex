@@ -28,13 +28,15 @@ Con este sistema podrán estudiarse distintas propuestas de horarios para maximi
 \begin{enumerate}[REQ-1]
     \item No pueden solaparse dos asignaturas el mismo día y a la misma hora en el mismo aula.
     \item Cómo máximo hay tres subgrupos de prácticas. Puede haber asignaturas en las que haya dos subgrupos y otras en las que haya sólo uno.
-    \item Para cada grupo se debe de decidir de forma manual su franja horaria y el aula de teoría.
-    \item No puede haber más de tres grupos de teoría asignados al mismo aula en el mismo turno (mañana o tarde). 
+    \item Para cada grupo se debe de decidir de forma manual su franja horaria, es decir, qué horario tendrá, y el aula de teoría que se le quiere asignar a ese grupo.
+    \item No puede haber más de tres grupos de teoría asignados al mismo aula en el mismo turno (mañana o tarde), pudiendo convivir de uno a tres grupos. 
     \item Se debe saber de antemano el número de horas de teoría y prácticas de cada asignatura.
-    \item Si el número de horas de teoría o prácticas de una asignatura es impar, se agrupará con otra asignatura que esté en la misma situación. En caso de que no sea posible, ésta hora se añadirá al principio o al final del turno ofreciendo la posibilidad de cambiarla manualmente.
-    \item Se debe dar la posibilidad de para una asignatura, dar las horas de teoría en un mismo turno de dos o más horas, o repartir las sesiones de teoría a lo largo de la semana en días distintos.
+    \item Si el número de horas de teoría o prácticas de una asignatura es impar, se agrupará con otra asignatura que esté en la misma situación, generando un ``bloque''. Esto puede generar un problema en la generación del horario y es que puede ser que alguna hora de una asignatura sea imposible cuadrarla en el horario con las demás, por lo que esta hora se añadirá al principio o al final del turno ofreciendo la posibilidad de cambiarla manualmente. Esta situación se puede evitar si las horas de prácticas y/o teoría las imparten profesores diferentes.
+    \item Se debe dar la posibilidad de para una asignatura, elegir si impartir las horas de teoría en un mismo turno de dos o más horas, o repartir las sesiones de teoría a lo largo de la semana en días distintos.
     \item El horario obtenido para cada grupo no debe de contener huecos, es decir, debe ser lo más compacto posible.
     \item Las distintas especialidades tienen su horario en paralelo para no favorecer ninguna especialidad sobre otra.
-    \item Se debe registrar el equipamiento disponible en cada laboratorio y el que cada asignatura necesita para llevar a cabo sus prácticas de forma que el sistema realice la asignación a laboratorios de forma automática.
+    \item Se debe registrar el equipamiento disponible en cada laboratorio y el que cada asignatura necesita para llevar a cabo sus prácticas de forma que el sistema realice la asignación a laboratorios de forma automática en función del equipamiento que tiene el aula y del que necesita la asignatura. 
     \item Se debe poder elegir el número de días y la franja horaria para cada titulación por separado. 
+    \item Se debe dar la posibilidad de incluir restricciones fuertes de horas y días para ciertas titulaciones, como es el caso del Doble Grado en Ingeniería Informática y Matemáticas, donde su horario puede ocupar una franja completa ($8:30-14:30$).
+    \item Se necesita saber el número de horas que tendrán las aulas para cuadrar los horarios.
 \end{enumerate}
