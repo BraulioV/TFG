@@ -1,34 +1,34 @@
 \chapter{Descripción del sistema y requisitos}
 
-\section{Descripción del sistema}
+% \section{Descripción del sistema}
 
-La idea general del sistema es ofrecer una forma automatizada de hacer los horarios de una escuela o facultad en base a restricciones tales como el profesorado y su disponibilidad, las aulas disponibles teniendo en cuenta su capacidad y el equipo del que disponen, el número de alumnos de una asignatura, bloques horarios, etc. 
+% La idea general del sistema es ofrecer una forma automatizada de hacer los horarios de una escuela o facultad en base a restricciones tales como el profesorado y su disponibilidad, las aulas disponibles teniendo en cuenta su capacidad y el equipo del que disponen, el número de alumnos de una asignatura, bloques horarios, etc. 
 
-Con este sistema podrán estudiarse distintas propuestas de horarios para maximizar el uso de las aulas, el rendimiento de todo el equipo de una facultad y facilitar el trabajo que supone la creación de un horario para cada nuevo curso.
+% Con este sistema podrán estudiarse distintas propuestas de horarios para maximizar el uso de las aulas, el rendimiento de todo el equipo de una facultad y facilitar el trabajo que supone la creación de un horario para cada nuevo curso.
 
-\section{Objetivos principales del sistema}
+% \section{Objetivos principales del sistema}
 
-\begin{enumerate}[OBJ-1]
-    \item El usuario debe introducir la menor información posible para que le resulte más cómodo y sencillo hacer uso del sistema. Esto sería posible si la mayoría de información necesaria para la generación del horario fuera posible obtenerla de la base de datos de la escuela o de la UGR, para evitar que el usuario tenga que realizar ninguna entrada desde ficheros o similares.
+% \begin{enumerate}[OBJ-1]
+%     \item El usuario debe introducir la menor información posible para que le resulte más cómodo y sencillo hacer uso del sistema. Esto sería posible si la mayoría de información necesaria para la generación del horario fuera posible obtenerla de la base de datos de la escuela o de la UGR, para evitar que el usuario tenga que realizar ninguna entrada desde ficheros o similares.
     
-    \item Tener la posibilidad de realizar un nuevo horario desde cero a partir de los datos disponibles, y la posibilidad de, a partir de uno ya generado, generar uno nuevo a partir de modificaciones.
+%     \item Tener la posibilidad de realizar un nuevo horario desde cero a partir de los datos disponibles, y la posibilidad de, a partir de uno ya generado, generar uno nuevo a partir de modificaciones.
 
-    \item Sobre la solución del sistema, existen dos opciones:
-    \begin{enumerate}[a)]
-        \item Ofrecer una única solución y ofrecer la posibilidad de realizar modificaciones sobre esta de forma interactiva y que el sistema avise de posibles conflictos.
-        \item Ofrecer como salida un parapeto de soluciones que haya encontrado el sistema y que el usuario final elija entre las soluciones que más le interesen.
-    \end{enumerate}
-    % \item Poder conectarse a las bases de datos de la universidad de forma que el usuario introduzca la menor información posible.
-    % \item Poder crear un horario válido desde cero usando los datos disponibles.
-    % \item Una vez hecha una propuesta de horario, realizar modificaciones sobre la misma de forma que se obtenga un horario válido.
-\end{enumerate}
+%     \item Sobre la solución del sistema, existen dos opciones:
+%     \begin{enumerate}[a)]
+%         \item Ofrecer una única solución y ofrecer la posibilidad de realizar modificaciones sobre esta de forma interactiva y que el sistema avise de posibles conflictos.
+%         \item Ofrecer como salida un parapeto de soluciones que haya encontrado el sistema y que el usuario final elija entre las soluciones que más le interesen.
+%     \end{enumerate}
+%     % \item Poder conectarse a las bases de datos de la universidad de forma que el usuario introduzca la menor información posible.
+%     % \item Poder crear un horario válido desde cero usando los datos disponibles.
+%     % \item Una vez hecha una propuesta de horario, realizar modificaciones sobre la misma de forma que se obtenga un horario válido.
+% \end{enumerate}
 
 \section{Requisitos del sistema}
 
 \begin{enumerate}[REQ-1]
     \item No pueden solaparse dos asignaturas el mismo día y a la misma hora en el mismo aula.
     \item Cómo máximo hay tres subgrupos de prácticas. Puede haber asignaturas en las que haya dos subgrupos y otras en las que haya sólo uno.
-    \item Para cada grupo se debe de decidir de forma manual su franja horaria, es decir, qué horario tendrá, y el aula de teoría que se le quiere asignar a ese grupo.
+    \item Para cada grupo de teoría se debe de decidir de forma manual su franja horaria, es decir, qué horario tendrá, y el aula de teoría que se le quiere asignar a ese grupo.
     \item No puede haber más de tres grupos de teoría asignados al mismo aula en el mismo turno (mañana o tarde), pudiendo convivir de uno a tres grupos. 
     \item Se debe saber de antemano el número de horas de teoría y prácticas de cada asignatura.
     \item Si el número de horas de teoría o prácticas de una asignatura es impar, se agrupará con otra asignatura que esté en la misma situación, generando un ``bloque''. Esto puede generar un problema en la generación del horario y es que puede ser que alguna hora de una asignatura sea imposible cuadrarla en el horario con las demás, por lo que esta hora se añadirá al principio o al final del turno ofreciendo la posibilidad de cambiarla manualmente. Esta situación se puede evitar si las horas de prácticas y/o teoría las imparten profesores diferentes.
