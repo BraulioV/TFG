@@ -40,3 +40,44 @@
     \item Se debe dar la posibilidad de incluir restricciones fuertes de horas y días para ciertas titulaciones, como es el caso del Doble Grado en Ingeniería Informática y Matemáticas, donde su horario puede ocupar una franja completa ($8:30-14:30$).
     \item Se necesita saber el número de horas que tendrán las aulas para cuadrar los horarios.
 \end{enumerate}
+
+\section{Interacción de los distintos elementos}
+
+A partir de los requisitos que hemos extraído, vemos que hay cuatro elementos fundamentales que interaccionan entre sí:
+
+\begin{enumerate}[---]
+    \item \textbf{Grupo}: define los distintos grupos que hay para cursar cada curso.
+    \item \textbf{Aula de teoría}: define las distintas aulas de teoría disponibles.
+    \item \textbf{Aula de prácticas}: define los distintos laboratorios de prácticas, junto al \textbf{material} del que disponen.
+    \item \textbf{Asignatura}: define las distintas asignaturas que se imparten en cada curso.
+\end{enumerate}
+
+\begin{figure}[!h]
+    \centering
+    \input{interaccion.tex}
+    \caption{Interacción de los diferentes elementos del sistema}
+    \label{interaccion}
+\end{figure}
+
+En la \hyperref[interaccion]{Figura \ref*{interaccion}} vemos un esquema de la interacción de los diferentes elementos del sistema entre sí. El primer paso que daría el usuario sería asignar manualmente a cada grupo su correspondiente aula de teoría. En primer lugar, el sistema debe comprobar si la asignación ha que ha hecho el sistema es \textbf{realizable}, consultando el número de horas de teoría que tiene ese grupo. En caso de que la asignación sea irealizable, el usuario deberá corregirla y si la asignación ha sido correcta, el sistema empezaría a trabajar. La principal labor que debe hacer es asignar a cada grupo de prácticas una hora y un laboratorio, siguiendo la restricción de que hay asignaturas que necesitan un material concreto. 
+
+Para cuadrar las horas de forma eficiente pensamos que es necesario una estructura de datos adicional (una tabla hash o un diccionario) en el que se vaya llevando la cuenta de las aulas que se asignan y cuándo se asignan. Además, al tratarse algo que se va construyendo poco a poco, hemos pensado que podemos usar alguna variante del algoritmo de \textit{Colonia de Hormigas}.
+
+\begin{figure}[!h]
+    \centering
+    \input{clases.tex}
+    \caption{Diagrama que representa cada uno de los elementos esenciales del sistema junto con la información que almacenan}
+    \label{clases}
+\end{figure}
+
+A partir del diagrama de interacción (\hyperref[interaccion]{Figura \ref*{interaccion}}) hemos extraído una serie de clases que representan cada uno de los elementos junto con la información que deben almacenar. Dicho diagrama está representado en la \hyperref[clases]{Figura \ref*{clases}} y destacamos los siguientes aspectos:
+
+\begin{enumerate}[$\bullet$]
+    \item El elemento \textit{Aula de teoría} está representado por la clase \textit{Aula}, que almacena la capacidad de la misma y su nombre. El elemento \textit{Aula de prácticas} es una especialización de la clase \textit{Aula}, que además almacena el material del que dispone ese laboratorio. Para representar este material, hemos optado por usar un \texttt{string} aunque no descartamos la posibilidad de usar un \texttt{struct} si vemos que necesitamos almacenar información adicional para caracterizar los distintos materiales que puede haber en un laboratorio.
+
+    \item El atributo referente al \textit{número de subgrupos de prácticas} está colocado tanto en la clase \textit{Grupo} como en la clase \textit{Asignatura} porque no sabemos dónde correspondería. Es decir, la idea es que tras un breve análisis podamos ponernos de acuerdo. Los argumentos para poner ese atributo en cada clase son:
+    \begin{enumerate}[---]
+        \item \textbf{Grupo}: cada grupo tiene un número distinto de alumnos. Por ejemplo, el grupo A de una asignatura puede tener 100 matriculados y el grupo F, 50. Por tanto al grupo A le corresponderían 3 grupos de prácticas mientras que al F sólo 2.
+        \item \textbf{Asignatura}: cada asignatura de un mismo grupo puede tener un número distinto de alumnos matriculados: no es lo mismo una asignatura obligatoria que una asignatura optativa. Además, al hacer el horario no sabemos el número de alumnos matriculados sino las plazas ofertadas, y en caso de no llenar todas las plazas, siempre está la opción de corregir el horario manualmente.
+    \end{enumerate}
+\end{enumerate} 
