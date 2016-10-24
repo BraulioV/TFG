@@ -43,13 +43,14 @@
 
 \section{Interacción de los distintos elementos}
 
-A partir de los requisitos que hemos extraído, vemos que hay cuatro elementos fundamentales que interaccionan entre sí:
+A partir de los requisitos extraídos anteriormente, vemos que hay cuatro elementos fundamentales que interaccionan entre sí:
 
 \begin{enumerate}[---]
-    \item \textbf{Grupo}: define los distintos grupos que hay para cursar cada curso.
-    \item \textbf{Aula de teoría}: define las distintas aulas de teoría disponibles.
-    \item \textbf{Aula de prácticas}: define los distintos laboratorios de prácticas, junto al \textbf{material} del que disponen.
-    \item \textbf{Asignatura}: define las distintas asignaturas que se imparten en cada curso.
+    \item \textbf{Grupo}: representa un grupo de teoría (o \textit{grupo grande}) al que se le asigna de forma manual un único aula de teoría.
+    \item \textbf{Aula de teoría}: representa un aula en las que se impartirán las clases de teoría para los grupos grandes. A estas aulas se le pueden asignar varios grupos de teoría en función de las horas disponibles que tenga.
+    \item \textbf{Aula de prácticas}: define los distintos laboratorios de prácticas, junto al \textbf{material} del que disponen. Hay que tener en cuenta, que algunas aulas de teoría pueden ser a la vez aulas de prácticas. Un ejemplo de ello son las aulas que hay en la primera planta del aulario de la Escuela.
+    \item \textbf{Asignatura}: representa las distintas asignaturas que se imparten en cada curso, junto con sus horas de prácticas y teoría, el material que necesita y más aspectos específicos las asignaturas.
+    \item \textbf{Grupo de prácticas}: es un subgrupo que existe por haber una conexión de un grupo de teoría con uno de prácticas, puediendo existir más de un subgrupo de prácticas para una asignatura asignada a un grupo.
 \end{enumerate}
 
 \begin{figure}[!h]
@@ -59,13 +60,17 @@ A partir de los requisitos que hemos extraído, vemos que hay cuatro elementos f
     \label{interaccion}
 \end{figure}
 
-En la \hyperref[interaccion]{Figura \ref*{interaccion}} vemos un esquema de la interacción de los diferentes elementos del sistema entre sí. El primer paso que daría el usuario sería asignar manualmente a cada grupo su correspondiente aula de teoría. En primer lugar, el sistema debe comprobar si la asignación ha que ha hecho el sistema es \textbf{realizable}, consultando el número de horas de teoría que tiene ese grupo. En caso de que la asignación sea irealizable, el usuario deberá corregirla y si la asignación ha sido correcta, el sistema empezaría a trabajar. La principal labor que debe hacer es asignar a cada grupo de prácticas una hora y un laboratorio, siguiendo la restricción de que hay asignaturas que necesitan un material concreto. 
+En la \hyperref[interaccion]{Figura \ref*{interaccion}} vemos un esquema de la interacción de los diferentes elementos del sistema entre sí. 
 
-Para cuadrar las horas de forma eficiente pensamos que es necesario una estructura de datos adicional (una tabla hash o un diccionario) en el que se vaya llevando la cuenta de las aulas que se asignan y cuándo se asignan. Además, al tratarse algo que se va construyendo poco a poco, hemos pensado que podemos usar alguna variante del algoritmo de \textit{Colonia de Hormigas}.
+En primer lugar, el usuario debe asignar manualmente a cada grupo, el aula de teoría correspondiente, para proporcionarle a los algoritmos que vienen detrás un punto de partida que se ajuste lo mejor posible a lo que se desea como resultado. Conforme el usuario vaya realizando asignaciones de grupos a aulas, el sistema estará comprobando si existe alguna incompatibilidad o no, para que, en caso de que haya una, avisad al usuario y evitar que se realice esa asignación. Una vez finalizada la asignación de aulas a los grupos de teoría, el sistema comenzará a asignarle a los subgrupos de prácticas, qué aula y hora les corresponden para cada asignatura, cumpliendo con las restricciones de material que imponga cada asignatura, y de que no ocurran solapamientos.
+
+%El primer paso que daría el usuario sería asignar manualmente a cada grupo su correspondiente aula de teoría. En primer lugar, el sistema debe comprobar si la asignación ha que ha hecho el sistema es \textbf{realizable}, consultando el número de horas de teoría que tiene ese grupo. En caso de que la asignación sea irealizable, el usuario deberá corregirla y si la asignación ha sido correcta, el sistema empezaría a trabajar. La principal labor que debe hacer es asignar a cada grupo de prácticas una hora y un laboratorio, siguiendo la restricción de que hay asignaturas que necesitan un material concreto. 
+
+Para cuadrar las horas de forma eficiente es necesario tener una estructura de datos adicional (una tabla hash o un diccionario) en el que se tenga constancia de las asignaciones que ha recibido un aula y el número de horas disponibles que tiene un aula, y cuándo las tiene disponibles. Además, al tratarse de algo que se va construyendo poco a poco, hemos pensado que podemos usar alguna variante del algoritmo de \textit{Colonia de Hormigas}.
 
 \begin{figure}[!h]
     \centering
-    \input{clases.tex}
+    \input{clases2.tex}
     \caption{Diagrama que representa cada uno de los elementos esenciales del sistema junto con la información que almacenan}
     \label{clases}
 \end{figure}
