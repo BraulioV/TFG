@@ -31,7 +31,7 @@
     \item Para cada grupo de teoría se debe decidir de forma manual su franja horaria, es decir, qué horario tendrá, y el aula de teoría que se le quiere asignar a ese grupo.
     %\item No puede haber más de tres grupos de teoría asignados al mismo aula en el mismo turno (mañana o tarde), pudiendo convivir de uno a tres grupos. 
     \item Se debe saber de antemano el número de horas de teoría y prácticas de cada asignatura.
-    \item Si el número de horas de teoría o prácticas de una asignatura es impar, se agrupará con otra asignatura que esté en la misma situación, generando un ``bloque''. Esto puede generar un problema en la generación del horario y es que puede ser que alguna hora de una asignatura sea imposible cuadrarla en el horario con las demás, por lo que esta hora se añadirá al principio o al final del turno según lo que elija el usuario de forma manual. Esta situación se puede evitar si las horas de prácticas y/o teoría las imparten profesores diferentes. Esta posibilidad solo afecta a las horas de prácticas de las asignaturas.
+    \item Si el número de horas de prácticas de una asignatura es impar, se agrupará con otra asignatura que esté en la misma situación, generando un ``bloque''. Esto puede generar un problema en la generación del horario y es que puede ser que alguna hora de una asignatura sea imposible cuadrarla en el horario con las demás, por lo que esta hora se añadirá al principio o al final del turno según lo que elija el usuario de forma manual. Esta situación se puede evitar si las horas de prácticas las imparten profesores diferentes. El objetivo es conseguir un \textbf{equilibrio horas/día}, es decir, evitar agrupar en un día muchas otras dejando otro prácticamente vacío. 
     \item Se debe dar la posibilidad de para una asignatura, elegir si impartir las horas de teoría en un mismo turno de dos o más horas, o repartir las sesiones de teoría a lo largo de la semana en días distintos.
     \item El horario obtenido para cada grupo no debe de contener huecos, es decir, debe ser lo más compacto posible.
     \item Las distintas especialidades tienen su horario en paralelo para no favorecer ninguna especialidad sobre otra.
@@ -46,11 +46,11 @@
 A partir de los requisitos extraídos anteriormente, vemos que hay cuatro elementos fundamentales que interaccionan entre sí:
 
 \begin{enumerate}[---]
-    \item \textbf{Grupo}: representa un grupo de teoría (o \textit{grupo grande}) al que se le asigna de forma manual un único aula de teoría.
+    \item \textbf{Grupo}: representa un grupo de teoría (o \textit{grupo grande}) al que se le asigna de forma manual un único aula de teoría. En los casos en los el número de matriculados en una o más de las asignaturas del grupo se dispare, será necesario asignar otro aula de teoría distinta. Por tanto, \textbf{puede darse la excepción de que un grupo tenga asignadas dos aulas de teoría}. Esto puede darse sobre todo en los grupos que tengan asignadas aulas con una menor capacidad. 
     \item \textbf{Aula de teoría}: representa un aula en las que se impartirán las clases de teoría para los grupos grandes. A estas aulas se le pueden asignar varios grupos de teoría en función de las horas disponibles que tenga.
     \item \textbf{Aula de prácticas}: define los distintos laboratorios de prácticas, junto al \textbf{material} del que disponen. Hay que tener en cuenta, que algunas aulas de teoría pueden ser a la vez aulas de prácticas. Un ejemplo de ello son las aulas que hay en la primera planta del aulario de la Escuela.
     \item \textbf{Asignatura}: representa las distintas asignaturas que se imparten en cada curso, junto con sus horas de prácticas y teoría, el material que necesita y más aspectos específicos las asignaturas.
-    \item \textbf{Grupo de prácticas}: es un subgrupo que existe por haber una conexión de un grupo de teoría con uno de prácticas, puediendo existir más de un subgrupo de prácticas para una asignatura asignada a un grupo.
+    \item \textbf{Grupo de prácticas}: es un subgrupo que existe por haber una conexión de un grupo de teoría con uno de prácticas, puediendo existir más de un subgrupo de prácticas para una asignatura asignada a un grupo. Siempre se sabe a priori el número de grupos de prácticas que tendrá una asignatura, aunque pueden crearse o destruirse nuevos si fuese necesario.
 \end{enumerate}
 
 \begin{figure}[!h]
