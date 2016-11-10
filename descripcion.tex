@@ -85,3 +85,18 @@ A partir del diagrama de interacción (\hyperref[interaccion]{Figura \ref*{inter
     \end{enumerate}
     Respecto a esto, hemos decidido hacer una mezcla de ambas opciones. En cada asignatura de un grupo determinado habrá un número de alumnos matriculados que no tiene que ser igual al número de alumnos matriculados en otra asignatura en ese mismo grupo. Por tanto, será el grupo quién decida, para cada asignatura, el número de subgrupos de prácticas que tendrá.
 \end{enumerate} 
+
+\section{Función de evaluación}
+La calidad de un horario depende de la calidad del horario obtenido para cada grupo de teoría. Por tanto, para simplificar el cálculo de la misma, hemos decidido \textbf{hacer una función de evaluación a nivel individual para cada grupo} y que la \textbf{función de evaluación final sea una combinación de estas} funciones de evaluación. Estas funciones de evaluación deben penalizar:
+
+\begin{enumerate}[---]
+    \item De forma muy grave que haya huecos en el horario. Para ello, aplicaremos la siguiente fórmula:
+    \begin{displaymath}
+        fitness_{huecos} = \frac{1}{2 \sum_{i = 1}^N h_i }
+    \end{displaymath}
+    Donde $i$ es un día de la semana y $h_i$ los huecos que hay en ese día.
+    
+    \item De forma más suave que haya asignaturas colocadas fuera de la franja horaria.
+\end{enumerate}
+
+
