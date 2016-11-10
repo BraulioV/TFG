@@ -87,16 +87,32 @@ A partir del diagrama de interacción (\hyperref[interaccion]{Figura \ref*{inter
 \end{enumerate} 
 
 \section{Función de evaluación}
-La calidad de un horario depende de la calidad del horario obtenido para cada grupo de teoría. Por tanto, para simplificar el cálculo de la misma, hemos decidido \textbf{hacer una función de evaluación a nivel individual para cada grupo} y que la \textbf{función de evaluación final sea una combinación de estas} funciones de evaluación. Estas funciones de evaluación deben penalizar:
+La calidad de un horario depende de la calidad del horario obtenido para cada grupo de teoría. Por tanto, para simplificar el cálculo de la misma, hemos decidido \textbf{hacer una función de evaluación a nivel individual para cada grupo} y que la \textbf{función de evaluación final sea una combinación de estas} funciones de evaluación:
+
+\begin{displaymath}
+    fitness = \sum_{i=0}^N fitness_i \qquad\ \forall i \in Grupos
+\end{displaymath}
+
+Donde la función de evaluación deberá maximizar la siguiente fórmula:
+
+\begin{displaymath}
+    fitness_i = fitness_{huecos} + fitness_{fueras}
+\end{displaymath}
+
+donde se reflejan las condiciones que debe penalizar:
 
 \begin{enumerate}[---]
     \item De forma muy grave que haya huecos en el horario. Para ello, aplicaremos la siguiente fórmula:
     \begin{displaymath}
-        fitness_{huecos} = \frac{1}{2 \sum_{i = 1}^N h_i }
+        fitness_{huecos} = \frac{1}{2 \sum_{i = 1}^N h_i}
     \end{displaymath}
-    Donde $i$ es un día de la semana y $h_i$ los huecos que hay en ese día.
+    Donde $i$ es un día de la semana y $h_i$, los huecos que hay en ese día.
     
-    \item De forma más suave que haya asignaturas colocadas fuera de la franja horaria.
+    \item De forma más suave que haya asignaturas colocadas fuera de la franja horaria. Para ello, aplicaremos la siguiente fórmula:
+    \begin{displaymath}
+        fitness_{fueras} = -10 * \sum_{i=1}^N f_i
+    \end{displaymath}
+    Donde $i$ es un día de la semana y $f_i$, las asignaturas fuera de la franja horaria que hay ese día.
 \end{enumerate}
 
-
+Queda por determinar si añadimos condiciones extra como por ejemplo, permitir que una asignatura pueda darse en dos días distintos en vez de en uno sólo.
