@@ -104,15 +104,15 @@ donde se reflejan las condiciones que debe penalizar:
 \begin{enumerate}[---]
     \item De forma muy grave que haya huecos en el horario. Para ello, aplicaremos la siguiente fórmula:
     \begin{displaymath}
-        fitness_{huecos} = \frac{1}{2 \sum_{i = 1}^N h_i}
+        fitness_{huecos} = \frac{1}{2 \left( \sum_{i = 1}^N h_i \right)^2}
     \end{displaymath}
     Donde $i$ es un día de la semana y $h_i$, los huecos que hay en ese día.
     
     \item De forma más suave que haya asignaturas colocadas fuera de la franja horaria. Para ello, aplicaremos la siguiente fórmula:
     \begin{displaymath}
-        fitness_{fueras} = -10 * \sum_{i=1}^N f_i
+        fitness_{fueras} = \frac{1}{\sum_{i=1}^N f_i}
     \end{displaymath}
     Donde $i$ es un día de la semana y $f_i$, las asignaturas fuera de la franja horaria que hay ese día.
 \end{enumerate}
 
-Queda por determinar si añadimos condiciones extra como por ejemplo, permitir que una asignatura pueda darse en dos días distintos en vez de en uno sólo.
+Con esta función de evaluación hemos cubierto los requisitos de minimizar los huecos en el horario y que haya asignaturas que queden fuera de la franja horaria establecida.
