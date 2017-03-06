@@ -225,3 +225,7 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+# Pycharm stuff
+.idea
+.idea/*
