@@ -17,11 +17,23 @@ def create_classroom(filename, days, hours_per_day):
 
 class ClassRoom:
 
-    """" Class to model a classroom for a specific bachelor """
+    """ Class to model a classroom for a specific bachelor """
 
     def __init__(self, d, x, name, capacity):
-        self.time_table = np.full((d, x), fill_value=False, dtype=np.bool)
+        self.time_table = np.full((d, x), fill_value=False)
         self.capacity = capacity
         self.classroom_name = name
 
+    """ Fill a specific hour a classroom """
 
+    def assign_class(self, x, y, group, subject):
+        # If time_table[x,y] is empty, assign the
+        # group and the subject
+        if not self.time_table[x,y]:
+            self.time_table[x,y] = [group, subject]
+            return True
+
+        return False
+
+    def delete_at(self, x, y):
+        self.time_table[x, y] = False
