@@ -1,4 +1,5 @@
 import numpy as np
+import sub_group
 
 def create_group(filename, classroom_list):
     groups = {}
@@ -26,3 +27,7 @@ class Group:
     def __repr__(self):
         return str(self.starttime) + " " + str(self.endtime) + " " + str(self.year) + " " \
                 + str(self.numsubgroups) + " " + str(self.classroom.classroom_name)
+
+
+    def create_subgroups(self):
+        pass
