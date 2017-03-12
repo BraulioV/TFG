@@ -24,6 +24,9 @@ class ClassRoom:
         self.capacity = capacity
         self.classroom_name = name
 
+    def __repr__(self):
+        return str(self.capacity) + " " + self.classroom_name
+
     """ Fill a specific hour a classroom """
 
     def assign_class(self, x, y, group, subject):

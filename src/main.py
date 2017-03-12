@@ -11,3 +11,6 @@ if __name__ == '__main__':
     groups = create_group(filename="../Dataset/groups.csv", 
                           classroom_list=classrooms)
     print(groups)
+    pclassrooms = create_practice_classroom(filename="../Dataset/practiceclassrooms.csv", days=5, hours_per_day=4)
+    print(pclassrooms)
+    

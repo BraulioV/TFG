@@ -22,3 +22,7 @@ class Group:
         self.year = year
         self.numsubgroups = numsubgroups
         self.classroom = classroom
+
+    def __repr__(self):
+        return str(self.starttime) + " " + str(self.endtime) + " " + str(self.year) + " " \
+                + str(self.numsubgroups) + " " + str(self.classroom.classroom_name)
