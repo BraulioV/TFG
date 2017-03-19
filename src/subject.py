@@ -18,7 +18,7 @@ class Subject:
      * split: if the teacher wants, theoretical hours will
              be taught on separate days. By default, false.
     """
-    def __init__(self, name, acronym, n_th, n_ph, year, semester,
+    def __init__(self, name, acronym, n_th, n_ph, year, semester, name
                  requirements = [], split = False):
 
         self.name = name
@@ -29,10 +29,11 @@ class Subject:
         self.semester = semester
         self.special_requirements = requirements
         self.split_th_hours = split
+        self.degree = degree
 
 
     def __str__(self):
-        return "Name: " + self.name + "\tAcronym: " + self.acronym + "\n\t* Theoretical hours: " + \
+        return "Name: " + self.name + "\tAcronym: " + self.acronym + "\tDegree: " + self.degree + "\n\t* Theoretical hours: " + \
                self.theoretical_hours + "\tPractical hours: " + self.practical_hours + \
                "\n\tYear: " + self.year + "\tSemester: " + self.semester + "\n\tSpecial requirements: " \
-               + self.special_requirements + "\nSplit theoretical hours: " + self.split_th_hours
+               + self.special_requirements + "\nSplit theoretical hours: " + self.split_th_hours 
