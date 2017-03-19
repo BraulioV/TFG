@@ -9,7 +9,7 @@ def create_group(filename, classroom_list):
         # load data
         for line in f:
             l = line[:-1].split(',')
-            groups[l[0]] = Group(l[1],l[2],int(l[3]),int(l[4]),classroom_list[l[5]])
+            groups[l[0]] = Group(l[1],l[2],int(l[3]),int(l[4]),classroom_list[l[5]],l[6])
 
     return groups
 
