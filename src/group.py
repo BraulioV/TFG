@@ -17,12 +17,13 @@ class Group:
 
     """ Class to model a group of students """
 
-    def __init__(self, starttime, endtime, year, numsubgroups, classroom):
+    def __init__(self, starttime, endtime, year, numsubgroups, classroom, degree):
         self.starttime = starttime
         self.endtime = endtime
         self.year = year
         self.numsubgroups = numsubgroups
         self.classroom = classroom
+        self.degree = degree
 
     def __repr__(self):
         return str(self.starttime) + " " + str(self.endtime) + " " + str(self.year) + " " \
