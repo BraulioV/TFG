@@ -25,7 +25,7 @@ class TimeTable:
 
     def __assign_class__(self, day, hour, subject, group, classroom):
         second_hour = hour + subject.theoretical_hours - 1
-        if not classroom.time_table[day, hour:second_hour]:
+        if not (classroom.time_table[day, hour:second_hour]).all():
             self.time_table[day, hour, group] = subject
             classroom.time_table[day, hour:second_hour] = True
             return True
@@ -36,32 +36,38 @@ class TimeTable:
     def random_greedy(self):
         for cname, classroom in self.classrooms.items():
             # filter groups assigned to that theory class
-            group = dict(filter(lambda g: g[1].classroom.classrom_name == cname, 
+            group = dict(filter(lambda g: g[1].classroom.classroom_name == cname, 
                                 self.groups.items()))
-            for gname, g in group:
+            for gname, g in group.items():
                 group_index = list(self.groups.keys()).index(gname)
                 # filter subjects assigned to that group
                 subject = dict(filter(lambda s: s[1].year == g.year and 
                                      s[1].speciality == g.speciality, 
                                      self.subjects.items()))
 
+
                 # assign all subjects theorical hours to random time in the 
                 # classroom table
                 n_days, n_hours, _ = self.time_table.shape
                 for d in range(n_days):
+                    if not subject:
+                        break
                     if g.franja == "M":
                         for h in range(n_hours//2):
-                            s = choice(subject.items())
+                            if not subject:
+                                break
+                            s = choice(list(subject.items()))
                             is_assigned = self.__assign_class__(d, h, s[1], \
-                                group_index, cname)
+                                group_index, classroom)
                             if is_assigned:
                                 del subject[s[0]]
 
                     else: # g.franja == "T"
                         for h in range(n_hours//2, n_hours):
-                            s = choice(subject.keys())
+                            if not subject:
+                                break
+                            s = choice(list(subject.items()))
                             is_assigned = self.__assign_class__(d, h, s[1], \
-                                group_index, cname)
+                                group_index, classroom)
                             if is_assigned:
                                 del subject[s[0]]
-
