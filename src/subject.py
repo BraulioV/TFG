@@ -1,5 +1,21 @@
 ## import statements
 
+def create_subject(filename):
+    # Empty dict of different subjects
+    subjects = {}
+    with open(filename, 'r') as f:
+        # Skip column names
+        f.readline()
+        # load data
+        for line in f:
+            l = line[:-1].split(',')
+            materials = l[3].split('-')
+            subjects[l[5]] = Subject(name=l[0], acronym=l[5], n_th=int(l[1]),
+                                    n_ph=int(l[2]), year=int(l[-3]), degree=l[-1],
+                                    semester=int(l[-2]), requirements=materials,
+                                    split=l[4]=='True')
+    return subjects
+
 class Subject:
 
     """ Class to model a subject """
@@ -18,7 +34,7 @@ class Subject:
      * split: if the teacher wants, theoretical hours will
              be taught on separate days. By default, false.
     """
-    def __init__(self, name, acronym, n_th, n_ph, year, semester, name
+    def __init__(self, name, acronym, n_th, n_ph, year, semester, degree,
                  requirements = [], split = False):
 
         self.name = name
@@ -32,8 +48,8 @@ class Subject:
         self.degree = degree
 
 
-    def __str__(self):
+    def __repr__(self):
         return "Name: " + self.name + "\tAcronym: " + self.acronym + "\tDegree: " + self.degree + "\n\t* Theoretical hours: " + \
-               self.theoretical_hours + "\tPractical hours: " + self.practical_hours + \
-               "\n\tYear: " + self.year + "\tSemester: " + self.semester + "\n\tSpecial requirements: " \
-               + self.special_requirements + "\nSplit theoretical hours: " + self.split_th_hours 
+               str(self.theoretical_hours) + "\tPractical hours: " + str(self.practical_hours) + \
+               "\n\tYear: " + str(self.year) + "\tSemester: " + str(self.semester) + "\n\tSpecial requirements: " \
+               + str(self.special_requirements) + "\nSplit theoretical hours: " + str(self.split_th_hours)

@@ -13,4 +13,5 @@ if __name__ == '__main__':
     print(groups)
     pclassrooms = create_practice_classroom(filename="../Dataset/practiceclassrooms.csv", days=5, hours_per_day=4)
     print(pclassrooms)
-    
+    subjects = create_subject(filename="../Dataset/subjects.csv")
+    print(subjects)
