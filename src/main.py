@@ -22,3 +22,4 @@ if __name__ == '__main__':
                           classrooms=classrooms, practices_classrooms=pclassrooms,
                           subjects=subjects)
     timetable.random_greedy()
+    print(timetable.time_table)
