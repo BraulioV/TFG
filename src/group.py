@@ -9,8 +9,8 @@ def create_group(filename, classroom_list):
         # load data
         for line in f:
             l = line[:-1].split(',')
-            groups[l[0]] = Group(l[0], l[1],l[2],int(l[3]),int(l[4]),
-                                classroom_list[l[5]],l[6],l[7])
+            groups[l[0]] = Group(l[0], l[1], int(l[2]),int(l[3]),
+                                classroom_list[l[4]],l[5],l[6])
 
     return groups
 
@@ -18,10 +18,9 @@ class Group:
 
     """ Class to model a group of students """
 
-    def __init__(self, name, starttime, endtime, year, numsubgroups, classroom, 
+    def __init__(self, name, franja, year, numsubgroups, classroom, 
                  degree, speciality):
-        self.starttime = starttime
-        self.endtime = endtime
+        self.franja = franja
         self.year = year
         self.numsubgroups = numsubgroups
         self.classroom = classroom
@@ -30,10 +29,9 @@ class Group:
         self.speciality = speciality
 
     def __repr__(self):
-        return self.name + " " + str(self.starttime) + " " + str(self.endtime) \
-                + " " + str(self.year) + " " + str(self.numsubgroups) + " " + \
-                str(self.classroom.classroom_name) + " " + self.degree + " " + \
-                self.speciality
+        return self.name + " " + self.franja + " " + str(self.year) + " " + \
+                str(self.numsubgroups) + " " + str(self.classroom.classroom_name) \
+                + " " + self.degree + " " + self.speciality
 
 
     def create_subgroups(self):
