@@ -13,7 +13,7 @@ def create_subject(filename):
             subjects[l[5]] = Subject(name=l[0], acronym=l[5], n_th=int(l[1]),
                                     n_ph=int(l[2]), year=int(l[-3]), degree=l[-1],
                                     semester=int(l[-2]), requirements=materials,
-                                    split=l[4]=='True')
+                                    split=l[4]=='True', speciality=l[6])
     return subjects
 
 class Subject:
@@ -50,7 +50,10 @@ class Subject:
 
 
     def __repr__(self):
-        return "Name: " + self.name + "\tAcronym: " + self.acronym + "\tDegree: " + self.degree + "\n\t* Theoretical hours: " + \
-               str(self.theoretical_hours) + "\tPractical hours: " + str(self.practical_hours) + \
-               "\n\tYear: " + str(self.year) + "\tSemester: " + str(self.semester) + "\n\tSpecial requirements: " \
-               + str(self.special_requirements) + "\nSplit theoretical hours: " + str(self.split_th_hours)
+        return "Name: " + self.name + "\tAcronym: " + self.acronym + "\tDegree: " \
+               + self.degree + "\n\t* Theoretical hours: " + \
+               str(self.theoretical_hours) + "\tPractical hours: " + \
+               str(self.practical_hours) + "\n\tYear: " + str(self.year) + \
+               "\tSemester: " + str(self.semester) + "\n\tSpecial requirements: " \
+               + str(self.special_requirements) + "\nSplit theoretical hours: " \
+               + str(self.split_th_hours) + "\nSpeciality: " + self.speciality + "\n"

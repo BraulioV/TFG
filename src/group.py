@@ -32,7 +32,8 @@ class Group:
     def __repr__(self):
         return self.name + " " + str(self.starttime) + " " + str(self.endtime) \
                 + " " + str(self.year) + " " + str(self.numsubgroups) + " " + \
-                str(self.classroom.classroom_name)
+                str(self.classroom.classroom_name) + " " + self.degree + " " + \
+                self.speciality
 
 
     def create_subgroups(self):
