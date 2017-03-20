@@ -1,5 +1,5 @@
 import numpy as np
-from random import choice, randint
+from random import shuffle, randint
 
 class TimeTable:
 
@@ -51,25 +51,19 @@ class TimeTable:
                 # assign all subjects theorical hours to random time in the 
                 # classroom table
                 n_days, n_hours, _ = self.time_table.shape
-                for d in range(n_days):
-                    if not subject:
-                        break
-                    if g.franja == "M":
-                        for h in range(n_hours//2):
-                            if not subject:
-                                break
-                            s = choice(list(subject.items()))
-                            is_assigned = self.__assign_class__(d, h, s[1], \
-                                group_index, classroom)
-                            if is_assigned:
-                                del subject[s[0]]
+                shuffle_keys = shuffle(list(subject.keys()))
+                # for d in range(n_days):
+                #     if g.franja == "M":
+                #         for h in range(n_hours//2):
+                            
+                #             is_assigned = self.__assign_class__(d, h, s[1], \
+                #                 group_index, classroom)
+                #             if is_assigned:
+                #                 del subject[s[0]]
 
-                    else: # g.franja == "T"
-                        for h in range(n_hours//2, n_hours):
-                            if not subject:
-                                break
-                            s = choice(list(subject.items()))
-                            is_assigned = self.__assign_class__(d, h, s[1], \
-                                group_index, classroom)
-                            if is_assigned:
-                                del subject[s[0]]
+                #     else: # g.franja == "T"
+                #         for h in range(n_hours//2, n_hours):
+                #             is_assigned = self.__assign_class__(d, h, s[1], \
+                #                 group_index, classroom)
+                #             if is_assigned:
+                #                 del subject[s[0]]
