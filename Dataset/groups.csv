@@ -1,8 +1,8 @@
-Name,StartTime,EndTime,Year,NumSubGroups,Classroom,Degree
-A,09:30,13:30,1,3,0.1,GII
-B,09:30,13:30,1,3,0.2,GII
-C,09:30,13:30,1,3,0.3,GII
-D,15:30,19:30,1,3,0.3,GII
-E,15:30,19:30,1,3,0.2,GII
-A,09:30,13:30,2,3,0.4,GII
-B,09:30,13:30,2,3,0.5,GII
+Name,StartTime,EndTime,Year,NumSubGroups,Classroom,Degree,Speciality
+A,09:30,13:30,1,3,0.1,GII,None
+B,09:30,13:30,1,3,0.2,GII,None
+C,09:30,13:30,1,3,0.3,GII,None
+D,15:30,19:30,1,3,0.3,GII,None
+E,15:30,19:30,1,3,0.2,GII,None
+A,09:30,13:30,2,3,0.4,GII,None
+B,09:30,13:30,2,3,0.5,GII,None

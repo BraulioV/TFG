@@ -1,5 +1,5 @@
-Name,THours,PHours,Materials,SplitHours,Acronym,Year,Semester,Degree
-Metodología de la Programación,2,2,Ordenadores,False,MP,1,2,GII
-Cálculo,3,1,Ordenadores,False,CA,1,1,GII
-Fundamentos de Redes,2,2,Ordenadores-Routers,False,FR,3,1,GII
-Arquitectura de Computadores,2,2,Ordenadores,True,AC,2,2,GII
+Name,THours,PHours,Materials,SplitHours,Acronym,Speciality,Year,Semester,Degree
+Metodología de la Programación,2,2,Ordenadores,False,MP,None,1,2,GII
+Cálculo,3,1,Ordenadores,False,CA,1,1,None,GII
+Fundamentos de Redes,2,2,Ordenadores-Routers,False,FR,None,3,1,GII
+Arquitectura de Computadores,2,2,Ordenadores,True,AC,None,2,2,GII
