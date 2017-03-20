@@ -1,5 +1,26 @@
 Name,THours,PHours,Materials,SplitHours,Acronym,Speciality,Year,Semester,Degree
-Metodología de la Programación,2,2,Ordenadores,False,MP,Troncal,1,2,GII
-Cálculo,3,1,Ordenadores,False,CA,Troncal,1,1,GII
+Fundamentos de la Programacion,2,2,Ordenadores,False,FP,Troncal,1,1,GII
+Fundamentos Fisicos y Tecnologicos,2,2,Ordenadores-Resistencias,False,FFT,Troncal,1,1,GII
+Fundamentos del Software,2,2,Ordenadores,False,FS,Troncal,1,1,GII
+Calculo,3,1,Ordenadores,False,CA,Troncal,1,1,GII
+Algebra Lineal y Estructuras Matematicas,3,1,Ordenadores,False,ALEM,Troncal,1,1,GII
+Ingenieria Empresa y Sociedad,4,0,Nada,False,IES,Troncal,1,2,GII
+Estadistica,3,1,Ordenadores,False,ES,Troncal,1,2,GII
+Logica y Metodos Discretos,3,1,Ordenadores,False,LMD,Troncal,1,2,GII
+Metodologia de la Programacion,2,2,Ordenadores,False,MP,Troncal,1,2,GII
+Tecnologia y Organizacion de los Computadores,2,2,Ordenadores-Placas,False,TOC,Troncal,1,2,GII
+Estructura de Computadores,2,2,Ordenadores,False,EC,Troncal,2,1,GII
+Estructura de Datos,2,2,Ordenadores,False,ED,Troncal,2,1,GII
+Programacion y Diseño Orientado a Objetos,2,2,Ordenadores,False,PDOO,Troncal,2,1,GII
+Sistemas Concurrentes y Distribuidos,2,2,Ordenadores,False,SCD,Troncal,2,1,GII
+Sistemas Operativos,2,2,Ordenadores,False,SO,Troncal,2,1,GII
+Arquitectura de Computadores,2,2,Ordenadores,False,AC,Troncal,2,2,GII
+Algoritmica,2,2,Ordenadores,False,ALG,Troncal,2,2,GII
+Inteligencia Artificial,2,2,Ordenadores,False,IA,Troncal,2,2,GII
+Fundamentos de Bases de Datos,2,2,Ordenadores,False,FBD,Troncal,2,2,GII
+Fundamentos de Ingeniería del Software,2,2,Ordenadores,False,FIS,Troncal,2,2,GII
+Ingeniería de Servidores,2,2,Ordenadores,False,ISE,Troncal,3,1,GII
 Fundamentos de Redes,2,2,Ordenadores-Routers,False,FR,Troncal,3,1,GII
-Arquitectura de Computadores,2,2,Ordenadores,True,AC,Troncal,2,2,GII
+Modelos de Computación,2,2,Nada,False,MC,Troncal,3,1,GII
+Informática Gráfica,2,2,Ordenadores,False,IG,Troncal,3,1,GII
+Diseño y Desarrollo de Sistemas de Información,1,3,Ordenadores,False,DDSI,Troncal,3,1,GII

@@ -38,12 +38,14 @@ class TimeTable:
             # filter groups assigned to that theory class
             group = dict(filter(lambda g: g[1].classroom.classroom_name == cname, 
                                 self.groups.items()))
+            print(group)
             for gname, g in group.items():
                 group_index = list(self.groups.keys()).index(gname)
                 # filter subjects assigned to that group
                 subject = dict(filter(lambda s: s[1].year == g.year and 
                                      s[1].speciality == g.speciality, 
                                      self.subjects.items()))
+                print(subject)
 
 
                 # assign all subjects theorical hours to random time in the 
