@@ -16,12 +16,13 @@ class TimeTable:
 
     """
     def __init__(self, n_days, n_hours, groups, classrooms, practices_classrooms,
-                subjects):
+                subjects, semester):
         self.time_table = np.zeros((n_days, n_hours, len(groups)), dtype=str)
         self.groups = groups
         self.classrooms = classrooms
         self.practices_classrooms = practices_classrooms
         self.subjects = subjects
+        self.semester = semester
 
     def __assign_class__(self, day, hour, subject, group, classroom):
         second_hour = hour + subject.theoretical_hours - 1
@@ -38,20 +39,21 @@ class TimeTable:
             # filter groups assigned to that theory class
             group = dict(filter(lambda g: g[1].classroom.classroom_name == cname, 
                                 self.groups.items()))
-            print(group)
+            # print(group)
             for gname, g in group.items():
                 group_index = list(self.groups.keys()).index(gname)
                 # filter subjects assigned to that group
                 subject = dict(filter(lambda s: s[1].year == g.year and 
                                      s[1].speciality == g.speciality, 
                                      self.subjects.items()))
-                print(subject)
+                # print(subject)
 
 
-                # assign all subjects theorical hours to random time in the 
+                # assign all subjects theoretical hours to random time in the 
                 # classroom table
                 n_days, n_hours, _ = self.time_table.shape
-                shuffle_keys = shuffle(list(subject.keys()))
+                subject_names = list(subject.keys())
+                shuffle(subject_names)
                 # for d in range(n_days):
                 #     if g.franja == "M":
                 #         for h in range(n_hours//2):
