@@ -1,11 +1,11 @@
 class Cell:
-    def __init__(self, group = "empty", classroom = "empty", subject = "empty"):
+    def __init__(self, group = "-", classroom = "-", subject = "-"):
         self.group = group
         self.classroom = classroom
         self.subject = subject
 
     def empty(self):
-        return self.group == "empty" and self.classroom == "empty" and self.subject == "empty"
+        return self.group == "-" and self.classroom == "-" and self.subject == "-"
 
     # equality operator overload
     def __eq__(self, other):

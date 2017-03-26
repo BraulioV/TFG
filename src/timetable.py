@@ -71,4 +71,4 @@ class TimeTable:
                                 subject_list[i][1].theoretical_hours -= 1
                                 day = (day + 1) % self.time_table.shape[0]
                                 break
-
+            it += 1
