@@ -64,7 +64,7 @@ En la \hyperref[interaccion]{Figura \ref*{interaccion}} vemos un esquema de la i
 
 En primer lugar, el usuario debe asignar manualmente a cada grupo, el aula de teoría correspondiente, para proporcionarle a los algoritmos que vienen detrás un punto de partida que se ajuste lo mejor posible a lo que se desea como resultado. Conforme el usuario vaya realizando asignaciones de grupos a aulas, el sistema estará comprobando si existe alguna incompatibilidad o no, para que, en caso de que haya una, avisar al usuario y evitar que se realice esa asignación. Una vez finalizada la asignación de aulas a los grupos de teoría, el sistema comenzará a asignarle a los subgrupos de prácticas, qué aula y hora les corresponden para cada asignatura, cumpliendo con las restricciones de material que imponga cada asignatura, y de que no ocurran solapamientos.
 
-Para cuadrar las horas de forma eficiente es necesario tener una estructura de datos adicional (una tabla hash o un diccionario) en el que se tenga constancia de las asignaciones que ha recibido un aula, el número de horas disponibles que tiene y cuándo las tiene disponibles. Además, al tratarse de algo que se va construyendo poco a poco, hemos pensado que podemos usar alguna variante del algoritmo de \textit{Colonia de Hormigas}.
+Para cuadrar las horas de forma eficiente es necesario tener una estructura de datos adicional (una tabla hash o un diccionario) en el que se tenga constancia de las asignaciones que ha recibido un aula, el número de horas disponibles que tiene y cuándo las tiene disponibles.
 
 \begin{figure}[!h]
     \centering
@@ -116,3 +116,38 @@ donde se reflejan las condiciones que debe penalizar:
 \end{enumerate}
 
 Con esta función de evaluación hemos cubierto los requisitos de minimizar los huecos en el horario y que haya asignaturas que queden fuera de la franja horaria establecida.
+
+\section{Greedy de inicialización}
+Para inicializar una población para el algoritmo genético, hemos desarrollado un algoritmo \textit{Greedy} aleatorio. El pseudocódigo se ve explicado en el \hyperref[greedyteoria]{Algoritmo \ref*{greedyteoria}} 
+
+\begin{pseudocode}{GreedyTeoria}{ }
+    \label{greedyteoria}
+    \FOREACH g \in groups \DO
+    \BEGIN
+        d \GETS 0 \\
+        subject\_list \GETS \CALL{shuffle}{\CALL{filter}{subjects, g}}\\
+        \WHILE \sum subject\_list.th\_hours \neq 0 \DO
+        \BEGIN
+            \FOREACH s \in subject_list \DO
+            \BEGIN
+                \IF s.th\_hours \neq 0 \DO
+                \BEGIN
+                    \FOR h \GETS 0 \TO number\_of\_hours \DO
+                    \BEGIN
+                        \IF \CALL{libre}{h} \DO
+                        \BEGIN
+                            tabla[d,h] \GETS (g, s, g.classroom)\\
+                            s.th\_hours \GETS s.th\_hours - 1\\
+                            d \GETS (d + 1) \bmod number\_of\_days\\
+                            \BREAK
+                        \END
+                    \END
+                \END
+            \END
+        \END
+    \END
+\end{pseudocode}
+
+Para realizar el filtrado de asignaturas que pertenecen a cada grupo, filtramos aquellas asignaturas que coincidan tanto en año, como en semestre y especialidad con el grupo en cuestión. Este método pertenece a la clase \texttt{Timetable} y, por tanto, \texttt{tabla}, \texttt{number\_of\_hours} y \texttt{number\_of\_days} son atributos de dicha clase. El atributo \texttt{th\_hours} de la clase \texttt{Subject} corresponde al número de horas teóricas de dicha asignatura.
+
+Para ilustrar el funcionamiento de este algoritmo vamos a hacer un pequeño ejemplo.
