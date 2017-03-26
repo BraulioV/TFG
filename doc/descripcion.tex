@@ -64,7 +64,7 @@ En la \hyperref[interaccion]{Figura \ref*{interaccion}} vemos un esquema de la i
 
 En primer lugar, el usuario debe asignar manualmente a cada grupo, el aula de teoría correspondiente, para proporcionarle a los algoritmos que vienen detrás un punto de partida que se ajuste lo mejor posible a lo que se desea como resultado. Conforme el usuario vaya realizando asignaciones de grupos a aulas, el sistema estará comprobando si existe alguna incompatibilidad o no, para que, en caso de que haya una, avisar al usuario y evitar que se realice esa asignación. Una vez finalizada la asignación de aulas a los grupos de teoría, el sistema comenzará a asignarle a los subgrupos de prácticas, qué aula y hora les corresponden para cada asignatura, cumpliendo con las restricciones de material que imponga cada asignatura, y de que no ocurran solapamientos.
 
-Para cuadrar las horas de forma eficiente es necesario tener una estructura de datos adicional (una tabla hash o un diccionario) en el que se tenga constancia de las asignaciones que ha recibido un aula, el número de horas disponibles que tiene y cuándo las tiene disponibles. Además, al tratarse de algo que se va construyendo poco a poco, hemos pensado que podemos usar alguna variante del algoritmo de \textit{Colonia de Hormigas}.
+Para cuadrar las horas de forma eficiente es necesario tener una estructura de datos adicional (una tabla hash o un diccionario) en el que se tenga constancia de las asignaciones que ha recibido un aula, el número de horas disponibles que tiene y cuándo las tiene disponibles.
 
 \begin{figure}[!h]
     \centering
@@ -116,3 +116,145 @@ donde se reflejan las condiciones que debe penalizar:
 \end{enumerate}
 
 Con esta función de evaluación hemos cubierto los requisitos de minimizar los huecos en el horario y que haya asignaturas que queden fuera de la franja horaria establecida.
+
+\section{Greedy de inicialización}
+Para inicializar una población para el algoritmo genético, hemos desarrollado un algoritmo \textit{Greedy} aleatorio. El pseudocódigo se ve explicado en el \hyperref[greedyteoria]{Algoritmo \ref*{greedyteoria}} 
+
+\begin{pseudocode}{GreedyTeoria}{ }
+    \label{greedyteoria}
+    \FOREACH g \in groups \DO
+    \BEGIN
+        d \GETS 0 \\
+        subject\_list \GETS \CALL{shuffle}{\CALL{filter}{subjects, g}}\\
+        \WHILE \sum subject\_list.th\_hours \neq 0 \DO
+        \BEGIN
+            \FOREACH s \in subject_list \DO
+            \BEGIN
+                \IF s.th\_hours \neq 0 \DO
+                \BEGIN
+                    \FOR h \GETS 0 \TO number\_of\_hours \DO
+                    \BEGIN
+                        \IF \CALL{libre}{h} \DO
+                        \BEGIN
+                            tabla[d,h] \GETS (g, s, g.classroom)\\
+                            s.th\_hours \GETS s.th\_hours - 1\\
+                            d \GETS (d + 1) \bmod number\_of\_days\\
+                            \BREAK
+                        \END
+                    \END
+                \END
+            \END
+        \END
+    \END
+\end{pseudocode}
+
+Para realizar el filtrado de asignaturas que pertenecen a cada grupo, filtramos aquellas asignaturas que coincidan tanto en año, como en semestre y especialidad con el grupo en cuestión. Este método pertenece a la clase \texttt{Timetable} y, por tanto, \texttt{tabla}, \texttt{number\_of\_hours} y \texttt{number\_of\_days} son atributos de dicha clase. El atributo \texttt{th\_hours} de la clase \texttt{Subject} corresponde al número de horas teóricas de dicha asignatura.
+
+\subsection{Ejemplo de funcionamiento}
+Supongamos que tenemos que hacer un horario para los grupos de segundo curso $A$ y $B$, que están asignados al aula de teoría 0.1 y cuyas asignaturas son:
+
+\begin{enumerate}[$\bullet$]
+    \item \textbf{AC} con dos horas de teoría,
+    \item \textbf{ALG} con tres horas de teoría y
+    \item \textbf{FBD} con una hora de teoría.
+\end{enumerate}
+
+Además, también suponemos que el número de días de en los que se quieren cuadrar estas asignaturas es de 3 y 4 horas.
+
+Vamos a hacer los pasos para cuadrar las asignaturas del grupo $A$:
+
+\begin{minipage}{0.5\textwidth}    
+\begin{tabular}{| c | c | c |}
+\hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & 2 \\
+ALG & 3 \\
+FBD & 1
+\end{tabular}
+\end{minipage}
+
+Seleccionamos la primera asignatura de nuestra lista filtrada y mezclada de asignaturas, \textbf{AC} y colocamos una de sus horas en el primer hueco disponible del horario. 
+
+\begin{minipage}{0.5\textwidth}    
+\begin{tabular}{| c | c | c |}
+\hline
+AC, A, 0.1 &  &  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & 1 \\
+ALG & 3 \\
+FBD & 1
+\end{tabular}
+\end{minipage}
+
+Ahora, hacemos lo mismo con \textbf{ALG} y \textbf{FBD}.
+
+\begin{minipage}{0.5\textwidth}    
+\begin{tabular}{| c | c | c |}
+\hline
+AC, A, 0.1 & ALG, A, 0.1  & FBD, A, 0.1 \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & 1 \\
+ALG & 2 \\
+FBD & 0
+\end{tabular}
+\end{minipage}
+
+Como aún siguen quedando horas por asignar, damos otra vuelta más.
+
+\begin{minipage}{0.5\textwidth}    
+\begin{tabular}{| c | c | c |}
+\hline
+AC, A, 0.1 & ALG, A, 0.1  & FBD, A, 0.1 \\
+ \hline
+AC, A, 0.1 & ALG, A, 0.1 & ALG, A, 0.1  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & 0 \\
+ALG & 0 \\
+FBD & 0
+\end{tabular}
+\end{minipage}
+
+Al no quedar más horas por asignar, pasaríamos a repetir estos mismos pasos con el grupo $B$.
