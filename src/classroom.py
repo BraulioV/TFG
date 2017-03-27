@@ -19,8 +19,8 @@ class ClassRoom:
 
     """ Class to model a classroom for a specific bachelor """
 
-    def __init__(self, d, x, name, capacity):
-        self.time_table = np.full((d, x), fill_value=False)
+    def __init__(self, days, hours, name, capacity):
+        self.time_table = np.full((hours, days), fill_value=False)
         self.capacity = capacity
         self.classroom_name = name
 

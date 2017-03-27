@@ -20,7 +20,7 @@ class TimeTable:
     """
     def __init__(self, n_days, n_hours, groups, classrooms, practices_classrooms,
                 subjects, semester):
-        self.time_table = np.full((n_days, n_hours, len(groups)), fill_value = Cell(), dtype=Cell)
+        self.time_table = np.full((n_hours, n_days, len(groups)), fill_value = Cell(), dtype=Cell)
         self.groups = groups
         self.classrooms = classrooms
         self.practices_classrooms = practices_classrooms
@@ -43,6 +43,12 @@ class TimeTable:
 
         return sum
 
+    def __assign_cell__(self, group_name, group_classroom, acronym, hour, day, it, i, subject_list):
+        self.time_table[hour, day, it] = Cell(group_name, group_classroom, acronym)
+        self.classrooms[group_classroom].time_table[hour,day] = True
+        subject_list[i][1].theoretical_hours -= 1
+        return (day + 1) % self.time_table.shape[1]
+
     def random_greedy(self, semester):
         it = 0
         # for each group
@@ -64,24 +70,21 @@ class TimeTable:
                     if subject_list[i][1].theoretical_hours > 0:
                         # search the hour
                         if group[1].shift == 'M':
-                            for hour in range(self.time_table.shape[1]//2 + 1):
+                            for hour in range(self.time_table.shape[0]//2 + 1):
                                 # if that hour it's empty, assign the group to that hour
-                                if np.all(map(lambda x: x.classroom != group.classroom, self.time_table[hour, day])):
+                                if not self.classrooms[group[1].classroom.classroom_name].time_table[hour,day]:
+                                    day = self.__assign_cell__(group[1].name, group[1].classroom.classroom_name, subject_list[i][1].acronym,
+                                                               hour, day, it, i, subject_list)
 
-                                    self.time_table[hour, day, it] = (group[1].name, group[1].classroom, subject_list[i][1].acronym)
-                                    subject_list[i][1].theoretical_hours -= 1
-                                    day = (day + 1) % self.time_table.shape[0]
                                     print(self.time_table[:,:,it])
                                     break
                         else:
-                            for hour in range(self.time_table.shape[1]//2 + 1):
+                            for hour in range(self.time_table.shape[0]//2, self.time_table.shape[0]):
                                 # if that hour it's empty, assign the group to that hour
-                                if np.all(map(lambda x: x.classroom != group.classroom, self.time_table[hour, day])):
-
-                                    self.time_table[hour, day, it] = (group[1].name, group[1].classroom, subject_list[i][1].acronym)
-                                    subject_list[i][1].theoretical_hours -= 1
-                                    day = (day + 1) % self.time_table.shape[0]
-                                    print(self.time_table[:,:,it])
+                                if not self.classrooms[group[1].classroom.classroom_name].time_table[hour, day]:
+                                    day = self.__assign_cell__(group[1].name, group[1].classroom.classroom_name,
+                                                               subject_list[i][1].acronym,
+                                                               hour, day, it, i, subject_list)
                                     break
 
             it += 1

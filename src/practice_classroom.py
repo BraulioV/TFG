@@ -19,7 +19,7 @@ def create_practice_classroom(filename, days, hours_per_day):
 class PracticeClassRoom (ClassRoom):
 
     def __init__(self, materials, days, hours_per_day, name, capacity):
-        super().__init__(d=days, x=hours_per_day, name=name, capacity=capacity)
+        super().__init__(days=days, hours=hours_per_day, name=name, capacity=capacity)
         self.materials = materials
 
     def __repr__(self):
