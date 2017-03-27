@@ -132,14 +132,30 @@ Para inicializar una población para el algoritmo genético, hemos desarrollado 
             \BEGIN
                 \IF s.th\_hours \neq 0 \DO
                 \BEGIN
-                    \FOR h \GETS 0 \TO number\_of\_hours \DO
+                    \IF g.turno = ``Morning'' \DO
                     \BEGIN
-                        \IF \CALL{libre}{h} \DO
+                        \FOR h \GETS 0 \TO number\_of\_hours / 2 \DO
                         \BEGIN
-                            tabla[d,h] \GETS (g, s, g.classroom)\\
-                            s.th\_hours \GETS s.th\_hours - 1\\
-                            d \GETS (d + 1) \bmod number\_of\_days\\
-                            \BREAK
+                            \IF \CALL{libre}{h} \DO
+                            \BEGIN
+                                tabla[d,h] \GETS (g, s, g.classroom)\\
+                                s.th\_hours \GETS s.th\_hours - 1\\
+                                d \GETS (d + 1) \bmod number\_of\_days\\
+                                \BREAK
+                            \END
+                        \END
+                    \END
+                    \ELSE \DO
+                    \BEGIN
+                        \FOR h \GETS number\_of\_hours / 2 \TO number\_of\_hours \DO
+                        \BEGIN
+                            \IF \CALL{libre}{h} \DO
+                            \BEGIN
+                                tabla[d,h] \GETS (g, s, g.classroom)\\
+                                s.th\_hours \GETS s.th\_hours - 1\\
+                                d \GETS (d + 1) \bmod number\_of\_days\\
+                                \BREAK
+                            \END
                         \END
                     \END
                 \END
