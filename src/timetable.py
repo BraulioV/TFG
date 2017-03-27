@@ -63,14 +63,25 @@ class TimeTable:
                     # and only work with the not assign subjects
                     if subject_list[i][1].theoretical_hours > 0:
                         # search the hour
-                        for hour in range(self.time_table.shape[1]//2 + 1):
-                            # if that hour it's empty, assign the group to that hour
-                            if np.all(map(lambda x: x.classroom != group.classroom, self.time_table[hour, day])):
+                        if group[1].shift == 'M':
+                            for hour in range(self.time_table.shape[1]//2 + 1):
+                                # if that hour it's empty, assign the group to that hour
+                                if np.all(map(lambda x: x.classroom != group.classroom, self.time_table[hour, day])):
 
-                                self.time_table[hour, day, it] = (group[1].name, group[1].classroom, subject_list[i][1].acronym)
-                                subject_list[i][1].theoretical_hours -= 1
-                                day = (day + 1) % self.time_table.shape[0]
-                                print(self.time_table[:,:,it])
-                                break
+                                    self.time_table[hour, day, it] = (group[1].name, group[1].classroom, subject_list[i][1].acronym)
+                                    subject_list[i][1].theoretical_hours -= 1
+                                    day = (day + 1) % self.time_table.shape[0]
+                                    print(self.time_table[:,:,it])
+                                    break
+                        else:
+                            for hour in range(self.time_table.shape[1]//2 + 1):
+                                # if that hour it's empty, assign the group to that hour
+                                if np.all(map(lambda x: x.classroom != group.classroom, self.time_table[hour, day])):
+
+                                    self.time_table[hour, day, it] = (group[1].name, group[1].classroom, subject_list[i][1].acronym)
+                                    subject_list[i][1].theoretical_hours -= 1
+                                    day = (day + 1) % self.time_table.shape[0]
+                                    print(self.time_table[:,:,it])
+                                    break
 
             it += 1
