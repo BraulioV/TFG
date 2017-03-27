@@ -20,7 +20,7 @@ class Group:
 
     def __init__(self, name, franja, year, numsubgroups, classroom, 
                  degree, speciality):
-        self.franja = franja
+        self.shift = franja
         self.year = year
         self.numsubgroups = numsubgroups
         self.classroom = classroom
@@ -29,8 +29,8 @@ class Group:
         self.speciality = speciality
 
     def __repr__(self):
-        return self.name + " " + self.franja + " " + str(self.year) + " " + \
-                str(self.numsubgroups) + " " + str(self.classroom.classroom_name) \
+        return self.name + " " + self.shift + " " + str(self.year) + " " + \
+               str(self.numsubgroups) + " " + str(self.classroom.classroom_name) \
                 + " " + self.degree + " " + self.speciality
 
 

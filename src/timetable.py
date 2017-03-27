@@ -38,8 +38,8 @@ class TimeTable:
 
     def __get_total_th_hours__(self, subject_list):
         sum = 0
-        for i in subject_list:
-            sum += i[1].theoretical_hours
+        for i in range(len(subject_list)):
+            sum += subject_list[i][1].theoretical_hours
 
         return sum
 
@@ -65,10 +65,12 @@ class TimeTable:
                         # search the hour
                         for hour in range(self.time_table.shape[1]//2 + 1):
                             # if that hour it's empty, assign the group to that hour
-                            if np.all(map(lambda x: x.classroom == group.classroom, self.time_table[hour, day])):
+                            if np.all(map(lambda x: x.classroom != group.classroom, self.time_table[hour, day])):
 
                                 self.time_table[hour, day, it] = (group[1].name, group[1].classroom, subject_list[i][1].acronym)
                                 subject_list[i][1].theoretical_hours -= 1
                                 day = (day + 1) % self.time_table.shape[0]
+                                print(self.time_table[:,:,it])
                                 break
+
             it += 1
