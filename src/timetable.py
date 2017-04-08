@@ -75,26 +75,18 @@ class TimeTable:
                             for hour in range(self.time_table.shape[1]//2):
                                 # if that hour it's empty, assign the group to that hour
                                 if not self.classrooms[group[1].classroom.classroom_name].time_table[hour,day]:
-                                    print(subj_name_hours)
+
                                     day = self.__assign_cell__(group[1].name, group[1].classroom.classroom_name, 
                                                                name, hour, day, it, subj_name_hours)
-                                    print(subj_name_hours)
-                                    print(self.__get_total_th_hours__(subj_name_hours.items()))
-                                    print(self.time_table[it])
-                                    input("strgrfg")
 
                                     break
                         else:
                             for hour in range(self.time_table.shape[1]//2, self.time_table.shape[1]):
                                 # if that hour it's empty, assign the group to that hour
                                 if not self.classrooms[group[1].classroom.classroom_name].time_table[hour, day]:
-                                    print(subj_name_hours)
+
                                     day = self.__assign_cell__(group[1].name, group[1].classroom.classroom_name,
                                                                name, hour, day, it, subj_name_hours)
-                                    print(subj_name_hours)
-                                    print(self.__get_total_th_hours__(subj_name_hours.items()))
-                                    print(self.time_table[it])
-                                    input("strgrfg")
                                     break
 
             it += 1
