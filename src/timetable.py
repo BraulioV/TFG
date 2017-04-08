@@ -70,7 +70,7 @@ class TimeTable:
                     if subject_list[i][1].theoretical_hours > 0:
                         # search the hour
                         if group[1].shift == 'M':
-                            for hour in range(self.time_table.shape[0]//2):
+                            for hour in range(self.time_table.shape[1]//2):
                                 # if that hour it's empty, assign the group to that hour
                                 if not self.classrooms[group[1].classroom.classroom_name].time_table[hour,day]:
                                     day = self.__assign_cell__(group[1].name, group[1].classroom.classroom_name, subject_list[i][1].acronym,
@@ -79,7 +79,7 @@ class TimeTable:
                                     print(self.time_table[:,:,it])
                                     break
                         else:
-                            for hour in range(self.time_table.shape[0]//2, self.time_table.shape[0]):
+                            for hour in range(self.time_table.shape[1]//2, self.time_table.shape[1]):
                                 # if that hour it's empty, assign the group to that hour
                                 if not self.classrooms[group[1].classroom.classroom_name].time_table[hour, day]:
                                     day = self.__assign_cell__(group[1].name, group[1].classroom.classroom_name,
