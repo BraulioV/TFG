@@ -44,10 +44,10 @@ class TimeTable:
         return sum
 
     def __assign_cell__(self, group_name, group_classroom, acronym, hour, day, it, i, subject_list):
-        self.time_table[hour, day, it] = Cell(group_name, group_classroom, acronym)
+        self.time_table[it, hour, day] = Cell(group_name, group_classroom, acronym)
         self.classrooms[group_classroom].time_table[hour,day] = True
         subject_list[i][1].theoretical_hours -= 1
-        return (day + 1) % self.time_table.shape[1]
+        return (day + 1) % self.time_table.shape[2]
 
     def random_greedy(self, semester):
         it = 0
@@ -76,7 +76,6 @@ class TimeTable:
                                     day = self.__assign_cell__(group[1].name, group[1].classroom.classroom_name, subject_list[i][1].acronym,
                                                                hour, day, it, i, subject_list)
 
-                                    print(self.time_table[:,:,it])
                                     break
                         else:
                             for hour in range(self.time_table.shape[1]//2, self.time_table.shape[1]):
@@ -88,4 +87,3 @@ class TimeTable:
                                     break
 
             it += 1
-            print("a")
