@@ -36,17 +36,17 @@ class TimeTable:
         else:
             return False
 
-    def __get_total_th_hours__(self, subject_list):
-        sum = 0
-        for i in range(len(subject_list)):
-            sum += subject_list[i][1].theoretical_hours
+    def __get_total_th_hours__(self, hour_list):
+        totalhours = 0
+        for i in hour_list:
+            totalhours += i[1]
 
-        return sum
+        return totalhours
 
-    def __assign_cell__(self, group_name, group_classroom, acronym, hour, day, it, i, subject_list):
+    def __assign_cell__(self, group_name, group_classroom, acronym, hour, day, it, subj_name_hours):
         self.time_table[it, hour, day] = Cell(group_name, group_classroom, acronym)
         self.classrooms[group_classroom].time_table[hour,day] = True
-        subject_list[i][1].theoretical_hours -= 1
+        subj_name_hours[acronym] -= 1
         return (day + 1) % self.time_table.shape[2]
 
     def random_greedy(self, semester):
@@ -59,22 +59,24 @@ class TimeTable:
                                                        and x[1].semester == semester,
                                              self.subjects.items()))
             shuffle(subject_list)
+            subj_name_hours = {subject[0]:subject[1].theoretical_hours for subject in subject_list}
             # day of the week
             day = 0
 
-            while  self.__get_total_th_hours__(subject_list) != 0:
+            while  self.__get_total_th_hours__(subj_name_hours.items()) != 0:
+                # print(subj_name_hours)
                 # for each subject, the algorithm try to assign to an hour
                 # the theoretical group.
-                for i in range(len(subject_list)):
+                for (name,th_hours) in subj_name_hours.items():
                     # and only work with the not assign subjects
-                    if subject_list[i][1].theoretical_hours > 0:
+                    if th_hours > 0:
                         # search the hour
                         if group[1].shift == 'M':
                             for hour in range(self.time_table.shape[1]//2):
                                 # if that hour it's empty, assign the group to that hour
                                 if not self.classrooms[group[1].classroom.classroom_name].time_table[hour,day]:
-                                    day = self.__assign_cell__(group[1].name, group[1].classroom.classroom_name, subject_list[i][1].acronym,
-                                                               hour, day, it, i, subject_list)
+                                    day = self.__assign_cell__(group[1].name, group[1].classroom.classroom_name, 
+                                                               name, hour, day, it, subj_name_hours)
 
                                     break
                         else:
@@ -82,8 +84,7 @@ class TimeTable:
                                 # if that hour it's empty, assign the group to that hour
                                 if not self.classrooms[group[1].classroom.classroom_name].time_table[hour, day]:
                                     day = self.__assign_cell__(group[1].name, group[1].classroom.classroom_name,
-                                                               subject_list[i][1].acronym,
-                                                               hour, day, it, i, subject_list)
+                                                               name, hour, day, it, subj_name_hours)
                                     break
 
             it += 1
