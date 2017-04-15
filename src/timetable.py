@@ -1,4 +1,5 @@
 from cell import Cell
+from practice_cell import PracticeCell
 import numpy as np
 from random import shuffle, randint
 from functools import reduce
@@ -98,6 +99,12 @@ class TimeTable:
             totalhours += sum(i[1])
 
         return totalhours
+
+    def __assign_lab_cell(self, window, it, hour day, group_name, subj_name_hours):
+        self.time_table[it, hour, day] = PracticeCell(group_name, subjects=window)
+        for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
+            subj_name_hours[s.acronym][i] -= 1
+        return (day + 1) % self.time_table.shape[2]
 
     def random_greedy_practice(self, semester):
         it = 0

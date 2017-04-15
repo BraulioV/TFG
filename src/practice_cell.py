@@ -1,3 +1,4 @@
+from cell import Cell
 """
 This class represents a lab cell in the time table, where there are
 subgroups of the original one. Each with a different subject
