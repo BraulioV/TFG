@@ -2,6 +2,7 @@ from cell import Cell
 import numpy as np
 from random import shuffle, randint
 from functools import reduce
+from itertools import cycle, islice
 
 class TimeTable:
 
@@ -49,7 +50,7 @@ class TimeTable:
         subj_name_hours[acronym] -= 1
         return (day + 1) % self.time_table.shape[2]
 
-    def random_greedy(self, semester):
+    def random_greedy_theory(self, semester):
         it = 0
         # for each group
         for group in self.groups.items():
@@ -90,3 +91,41 @@ class TimeTable:
                                     break
 
             it += 1
+
+    def __get_total_lab_hours__(self, hour_list):
+        totalhours = 0
+        for i in hour_list:
+            totalhours += sum(i[1])
+
+        return totalhours
+
+    def random_greedy_practice(self, semester):
+        it = 0
+
+        for group in self.groups.items():
+            # get subjects and its practical hours
+            subject_list = list(filter(lambda x: x[1].year == group[1].year and
+                                                 x[1].semester == semester,
+                                                 self.subjects.items()))
+            shuffle(subject_list)
+            # number of lab hours for each subgroup
+            subj_name_hours = {s[0]:[s[1].practical_hours for i in \
+                              range(group[1].numsubgroups)] for s in subject_list}
+            day = 0
+
+            # create a window of size group.numsubgroups
+            # In [4]: a
+            # Out[4]: {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6}
+            # In [5]: c = [i[1] for i in a.items()]
+            # In [5]: b = [tuple(c[i:i+n]) for i in range(len(a)-(n-1))]
+            # In [6]: b
+            # Out[6]: [(0, 1, 2), (1, 2, 3), (2, 3, 4), (3, 4, 5), (4, 5, 6), (5, 6, 7), (6, 7, 8)]
+            aux = [i[1] for i in subject_list]
+            aux_cycle = list(islice(cycle(aux), len(aux)+group[1].numsubgroups))
+
+            windows = [aux_cycle[i:i+group[1].numsubgroups] for i in \
+                        range(len(aux))]
+
+            while self.__get_total_lab_hours__(subj_name_hours.items()) != 0:
+                for window in windows:
+                    pass

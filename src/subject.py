@@ -49,11 +49,13 @@ class Subject:
         self.speciality = speciality
 
 
+    # def __repr__(self):
+    #     return "Name: " + self.name + "\tAcronym: " + self.acronym + "\tDegree: " \
+    #            + self.degree + "\n\t* Theoretical hours: " + \
+    #            str(self.theoretical_hours) + "\tPractical hours: " + \
+    #            str(self.practical_hours) + "\n\tYear: " + str(self.year) + \
+    #            "\tSemester: " + str(self.semester) + "\n\tSpecial requirements: " \
+    #            + str(self.special_requirements) + "\nSplit theoretical hours: " \
+    #            + str(self.split_th_hours) + "\nSpeciality: " + self.speciality + "\n"
     def __repr__(self):
-        return "Name: " + self.name + "\tAcronym: " + self.acronym + "\tDegree: " \
-               + self.degree + "\n\t* Theoretical hours: " + \
-               str(self.theoretical_hours) + "\tPractical hours: " + \
-               str(self.practical_hours) + "\n\tYear: " + str(self.year) + \
-               "\tSemester: " + str(self.semester) + "\n\tSpecial requirements: " \
-               + str(self.special_requirements) + "\nSplit theoretical hours: " \
-               + str(self.split_th_hours) + "\nSpeciality: " + self.speciality + "\n"
+        return self.acronym
