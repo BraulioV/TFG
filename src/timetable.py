@@ -100,7 +100,7 @@ class TimeTable:
 
         return totalhours
 
-    def __assign_lab_cell(self, window, it, hour day, group_name, subj_name_hours):
+    def __assign_lab_cell__(self, window, it, hour, day, group_name, subj_name_hours):
         self.time_table[it, hour, day] = PracticeCell(group_name, subjects=window)
         for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
             subj_name_hours[s.acronym][i] -= 1
@@ -135,4 +135,19 @@ class TimeTable:
 
             while self.__get_total_lab_hours__(subj_name_hours.items()) != 0:
                 for window in windows:
-                    pass
+                    if sum([subj_name_hours[w.acronym][i] for (w,i) in \
+                            zip(window, range(group[1].numsubgroups))]) > 0:
+
+                        if group[1].shift == 'M':
+                            for hour in range(self.time_table.shape[1]//2):
+                                day = self.__assign_lab_cell__(window, it, hour,
+                                    day, group[0], subj_name_hours)
+
+                        else:
+                            for hour in range(self.time_table.shape[1]//2, self.time_table.shape[1]):
+                                day = self.__assign_lab_cell__(window, it, hour,
+                                    day, group[0], subj_name_hours)
+                    print(self.time_table)
+            it += 1
+
+

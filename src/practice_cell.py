@@ -5,6 +5,6 @@ subgroups of the original one. Each with a different subject
 """
 class PracticeCell (Cell):
     def __init__(self, group="-", subjects=[], classrooms=[]):
-        super.__init__(group=group)
+        super().__init__(group=group)
         self.subjects = subjects
         self.classrooms = classrooms
