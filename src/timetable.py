@@ -104,7 +104,6 @@ class TimeTable:
         self.time_table[it, hour, day] = PracticeCell(group_name, subjects=window)
         for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
             subj_name_hours[s.acronym][i] -= 1
-        return (day + 1) % self.time_table.shape[2]
 
     def random_greedy_practice(self, semester):
         it = 0
@@ -135,19 +134,29 @@ class TimeTable:
 
             while self.__get_total_lab_hours__(subj_name_hours.items()) != 0:
                 for window in windows:
+                    print(window)
+                    print(day)
+                    print(group)
                     if sum([subj_name_hours[w.acronym][i] for (w,i) in \
                             zip(window, range(group[1].numsubgroups))]) > 0:
 
                         if group[1].shift == 'M':
                             for hour in range(self.time_table.shape[1]//2):
-                                day = self.__assign_lab_cell__(window, it, hour,
-                                    day, group[0], subj_name_hours)
+                                if self.time_table[it, hour, day] == Cell():
+                                    self.__assign_lab_cell__(window, it, hour,
+                                        day, group[0], subj_name_hours)
 
                         else:
                             for hour in range(self.time_table.shape[1]//2, self.time_table.shape[1]):
-                                day = self.__assign_lab_cell__(window, it, hour,
-                                    day, group[0], subj_name_hours)
+                                if self.time_table[it, hour, day] == Cell():
+                                    self.__assign_lab_cell__(window, it, hour,
+                                        day, group[0], subj_name_hours)
+
+                    day = (day + 1) % self.time_table.shape[2]
+
                     print(self.time_table)
+                    print("-------------------------------------------------------------------")
+                    input(" ")
             it += 1
 
 

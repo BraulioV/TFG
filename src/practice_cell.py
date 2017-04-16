@@ -8,3 +8,6 @@ class PracticeCell (Cell):
         super().__init__(group=group)
         self.subjects = subjects
         self.classrooms = classrooms
+
+    def __repr__(self):
+        return self.group + " " + str(self.subjects) 

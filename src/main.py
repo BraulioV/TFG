@@ -25,6 +25,6 @@ if __name__ == '__main__':
     timetable = TimeTable(n_days=DAYS, n_hours=HOURS, groups=groups,
                           classrooms=classrooms, practices_classrooms=pclassrooms,
                           subjects=subjects1, semester=1)
-    # timetable.random_greedy_theory(1)
+    timetable.random_greedy_theory(1)
     # print(timetable.time_table)
     timetable.random_greedy_practice(1)
