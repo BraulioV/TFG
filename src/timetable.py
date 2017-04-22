@@ -4,6 +4,7 @@ import numpy as np
 from random import shuffle, randint
 from functools import reduce
 from itertools import cycle, islice
+from subject import Subject
 
 class TimeTable:
 
@@ -97,7 +98,7 @@ class TimeTable:
     def __get_total_lab_hours__(self, hour_list):
         
         totalhours = 0
-        
+
         for i in hour_list:
             totalhours += sum(i[1])
 
@@ -106,14 +107,22 @@ class TimeTable:
 
     def __assign_lab_cell__(self, window, it, hour, day, group_name, subj_name_hours):
         
-        self.time_table[it, hour, day] = PracticeCell(group_name, subjects=window)
+        local_window = []
+        for (w, i) in zip(window, range(len(window))):
+            if subj_name_hours[w.acronym][i] > 0:
+                local_window.append(w)
+            else:
+                local_window.append(Subject())
+
+        self.time_table[it, hour, day] = PracticeCell(group_name, subjects=local_window)
 
         for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
-            subj_name_hours[s.acronym][i] -= 1
+            if subj_name_hours[s.acronym][i] > 0:
+                subj_name_hours[s.acronym][i] -= 1
 
 
     def random_greedy_practice(self, semester):
-        it = 0 
+        it = -1
         empty_cell = Cell()
 
         for group in self.groups.items():
@@ -139,6 +148,7 @@ class TimeTable:
 
             windows = [aux_cycle[i:i+group[1].numsubgroups] for i in \
                         range(len(aux))]
+            it += 1
 
             while self.__get_total_lab_hours__(subj_name_hours.items()) != 0:
                 for window in windows:
@@ -165,7 +175,6 @@ class TimeTable:
                     # print(self.time_table)
                     # print("-------------------------------------------------------------------")
                     # input(" ")
-                it += 1
 
         
         print(self.time_table)
