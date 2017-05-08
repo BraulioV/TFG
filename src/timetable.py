@@ -4,6 +4,7 @@ import numpy as np
 from random import shuffle, randint
 from functools import reduce
 from itertools import cycle, islice
+from subject import Subject
 
 class TimeTable:
 
@@ -101,6 +102,13 @@ class TimeTable:
         return totalhours
 
     def __assign_lab_cell__(self, window, it, hour, day, group_name, subj_name_hours):
+        for (w,i) in zip(window,range(len(window))):
+            if subj_name_hours[w.acronym][i] <= 0:
+                print("asignatura con 0 horas por asignar")
+                print(w)
+                window[i] = Subject()
+
+        print(window)
         self.time_table[it, hour, day] = PracticeCell(group_name, subjects=window)
         for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
             subj_name_hours[s.acronym][i] -= 1
@@ -117,6 +125,7 @@ class TimeTable:
             # number of lab hours for each subgroup
             subj_name_hours = {s[0]:[s[1].practical_hours for i in \
                               range(group[1].numsubgroups)] for s in subject_list}
+            subj_name_hours['']=[0,0,0]
             day = 0
 
             # create a window of size group.numsubgroups
@@ -154,6 +163,7 @@ class TimeTable:
 
                     day = (day + 1) % self.time_table.shape[2]
 
+                    print(subj_name_hours)
                     print(self.time_table)
                     print("-------------------------------------------------------------------")
                     input(" ")
