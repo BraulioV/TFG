@@ -34,7 +34,8 @@ class Subject:
      * split: if the teacher wants, theoretical hours will
              be taught on separate days. By default, false.
     """
-    def __init__(self, name="", acronym="", n_th=0, n_ph=0, year=0, semester=0, degree="", speciality="",
+
+    def __init__(self, name="", acronym="", n_th=0, n_ph=0, year=0, semester=0, degree=0, speciality="",
                  requirements = [], split = False):
 
         self.name = name

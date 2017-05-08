@@ -11,8 +11,8 @@ def create_practice_classroom(filename, days, hours_per_day):
         for line in f:
             l = line[:-1].split(',')
             materials = l[-1].split('-')
-            classroom[l[0]] = PracticeClassRoom(materials, days, hours_per_day, 
-                              l[0], int(l[1]))
+            classroom[l[0]] = PracticeClassRoom(set(map(lambda x: str.upper(x), materials)),
+                                                days, hours_per_day, l[0], int(l[1]))
 
     return classroom
 
@@ -21,6 +21,7 @@ class PracticeClassRoom (ClassRoom):
     def __init__(self, materials, days, hours_per_day, name, capacity):
         super().__init__(days=days, hours=hours_per_day, name=name, capacity=capacity)
         self.materials = materials
+        
 
     def __repr__(self):
         return str(self.capacity) + " " + self.classroom_name + " " + str(self.materials)

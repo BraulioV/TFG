@@ -65,7 +65,7 @@ class TimeTable:
             subj_name_hours = {subject[0]:subject[1].theoretical_hours for subject in subject_list}
             # day of the week
             day = 0
-
+            empty_cell = Cell()
             while  self.__get_total_th_hours__(subj_name_hours.items()) != 0:
                 # print(subj_name_hours)
                 # for each subject, the algorithm try to assign to an hour
@@ -94,27 +94,36 @@ class TimeTable:
 
             it += 1
 
+
     def __get_total_lab_hours__(self, hour_list):
+        
         totalhours = 0
+
         for i in hour_list:
             totalhours += sum(i[1])
 
         return totalhours
 
-    def __assign_lab_cell__(self, window, it, hour, day, group_name, subj_name_hours):
-        for (w,i) in zip(window,range(len(window))):
-            if subj_name_hours[w.acronym][i] <= 0:
-                print("asignatura con 0 horas por asignar")
-                print(w)
-                window[i] = Subject()
 
-        print(window)
-        self.time_table[it, hour, day] = PracticeCell(group_name, subjects=window)
+    def __assign_lab_cell__(self, window, it, hour, day, group_name, subj_name_hours):
+ 
+        local_window = []
+        for (w, i) in zip(window, range(len(window))):
+            if subj_name_hours[w.acronym][i] > 0:
+                local_window.append(w)
+            else:
+                local_window.append(Subject())
+
+        self.time_table[it, hour, day] = PracticeCell(group_name, subjects=local_window)
+
         for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
-            subj_name_hours[s.acronym][i] -= 1
+            if subj_name_hours[s.acronym][i] > 0:
+                subj_name_hours[s.acronym][i] -= 1
+
 
     def random_greedy_practice(self, semester):
-        it = 0
+        it = -1
+        empty_cell = Cell()
 
         for group in self.groups.items():
             # get subjects and its practical hours
@@ -140,24 +149,26 @@ class TimeTable:
 
             windows = [aux_cycle[i:i+group[1].numsubgroups] for i in \
                         range(len(aux))]
+            it += 1
 
             while self.__get_total_lab_hours__(subj_name_hours.items()) != 0:
                 for window in windows:
-                    print(window)
-                    print(day)
-                    print(group)
+                    # print(window)
+                    # print(day)
+                    # print(group)
                     if sum([subj_name_hours[w.acronym][i] for (w,i) in \
                             zip(window, range(group[1].numsubgroups))]) > 0:
 
                         if group[1].shift == 'M':
                             for hour in range(self.time_table.shape[1]//2):
-                                if self.time_table[it, hour, day] == Cell():
+                                if self.time_table[it, hour, day] == empty_cell or \
+                                    self.timetable[it, hour, day].is_complete():
                                     self.__assign_lab_cell__(window, it, hour,
                                         day, group[0], subj_name_hours)
 
                         else:
                             for hour in range(self.time_table.shape[1]//2, self.time_table.shape[1]):
-                                if self.time_table[it, hour, day] == Cell():
+                                if self.time_table[it, hour, day] == empty_cell:
                                     self.__assign_lab_cell__(window, it, hour,
                                         day, group[0], subj_name_hours)
 
@@ -167,6 +178,5 @@ class TimeTable:
                     print(self.time_table)
                     print("-------------------------------------------------------------------")
                     input(" ")
-            it += 1
 
 

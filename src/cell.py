@@ -13,5 +13,5 @@ class Cell:
 
 
     def __repr__(self):
-        return self.group + " " + self.subject + " " + self.classroom
+        return "| " + self.group + " " + self.subject + " " + self.classroom + " |"
 
