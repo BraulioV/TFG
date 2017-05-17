@@ -12,7 +12,6 @@ class PracticeCell (Cell):
 
 
     def is_free(self):
-    	empty = Subject()
     	return any(map(lambda x: x.acronym == '', self.subjects))
 
 
