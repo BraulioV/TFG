@@ -16,5 +16,5 @@ class Cell:
         return "| " + self.group + " " + self.subject + " " + self.classroom + " |"
 
 
-    def is_complete(self):
-        pass
+    def is_free(self):
+        return self.subject == '-'

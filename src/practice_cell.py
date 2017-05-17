@@ -11,9 +11,9 @@ class PracticeCell (Cell):
         self.classrooms = classrooms
 
 
-    def is_complete(self):
+    def is_free(self):
     	empty = Subject()
-    	return any(map(lambda x: x == empty), self.subjects)
+    	return any(map(lambda x: x.acronym == '', self.subjects))
 
 
     def __repr__(self):

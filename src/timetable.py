@@ -114,7 +114,12 @@ class TimeTable:
             else:
                 local_window.append(Subject())
 
-        self.time_table[it, hour, day] = PracticeCell(group_name, subjects=local_window)
+        # si la celda estaba previamente vacía: asignamos la ventana completa
+        if self.time_table[it, hour, day] == PracticeCell():
+            self.time_table[it, hour, day] = PracticeCell(group_name, subjects=local_window)
+        # si la celda NO estaba vacía, sólo podemos asignar los huecos que tenga.
+        else:
+            pass
 
         for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
             if subj_name_hours[s.acronym][i] > 0:
@@ -150,33 +155,29 @@ class TimeTable:
             windows = [aux_cycle[i:i+group[1].numsubgroups] for i in \
                         range(len(aux))]
             it += 1
+            i=0
+
+            if group[1].shift == 'M':
+                start_range, end_range = 0, self.time_table.shape[1] // 2
+
+            else:
+                start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
 
             while self.__get_total_lab_hours__(subj_name_hours.items()) != 0:
-                for window in windows:
+                while i < len(windows):
+                    window = windows[i]
                     # print(window)
                     # print(day)
                     # print(group)
                     if sum([subj_name_hours[w.acronym][i] for (w,i) in \
                             zip(window, range(group[1].numsubgroups))]) > 0:
 
-                        if group[1].shift == 'M':
-                            for hour in range(self.time_table.shape[1]//2):
-                                if self.time_table[it, hour, day] == empty_cell or \
-                                    self.time_table[it, hour, day].is_complete():
-                                    self.__assign_lab_cell__(window, it, hour,
-                                        day, group[0], subj_name_hours)
-
-                        else:
-                            for hour in range(self.time_table.shape[1]//2, self.time_table.shape[1]):
-                                if self.time_table[it, hour, day] == empty_cell:
-                                    self.__assign_lab_cell__(window, it, hour,
-                                        day, group[0], subj_name_hours)
+                        for hour in range(start_range, end_range):
+                            if self.time_table[it, hour, day].is_free():
+                                self.__assign_lab_cell__(window, it, hour,
+                                                         day, group[0], subj_name_hours)
+                                if hour == end_range-1:
+                                    i = (i + 1) % len(windows)
 
                     day = (day + 1) % self.time_table.shape[2]
-
-                    print(subj_name_hours)
-                    print(self.time_table)
-                    print("-------------------------------------------------------------------")
-                    input(" ")
-
 
