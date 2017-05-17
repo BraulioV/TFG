@@ -15,3 +15,6 @@ class Cell:
     def __repr__(self):
         return "| " + self.group + " " + self.subject + " " + self.classroom + " |"
 
+
+    def is_complete(self):
+        pass

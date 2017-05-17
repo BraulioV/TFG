@@ -162,7 +162,7 @@ class TimeTable:
                         if group[1].shift == 'M':
                             for hour in range(self.time_table.shape[1]//2):
                                 if self.time_table[it, hour, day] == empty_cell or \
-                                    self.timetable[it, hour, day].is_complete():
+                                    self.time_table[it, hour, day].is_complete():
                                     self.__assign_lab_cell__(window, it, hour,
                                         day, group[0], subj_name_hours)
 
