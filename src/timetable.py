@@ -117,18 +117,15 @@ class TimeTable:
         # si la celda estaba previamente vacía: asignamos la ventana completa
         if self.time_table[it, hour, day] == PracticeCell():
             self.time_table[it, hour, day] = PracticeCell(group_name, subjects=local_window)
+            for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
+                if subj_name_hours[s.acronym][i] > 0:
+                    subj_name_hours[s.acronym][i] -= 1
         # si la celda NO estaba vacía, sólo podemos asignar los huecos que tenga.
         else:
             pass
 
-        for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
-            if subj_name_hours[s.acronym][i] > 0:
-                subj_name_hours[s.acronym][i] -= 1
-
-
     def random_greedy_practice(self, semester):
         it = -1
-        empty_cell = Cell()
 
         for group in self.groups.items():
             # get subjects and its practical hours
@@ -166,9 +163,7 @@ class TimeTable:
             while self.__get_total_lab_hours__(subj_name_hours.items()) != 0:
                 while i < len(windows):
                     window = windows[i]
-                    # print(window)
-                    # print(day)
-                    # print(group)
+
                     if sum([subj_name_hours[w.acronym][i] for (w,i) in \
                             zip(window, range(group[1].numsubgroups))]) > 0:
 
