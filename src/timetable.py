@@ -119,7 +119,16 @@ class TimeTable:
                     subj_name_hours[s.acronym][i] -= 1
         # si la celda NO estaba vacía, sólo podemos asignar los huecos que tenga.
         else:
-            pass
+            # 1. Buscar índices de huecos
+            indices = {i for i, x in enumerate(self.window) if x == Subject()}
+            # 2. Buscar índices de huecos de asignaturas
+            subj = [w.acronym for w in window if sum(subj_name_hours[w.acronym])]
+            indices_huecos = {s:i for s in subj for i, x in enumerate(subj_name_hours[s]) if x == 1}
+            # 3. Asignar al hueco la asignatura que le corresponda y restar 1
+            for s,h in indices_huecos.items():
+                if window[h] == Subject() and subj_name_hours[s][h] > 0:
+                    self.time_table[it, hour, day].subjects[h] = self.subjects[s]
+                    subj_name_hours[s] -= 1
 
     def random_greedy_practice(self, semester):
         it = -1
