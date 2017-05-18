@@ -16,5 +16,5 @@ class Cell:
         return "| " + self.group + " " + self.subject + " " + self.classroom + " |"
 
 
-    def is_free(self):
+    def is_free(self, window=None):
         return self.subject == '-'

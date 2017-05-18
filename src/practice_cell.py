@@ -11,9 +11,19 @@ class PracticeCell (Cell):
         self.classrooms = classrooms
 
 
-    def is_free(self):
-    	return any(map(lambda x: x.acronym == '', self.subjects))
-
+    def is_free(self, window):
+        # comprobamos si la celda está vacía
+        if self.subjects == []:
+            return True
+        # si no está vacía, comprobamos si hay algún hueco
+        elif any(map(lambda  x: x.acronym == '', self.subjects)):
+            # si hay algún hueco, comprobamos que coincide con el hueco de la ventana
+            if self.subjects.index(Subject()) == window.index(Subject()):
+                return True
+            else:
+                return False
+        else:
+            return False
 
     def __repr__(self):
         return self.group + " " + str(self.subjects) 

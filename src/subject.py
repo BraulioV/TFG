@@ -60,3 +60,11 @@ class Subject:
     #            + str(self.split_th_hours) + "\nSpeciality: " + self.speciality + "\n"
     def __repr__(self):
         return self.acronym
+
+    # equality operator overload
+    def __eq__(self, other):
+        return self.name == other.name and self.acronym == other.acronym and \
+               self.theoretical_hours == other.theoretical_hours and self.practical_hours == other.practical_hours and \
+               self.year == other.year and self.semester == other.semester and \
+               self.special_requirements == other.special_requirements and self.split_th_hours == other.split_th_hours \
+               and self.degree == other.degree and self.speciality == other.speciality
