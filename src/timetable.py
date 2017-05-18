@@ -165,7 +165,7 @@ class TimeTable:
                             zip(window, range(group[1].numsubgroups))]) > 0:
 
                         for hour in range(start_range, end_range):
-                            if self.time_table[it, hour, day].is_free(window):
+                            if self.time_table[it, hour, day].is_free(window, subj_name_hours):
                                 self.__assign_lab_cell__(window, it, hour,
                                                          day, group[0], subj_name_hours)
                                 if hour == end_range-1:

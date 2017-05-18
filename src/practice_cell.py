@@ -11,17 +11,19 @@ class PracticeCell (Cell):
         self.classrooms = classrooms
 
 
-    def is_free(self, window):
+    def is_free(self, window, subj_name_hours):
         # comprobamos si la celda está vacía
         if self.subjects == []:
             return True
         # si no está vacía, comprobamos si hay algún hueco
         elif any(map(lambda  x: x.acronym == '', self.subjects)):
-            # si hay algún hueco, comprobamos que coincide con el hueco de la ventana
-            if self.subjects.index(Subject()) == window.index(Subject()):
-                return True
-            else:
-                return False
+            # sacamos los índices del hueco
+            indices = {i for i, x in enumerate(self.subjects) if x == Subject()}
+            # y sacamos las asignaturas que tienen horas por asignar
+            subj = [w.acronym for w in window if sum(subj_name_hours[w.acronym])]
+            # y dónde tienen sus huecos
+            indices_huecos = {i for s in subj for i,x in enumerate(subj_name_hours[s]) if x==1}
+            return indices.intersection(indices_huecos) != set()
         else:
             return False
 
