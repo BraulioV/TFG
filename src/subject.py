@@ -9,7 +9,7 @@ def create_subject(filename):
         # load data
         for line in f:
             l = line[:-1].split(',')
-            materials = l[3].split('-')
+            materials = set(l[3].split('-'))
             subjects[l[5]] = Subject(name=l[0], acronym=l[5], n_th=int(l[1]),
                                     n_ph=int(l[2]), year=int(l[-3]), degree=l[-1],
                                     semester=int(l[-2]), requirements=materials,
@@ -36,7 +36,7 @@ class Subject:
     """
 
     def __init__(self, name="", acronym="", n_th=0, n_ph=0, year=0, semester=0, degree=0, speciality="",
-                 requirements = [], split = False):
+                 requirements = {}, split = False):
 
         self.name = name
         self.acronym = acronym

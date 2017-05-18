@@ -10,7 +10,7 @@ def create_practice_classroom(filename, days, hours_per_day):
         # Load data
         for line in f:
             l = line[:-1].split(',')
-            materials = l[-1].split('-')
+            materials = set(l[-1].split('-'))
             classroom[l[0]] = PracticeClassRoom(set(map(lambda x: str.upper(x), materials)),
                                                 days, hours_per_day, l[0], int(l[1]))
 
