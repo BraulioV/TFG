@@ -203,7 +203,9 @@ class TimeTable:
                                     i = (i + 1) % len(windows)
 
                     else:
+                        i = (i + 1) % len(windows)
                         break
 
                     day = (day + 1) % self.time_table.shape[2]
 
+            print(self.time_table)
