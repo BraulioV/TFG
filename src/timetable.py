@@ -120,9 +120,10 @@ class TimeTable:
         # si la celda NO estaba vacía, sólo podemos asignar los huecos que tenga.
         else:
             # 1. Buscar índices de huecos
-            indices = {i for i, x in enumerate(self.window) if x == Subject()}
+            indices = {i for i, x in enumerate(self.time_table[it,hour,day].subjects) if x == Subject()}
             # 2. Buscar índices de huecos de asignaturas
             subj = [w.acronym for w in window if sum(subj_name_hours[w.acronym])]
+            # si una misma asignatura tiene más de un hueco, sólo se queda el último (corregir esto)
             indices_huecos = {s:i for s in subj for i, x in enumerate(subj_name_hours[s]) if x == 1}
             # 3. Asignar al hueco la asignatura que le corresponda y restar 1
             for s,h in indices_huecos.items():
