@@ -122,14 +122,19 @@ class TimeTable:
             # 1. Buscar índices de huecos
             indices = {i for i, x in enumerate(self.time_table[it,hour,day].subjects) if x == Subject()}
             # 2. Buscar índices de huecos de asignaturas
-            subj = [w.acronym for w in window if sum(subj_name_hours[w.acronym])]
+            subj = {w.acronym:[] for w in window if sum(subj_name_hours[w.acronym])}
+            for s,l in subj.items():
+                for i,x in enumerate(subj_name_hours[s]):
+                    if x == 1:
+                        l.append(i)
             # si una misma asignatura tiene más de un hueco, sólo se queda el último (corregir esto)
-            indices_huecos = {s:i for s in subj for i, x in enumerate(subj_name_hours[s]) if x == 1}
+            # indices_huecos = {s:[] for s in subj for i, x in enumerate(subj_name_hours[s]) if x == 1}
             # 3. Asignar al hueco la asignatura que le corresponda y restar 1
-            for s,h in indices_huecos.items():
-                if window[h] == Subject() and subj_name_hours[s][h] > 0:
-                    self.time_table[it, hour, day].subjects[h] = self.subjects[s]
-                    subj_name_hours[s] -= 1
+            for s,l in subj.items():
+                for h in l:
+                    if self.time_table[it,hour,day].subjects[h] == Subject() and subj_name_hours[s][h] > 0:
+                        self.time_table[it, hour, day].subjects[h] = self.subjects[s]
+                        subj_name_hours[s][h] -= 1
 
     def random_greedy_practice(self, semester):
         it = -1
