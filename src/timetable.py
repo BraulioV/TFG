@@ -115,6 +115,23 @@ class TimeTable:
         if self.time_table[it, hour, day] == PracticeCell():
             self.time_table[it, hour, day] = PracticeCell(group_name, subjects=local_window)
             for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
+                # Get the necessary materials for that subject
+                materials = self.subjects[s.acronym].special_requirements
+                # and the possible classrooms where the subject
+                # can be taught. A classroom become a possible option
+                # if the interesection between it's materials and
+                # the subject's materials are equal to the
+                # subject's material
+                possible_classrooms = list(filter(lambda x:
+                                                  (self.practices_classrooms[x].materials & materials) == materials,
+                                                  self.practices_classrooms))
+
+                for classroom in possible_classrooms:
+                    if not self.practices_classrooms[classroom].time_table[hour, day]:
+                        self.practices_classrooms[classroom].time_table[hour, day] = True
+                        self.time_table[it, hour, day].classrooms.append(classroom)
+                        break
+
                 if subj_name_hours[s.acronym][i] > 0:
                     subj_name_hours[s.acronym][i] -= 1
         # si la celda NO estaba vacía, sólo podemos asignar los huecos que tenga.

@@ -10,10 +10,14 @@ def create_subject(filename):
         for line in f:
             l = line[:-1].split(',')
             materials = set(l[3].split('-'))
-            subjects[l[5]] = Subject(name=l[0], acronym=l[5], n_th=int(l[1]),
-                                    n_ph=int(l[2]), year=int(l[-3]), degree=l[-1],
-                                    semester=int(l[-2]), requirements=materials,
-                                    split=l[4]=='True', speciality=l[6])
+            subjects[l[5]] = Subject(name=l[0], acronym=l[5],
+                                     n_th=int(l[1]),
+                                    n_ph=int(l[2]), year=int(l[-3]),
+                                     degree=l[-1],
+                                    semester=int(l[-2]),
+                                     requirements=set(map(lambda x: str.upper(x), materials)),
+                                    split=l[4]=='True',
+                                     speciality=l[6])
     return subjects
 
 class Subject:
