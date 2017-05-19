@@ -28,4 +28,4 @@ class PracticeCell (Cell):
             return False
 
     def __repr__(self):
-        return self.group + " " + str(self.subjects) 
+        return self.group + " " + str(self.subjects) + " " + str(self.classrooms)
