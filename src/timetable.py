@@ -127,8 +127,7 @@ class TimeTable:
                 for i,x in enumerate(subj_name_hours[s]):
                     if x == 1:
                         l.append(i)
-            # si una misma asignatura tiene más de un hueco, sólo se queda el último (corregir esto)
-            # indices_huecos = {s:[] for s in subj for i, x in enumerate(subj_name_hours[s]) if x == 1}
+
             # 3. Asignar al hueco la asignatura que le corresponda y restar 1
             for s,l in subj.items():
                 for h in l:
@@ -185,6 +184,9 @@ class TimeTable:
                                                          day, group[0], subj_name_hours)
                                 if hour == end_range-1:
                                     i = (i + 1) % len(windows)
+
+                    else:
+                        break
 
                     day = (day + 1) % self.time_table.shape[2]
 
