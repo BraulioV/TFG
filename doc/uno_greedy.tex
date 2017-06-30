@@ -1,0 +1,408 @@
+\chapter{Primera aproximación Greedy}
+Hemos desarrollado dos algoritmos \textit{Greedy}: uno para asignar las horas de teoría y otro para asignar las horas de prácticas.
+
+\section{Greedy para asignar horas de teoría}
+Para inicializar una población para el algoritmo genético, hemos desarrollado un algoritmo \textit{Greedy} aleatorio. El pseudocódigo se ve explicado en el \hyperref[greedyteoria]{Algoritmo \ref*{greedyteoria}} 
+
+\begin{pseudocode}{GreedyTeoria}{ }
+    \label{greedyteoria}
+    \FOREACH g \in groups \DO
+    \BEGIN
+        d \GETS 0 \\
+        subject\_list \GETS \CALL{shuffle}{\CALL{filter}{subjects, g}}\\
+        \WHILE \sum subject\_list.th\_hours \neq 0 \DO
+        \BEGIN
+            \FOREACH s \in subject\_list \DO
+            \BEGIN
+                \IF s.th\_hours \neq 0 \DO
+                \BEGIN
+                    \IF g.turno = ``Morning'' \DO
+                    \BEGIN
+                        \FOR h \GETS 0 \TO number\_of\_hours / 2 \DO
+                        \BEGIN
+                            \IF \CALL{libre}{h} \DO
+                            \BEGIN
+                                tabla[d,h] \GETS (g, s, g.classroom)\\
+                                s.th\_hours \GETS s.th\_hours - 1\\
+                                d \GETS (d + 1) \bmod number\_of\_days\\
+                                \BREAK
+                            \END
+                        \END
+                    \END
+                    \ELSE \DO
+                    \BEGIN
+                        \FOR h \GETS number\_of\_hours / 2 \TO number\_of\_hours \DO
+                        \BEGIN
+                            \IF \CALL{libre}{h} \DO
+                            \BEGIN
+                                tabla[d,h] \GETS (g, s, g.classroom)\\
+                                s.th\_hours \GETS s.th\_hours - 1\\
+                                d \GETS (d + 1) \bmod number\_of\_days\\
+                                \BREAK
+                            \END
+                        \END
+                    \END
+                \END
+            \END
+        \END
+    \END
+\end{pseudocode}
+
+Para realizar el filtrado de asignaturas que pertenecen a cada grupo, filtramos aquellas asignaturas que coincidan tanto en año, como en semestre y especialidad con el grupo en cuestión. Este método pertenece a la clase \texttt{Timetable} y, por tanto, \texttt{tabla}, \texttt{number\_of\_hours} y \texttt{number\_of\_days} son atributos de dicha clase. El atributo \texttt{th\_hours} de la clase \texttt{Subject} corresponde al número de horas teóricas de dicha asignatura.
+
+\subsection{Ejemplo de funcionamiento}
+Supongamos que tenemos que hacer un horario para los grupos de segundo curso $A$ y $B$, que están asignados al aula de teoría 0.1 y cuyas asignaturas son:
+
+\begin{enumerate}[$\bullet$]
+    \item \textbf{AC} con dos horas de teoría,
+    \item \textbf{ALG} con tres horas de teoría y
+    \item \textbf{FBD} con una hora de teoría.
+\end{enumerate}
+
+Además, también suponemos que el número de días de en los que se quieren cuadrar estas asignaturas es de 3 y 4 horas.
+
+Vamos a hacer los pasos para cuadrar las asignaturas del grupo $A$:
+
+\begin{minipage}{0.5\textwidth}    
+\begin{tabular}{| c | c | c |}
+\hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & 2 \\
+ALG & 3 \\
+FBD & 1
+\end{tabular}
+\end{minipage}
+
+Seleccionamos la primera asignatura de nuestra lista filtrada y mezclada de asignaturas, \textbf{AC} y colocamos una de sus horas en el primer hueco disponible del horario. 
+
+\begin{minipage}{0.5\textwidth}    
+\begin{tabular}{| c | c | c |}
+\hline
+AC, A, 0.1 &  &  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & 1 \\
+ALG & 3 \\
+FBD & 1
+\end{tabular}
+\end{minipage}
+
+Ahora, hacemos lo mismo con \textbf{ALG} y \textbf{FBD}.
+
+\begin{minipage}{0.5\textwidth}    
+\begin{tabular}{| c | c | c |}
+\hline
+AC, A, 0.1 & ALG, A, 0.1  & FBD, A, 0.1 \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & 1 \\
+ALG & 2 \\
+FBD & 0
+\end{tabular}
+\end{minipage}
+
+Como aún siguen quedando horas por asignar, damos otra vuelta más.
+
+\begin{minipage}{0.5\textwidth}    
+\begin{tabular}{| c | c | c |}
+\hline
+AC, A, 0.1 & ALG, A, 0.1  & FBD, A, 0.1 \\
+ \hline
+AC, A, 0.1 & ALG, A, 0.1 & ALG, A, 0.1  \\
+ \hline
+ &  &  \\
+ \hline
+ &  &  \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & 0 \\
+ALG & 0 \\
+FBD & 0
+\end{tabular}
+\end{minipage}
+
+Al no quedar más horas por asignar, pasaríamos a repetir estos mismos pasos con el grupo $B$.
+
+\section{Greedy para inicializar horas de prácticas}
+En el caso del Greedy para inicializar las horas de prácticas, hemos hecho un algoritmo parecido al de las horas de teoría. Su funcionamiento básico consiste en ir desplazando una ventana, cuyo tamaño será el número de subgrupos de prácticas, e ir asignando dicha ventana cada día de la semana.
+
+% \begin{pseudocode}{GreedyPracticas}{ }
+%     \label{greedypracticas}
+%     \FOREACH g \in groups \DO
+%     \BEGIN
+%         d \GETS 0 \\
+%         subject\_list \GETS \CALL{shuffle}{\CALL{filter}{subjects, g}}\\
+%         \WHILE \sum subject\_list.pr\_hours \neq 0 \DO
+%         \BEGIN
+%             \FOREACH v \in ventana\_subjects \DO
+%             \BEGIN
+%                 \IF v.pr\_hours \neq 0 \DO
+%                 \BEGIN
+%                     \IF g.turno = ``Morning'' \DO
+%                     \BEGIN
+%                         \FOR h \GETS 0 \TO number\_of\_hours / 2 \DO
+%                         \BEGIN
+%                             \IF \CALL{libre}{h} \DO
+%                             \BEGIN
+%                                 tabla[d,h] \GETS (g, s)\\
+%                                 s.th\_hours \GETS s.th\_hours - 1\\
+%                                 d \GETS (d + 1) \bmod number\_of\_days\\
+%                                 \BREAK
+%                             \END
+%                         \END
+%                     \END
+%                     \ELSE \DO
+%                     \BEGIN
+%                         \FOR h \GETS number\_of\_hours / 2 \TO number\_of\_hours \DO
+%                         \BEGIN
+%                             \IF \CALL{libre}{h} \DO
+%                             \BEGIN
+%                                 tabla[d,h] \GETS (g, s, g.classroom)\\
+%                                 s.th\_hours \GETS s.th\_hours - 1\\
+%                                 d \GETS (d + 1) \bmod number\_of\_days\\
+%                                 \BREAK
+%                             \END
+%                         \END
+%                     \END
+%                 \END
+%             \END
+%         \END
+%     \END
+% \end{pseudocode}
+
+\subsection{Ejemplo de funcionamiento}
+Supongamos que tenemos que asignar a un grupo con tres subgrupos de prácticas las siguientes asignaturas:
+
+\begin{tabular}{c | c  c  c  c  c}
+\textbf{Nombre} & AC & FBD & ALG & IA & FIS \\
+\hline
+\textbf{Horas de prácticas}  & 2 & 3 & 1 & 2 & 2 \\
+\end{tabular}
+
+Al tener tres subgrupos de prácticas, nuestra ventana tendrá tamaño 3. 
+
+\begin{minipage}{0.5\textwidth}    
+\begin{tabular}{| c | c | c | c | c |}
+\hline
+ &  &  &  & \\
+ \hline
+ &  &  &  & \\
+ \hline
+ &  &  &  & \\
+ \hline
+ &  &  &  & \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & (2, 2, 2) \\
+FBD & (3, 3, 3) \\
+ALG & (1, 1, 1) \\
+IA & (2, 2, 2) \\
+FIS & (2, 2, 2)
+\end{tabular}
+\end{minipage}
+
+Seleccionamos las tres primeras asignaturas de la lista (AC, FBD, ALG), y las asignamos al primer día de la semana.
+
+\begin{minipage}{0.5\textwidth}    
+\begin{tabular}{| c | c | c | c | c |}
+\hline
+ (AC, A1), &  &  &  & \\
+ (FBD, A2), &  &  &  & \\
+ (ALG, A3) &  &  &  & \\
+ \hline
+ (AC, A1), &  &  &  & \\
+ (FBD, A2), &  &  &  & \\
+ (FBD, A3) &  &  &  & \\
+ \hline
+ &  &  &  & \\
+ \hline
+ &  &  &  & \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & (0, 2, 2) \\
+FBD & (3, 1, 2) \\
+ALG & (1, 1, 0) \\
+IA & (2, 2, 2) \\
+FIS & (2, 2, 2)
+\end{tabular}
+\end{minipage}
+
+Movemos la ventana en una posición (FBD, ALG, IA) y volvemos a asignar las prácticas para el siguiente día de la semana:
+
+\begin{minipage}{0.5\textwidth}    
+\begin{tabular}{| c | c | c | c | c |}
+\hline
+ (AC, A1), & (FBD, A1), &  &  & \\
+ (FBD, A2), & (ALG, A2) &  &  & \\
+ (ALG, A3) &  (IA, A3) &  &  & \\
+ \hline
+ (AC, A1), & (FBD, A1) &  &  & \\
+ (FBD, A2), & (FBD, A2) &  &  & \\
+ (FBD, A3) & (IA, A3) &  &  & \\
+ \hline
+ &  &  &  & \\
+ \hline
+ &  &  &  & \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & (0, 2, 2) \\
+FBD & (1, 0, 2) \\
+ALG & (1, 0, 0) \\
+IA & (2, 2, 0) \\
+FIS & (2, 2, 2)
+\end{tabular}
+\end{minipage}
+
+Volvemos a mover la ventana una posición más (ALG, IA, FIS) y repetimos la operación del día anterior. En este caso, el grupo A1 tendrá un hueco en su segunda hora de prácticas, que se rellenará más adelante, si es posible.
+
+\begin{minipage}{0.7\textwidth}    
+\begin{tabular}{| c | c | c | c | c |}
+\hline
+ (AC, A1), & (FBD, A1), & (ALG, A1) &  & \\
+ (FBD, A2), & (ALG, A2) & (IA, A2) &  & \\
+ (ALG, A3) &  (IA, A3) & (FIS, A3) &  & \\
+ \hline
+ (AC, A1), & (FBD, A1) & () &  & \\
+ (FBD, A2), & (FBD, A2) & (IA, A2) &  & \\
+ (FBD, A3) & (IA, A3) & (FIS, A3) &  & \\
+ \hline
+ &  &  &  & \\
+ \hline
+ &  &  &  & \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.8\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & (0, 2, 2) \\
+FBD & (1, 0, 2) \\
+ALG & (0, 0, 0) \\
+IA & (2, 0, 0) \\
+FIS & (2, 2, 0)
+\end{tabular}
+\end{minipage}
+
+Repetimos la operación hasta hacer la semana completa
+
+\begin{minipage}{0.8\textwidth}    
+\begin{tabular}{| c | c | c | c | c |}
+\hline
+ (AC, A1), & (FBD, A1), & (ALG, A1) & (IA, A1) & (FIS, A1) \\
+ (FBD, A2), & (ALG, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
+ (ALG, A3) &  (IA, A3) & (FIS, A3) & (AC, A3) & (FBD, A3) \\
+ \hline
+ (AC, A1), & (FBD, A1) & () & (IA, A1) & (FIS, A1) \\
+ (FBD, A2), & (FBD, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
+ (FBD, A3) & (IA, A3) & (FIS, A3) & (AC, A3) & (FBD, A3) \\
+ \hline
+ &  &  &  & \\
+ \hline
+ &  &  &  & \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{1\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & (0, 0, 0) \\
+FBD & (1, 0, 0) \\
+ALG & (0, 0, 0) \\
+IA & (0, 0, 0) \\
+FIS & (0, 0, 0)
+\end{tabular}
+\end{minipage}
+
+Como aún queda una hora por asignar, el algoritmo buscaría un hueco posible donde asignarla.
+
+\begin{minipage}{0.8\textwidth}    
+\begin{tabular}{| c | c | c | c | c |}
+\hline
+ (AC, A1), & (FBD, A1), & (ALG, A1) & (IA, A1) & (FIS, A1) \\
+ (FBD, A2), & (ALG, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
+ (ALG, A3) &  (IA, A3) & (FIS, A3) & (AC, A3) & (FBD, A3) \\
+ \hline
+ (AC, A1), & (FBD, A1) & (FBD, A1) & (IA, A1) & (FIS, A1) \\
+ (FBD, A2), & (FBD, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
+ (FBD, A3) & (IA, A3) & (FIS, A3) & (AC, A3) & (FBD, A3) \\
+ \hline
+ &  &  &  & \\
+ \hline
+ &  &  &  & \\
+ \hline 
+\end{tabular}
+\end{minipage}
+\begin{minipage}{1\textwidth}
+\begin{tabular}{c | c}
+Asignatura & Num horas restantes \\
+AC & (0, 0, 0) \\
+FBD & (0, 0, 0) \\
+ALG & (0, 0, 0) \\
+IA & (0, 0, 0) \\
+FIS & (0, 0, 0)
+\end{tabular}
+\end{minipage}
+
+\subsection{Asignación de aulas de prácticas}
+Consideramos que la mejor asignación es la que tiene en cuenta el material que necesita cada asignatura para llevar a cabo sus prácticas y el material del que dispone cada aula. Por ejemplo, para la asignatura \textit{Fundamentos de Redes} se necesita usar un aula con una instalación de red especial, por lo que no puede ser asignada en un aula que no disponga de dicha instalación. 
+
+Por tanto, para calcular qué aula es la óptima para cada asignatura, debemos saber qué materiales necesita cada asignatura y qué materiales dispone cada aula. Para saber los materiales de los que dispone cada aula, hemos consultado la página web de la escuela: \url{http://etsiit.ugr.es/pages/instalaciones_servicios/aulas_etsiit2017/!}.
+
+Nuestro algoritmo elige las asignaturas más restrictivas (con una lista de materiales más larga) y les asigna las aulas óptimas. Termina con las asignaturas que \textit{podrían} impartirse en ``cualquier'' aula.
+
+\section{Problemas con esta primera aproximación}
+A la hora de implementar esta versión nos hemos encontrado con varios problemas:
+
+\begin{enumerate}[---]
+    \item En primer lugar, todas las horas de teoría se asignaban en la misma franja horaria, haciendo muy difícil la asigación de aulas de prácticas. Para solucionar esto, antes de empezar a asignar asignaturas con nuestro algoritmo, debemos decidir qué horas son de prácticas y de teoría para cada grupo de forma que, cuando un grupo tenga teoría otro grupo tenga prácticas. Así, la ocupación de las aulas de prácticas se maximiza.
+
+    \item No disponemos de los materiales que necesita cada asignatura para poder hacer sus prácticas. Nuestro tutor nos ha dicho que esta información es bastante difícil de conseguir. Como solución, hemos decidido añadir un requisito: en vez de asignar asignaturas a aulas según material vamos a añadir al Dataset las aulas de prácticas en las que se imparte cada asignatura consultando los actuales horarios.
+\end{enumerate}
