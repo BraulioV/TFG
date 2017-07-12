@@ -25,6 +25,7 @@ class TimeTable:
     def __init__(self, n_days, n_hours, groups, classrooms, practices_classrooms,
                 subjects, semester):
         self.time_table = np.full((len(groups), n_hours, n_days), fill_value = Cell(), dtype=Cell)
+        self.is_lab_hour = np.full((len(groups), n_hours, n_days), fill_value=False, dtype=bool)
         self.groups = groups
         self.classrooms = classrooms
         self.practices_classrooms = practices_classrooms
@@ -223,6 +224,8 @@ class TimeTable:
     """
     Function to decide which are theory hours and lab hours for each pair of groups.
     """
-    def asign_hours(self, semester):
+    def asign_hours(self):
+        # first, we asign lab hours for the 1st goup
         for g1, g2 in self.__pairwise__(self.groups.items()):
             print(g1[0], g2[0])
+
