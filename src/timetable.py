@@ -5,6 +5,7 @@ from random import shuffle, randint
 from functools import reduce
 from itertools import cycle, islice
 from subject import Subject
+from itertools import tee
 
 class TimeTable:
 
@@ -209,3 +210,19 @@ class TimeTable:
                     day = (day + 1) % self.time_table.shape[2]
 
             print(self.time_table)
+
+    """
+    Auxiliar function to iterate a list in pairs
+    """
+    def __pairwise__(self, iterable):
+        "s -> (s0,s1) (s1,s2) (s2,s3),..."
+        a, b = tee(iterable)
+        next (b, None)
+        return zip(a,b)
+
+    """
+    Function to decide which are theory hours and lab hours for each pair of groups.
+    """
+    def asign_hours(self, semester):
+        for g1, g2 in self.__pairwise__(self.groups.items()):
+            print(g1[0], g2[0])
