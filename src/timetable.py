@@ -1,7 +1,7 @@
 from cell import Cell
 from practice_cell import PracticeCell
 import numpy as np
-from random import shuffle, randint
+from random import shuffle, randint, random
 from functools import reduce
 from itertools import cycle, islice
 from subject import Subject
@@ -31,6 +31,7 @@ class TimeTable:
         self.practices_classrooms = practices_classrooms
         self.subjects = subjects
         self.semester = semester
+        self.possible_pr_classrooms = {}
 
     def __assign_class__(self, day, hour, subject, group, classroom):
         second_hour = hour + subject.theoretical_hours - 1
@@ -40,6 +41,7 @@ class TimeTable:
             return True
         else:
             return False
+
 
     def __get_total_th_hours__(self, hour_list):
         totalhours = 0
@@ -53,6 +55,25 @@ class TimeTable:
         self.classrooms[group_classroom].time_table[hour,day] = True
         subj_name_hours[acronym] -= 1
         return (day + 1) % self.time_table.shape[2]
+
+
+    def __get_possible_classrooms__(self):
+
+        for subject in self.subjects:
+
+            # Get the necessary materials for that subject
+            materials = self.subjects[subject].special_requirements
+            # and the possible classrooms where the subject
+            # can be taught. A classroom become a possible option
+            # if the interesection between it's materials and
+            # the subject's materials are equal to the
+            # subject's material
+            possible_classrooms = list(filter(lambda x:
+                                              (self.practices_classrooms[x].materials & materials) == materials,
+                                              self.practices_classrooms))
+
+            self.possible_pr_classrooms[subject] = possible_classrooms
+
 
     def random_greedy_theory(self, semester):
         it = 0
@@ -74,16 +95,19 @@ class TimeTable:
             else:
                 start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
 
-
-            while  self.__get_total_th_hours__(subj_name_hours.items()) != 0:
+            plus = 2 if random() < 0.5 else 0
+            while self.__get_total_th_hours__(subj_name_hours.items()) != 0:
                 # print(subj_name_hours)
                 # for each subject, the algorithm try to assign to an hour
                 # the theoretical group.
+
                 for (name,th_hours) in subj_name_hours.items():
                     # and only work with the not assign subjects
+
                     if th_hours > 0:
+
                         # search the hour
-                        for hour in range(start_range, end_range):
+                        for hour in range(start_range + plus, end_range):
                             # if that hour it's empty, assign the group to that hour
                             if not self.classrooms[group[1].classroom.classroom_name].time_table[hour,day]:
 
@@ -115,27 +139,22 @@ class TimeTable:
 
         # si la celda estaba previamente vacía: asignamos la ventana completa
         if self.time_table[it, hour, day] == PracticeCell():
-            self.time_table[it, hour, day] = PracticeCell(group_name, subjects=local_window)
-            for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
-                # Get the necessary materials for that subject
-                materials = self.subjects[s.acronym].special_requirements
-                # and the possible classrooms where the subject
-                # can be taught. A classroom become a possible option
-                # if the interesection between it's materials and
-                # the subject's materials are equal to the
-                # subject's material
-                possible_classrooms = list(filter(lambda x:
-                                                  (self.practices_classrooms[x].materials & materials) == materials,
-                                                  self.practices_classrooms))
 
-                for classroom in possible_classrooms:
+            self.time_table[it, hour, day] = PracticeCell(group_name, subjects=local_window)
+
+            for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
+                for classroom in self.possible_pr_classrooms[s.acronym]:
+
                     if not self.practices_classrooms[classroom].time_table[hour, day]:
+
                         self.practices_classrooms[classroom].time_table[hour, day] = True
                         self.time_table[it, hour, day].classrooms.append(classroom)
+                        if subj_name_hours[s.acronym][i] > 0:
+                            subj_name_hours[s.acronym][i] -= 1
+
                         break
 
-                if subj_name_hours[s.acronym][i] > 0:
-                    subj_name_hours[s.acronym][i] -= 1
+
         # si la celda NO estaba vacía, sólo podemos asignar los huecos que tenga.
         else:
             # 1. Buscar índices de huecos
@@ -153,6 +172,7 @@ class TimeTable:
                     if self.time_table[it,hour,day].subjects[h] == Subject() and subj_name_hours[s][h] > 0:
                         self.time_table[it, hour, day].subjects[h] = self.subjects[s]
                         subj_name_hours[s][h] -= 1
+
 
     def random_greedy_practice(self, semester):
         it = -1
@@ -189,6 +209,7 @@ class TimeTable:
 
             else:
                 start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
+
 
             while self.__get_total_lab_hours__(subj_name_hours.items()) != 0:
                 while i < len(windows):

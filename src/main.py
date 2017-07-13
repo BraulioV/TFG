@@ -5,7 +5,7 @@ from sub_group import *
 from practice_classroom import *
 from timetable import *
 
-HOURS = 8
+HOURS = 12
 DAYS = 5
 
 if __name__ == '__main__':
@@ -26,7 +26,9 @@ if __name__ == '__main__':
                           classrooms=classrooms, practices_classrooms=pclassrooms,
                           subjects=subjects1, semester=1)
 
-    timetable.asign_hours(1)
-    # timetable.random_greedy_theory(1)
-    # print(timetable.time_table)
-    # timetable.random_greedy_practice(1)
+    timetable.__get_possible_classrooms__()
+
+    # timetable.asign_hours(1)
+    timetable.random_greedy_theory(1)
+    timetable.random_greedy_practice(1)
+    print(timetable.time_table)
