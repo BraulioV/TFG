@@ -78,12 +78,13 @@ class TimeTable:
     def random_greedy_theory(self, semester):
         it = 0
         # for each group
+        plus = 2 if random() < 0.5 else 0
         for group in self.groups.items():
 
             # we get the subjects and its, theoretical hours
             subject_list =list(filter(lambda x: x[1].year == group[1].year
-                                                       and x[1].semester == semester,
-                                             self.subjects.items()))
+                                                and x[1].semester == semester,
+                                      self.subjects.items()))
             shuffle(subject_list)
             subj_name_hours = {subject[0]:subject[1].theoretical_hours for subject in subject_list}
             # day of the week
@@ -95,7 +96,7 @@ class TimeTable:
             else:
                 start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
 
-            plus = 2 if random() < 0.5 else 0
+            plus = 2 if plus == 0 else 0
             while self.__get_total_th_hours__(subj_name_hours.items()) != 0:
                 # print(subj_name_hours)
                 # for each subject, the algorithm try to assign to an hour

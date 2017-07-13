@@ -30,5 +30,5 @@ if __name__ == '__main__':
 
     # timetable.asign_hours(1)
     timetable.random_greedy_theory(1)
-    timetable.random_greedy_practice(1)
+    #timetable.random_greedy_practice(1)
     print(timetable.time_table)
