@@ -86,6 +86,7 @@ class Subject:
     def __lt__(self, other):
         if self.year < other.year:
             return True
+
         elif self.year == other.year:
             return self.n_students < other.n_students
 
