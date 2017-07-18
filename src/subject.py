@@ -2,7 +2,7 @@
 
 def create_subject(filename):
     # Empty dict of different subjects
-    subjects = {}
+    subjects, n_years, last_year = {}, -1, -1
     with open(filename, 'r') as f:
         # Skip column names
         f.readline()
@@ -10,15 +10,22 @@ def create_subject(filename):
         for line in f:
             l = line[:-1].split(',')
             materials = set(l[3].split('-'))
-            subjects[l[5]] = Subject(name=l[0], acronym=l[5],
-                                     n_th=int(l[1]),
-                                    n_ph=int(l[2]), year=int(l[-3]),
-                                     degree=l[-1],
-                                    semester=int(l[-2]),
+            subjects[l[5]] = Subject(name=l[0],
+                                     n_th = int(l[1]),
+                                     n_ph = int(l[2]),
                                      requirements=set(map(lambda x: str.upper(x), materials)),
-                                    split=l[4]=='True',
-                                     speciality=l[6])
-    return subjects
+                                     split=l[4] == 'True',
+                                     acronym=l[5],
+                                     speciality=l[6],
+                                     year = int(l[7]),
+                                     semester = int(l[8]),
+                                     degree = l[9],
+                                     students = int(l[10]))
+            if l[7] != last_year:
+                last_year = l[7]
+                n_years += 1
+
+    return subjects, n_years
 
 class Subject:
 
@@ -40,7 +47,7 @@ class Subject:
     """
 
     def __init__(self, name="", acronym="", n_th=0, n_ph=0, year=0, semester=0, degree=0, speciality="",
-                 requirements = {}, split = False):
+                 requirements = {}, split = False, students=0):
 
         self.name = name
         self.acronym = acronym
@@ -52,6 +59,7 @@ class Subject:
         self.split_th_hours = split
         self.degree = degree
         self.speciality = speciality
+        self.n_students = students
 
 
     # def __repr__(self):

@@ -20,6 +20,7 @@ class TimeTable:
      * classrooms: list with all the theoretical classrooms of the center
      * practice_classrooms: list with all the practices classrooms of the center
      * semester: describe if the timetable it's for the first semester or the second
+     * subjects: dict with all the subjects
 
     """
     def __init__(self, n_days, n_hours, groups, classrooms, practices_classrooms,
