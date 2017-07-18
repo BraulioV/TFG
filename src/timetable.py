@@ -51,6 +51,9 @@ class TimeTable:
 
         return totalhours
 
+    def __get_subj_list__(self, group, semester):
+        return list(filter(lambda x: x.year == group.year and x.semester == semester, self.subjects.values()))
+
     def __assign_cell__(self, group_name, group_classroom, acronym, hour, day, it, subj_name_hours):
         self.time_table[it, hour, day] = Cell(group_name, group_classroom, acronym)
         self.classrooms[group_classroom].time_table[hour,day] = True
@@ -83,9 +86,8 @@ class TimeTable:
         for group in self.groups.items():
 
             # we get the subjects and its, theoretical hours
-            subject_list =list(filter(lambda x: x[1].year == group[1].year
-                                                and x[1].semester == semester,
-                                      self.subjects.items()))
+            subject_list =self.__get_subj_list__(group, semester)
+
             shuffle(subject_list)
             subj_name_hours = {subject[0]:subject[1].theoretical_hours for subject in subject_list}
             # day of the week
@@ -181,59 +183,60 @@ class TimeTable:
 
         for group in self.groups.items():
             # get subjects and its practical hours
-            subject_list = list(filter(lambda x: x[1].year == group[1].year and
-                                                 x[1].semester == semester,
-                                                 self.subjects.items()))
+            subject_list = self.__get_subj_list__(group, semester)
+            
             shuffle(subject_list)
+            sorted(subject_list)
+            print(subject_list)
             # number of lab hours for each subgroup
-            subj_name_hours = {s[0]:[s[1].practical_hours for i in \
-                              range(group[1].numsubgroups)] for s in subject_list}
-            subj_name_hours['']=[0,0,0]
-            day = 0
-
-            # create a window of size group.numsubgroups
-            # In [4]: a
-            # Out[4]: {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6}
-            # In [5]: c = [i[1] for i in a.items()]
-            # In [5]: b = [tuple(c[i:i+n]) for i in range(len(a)-(n-1))]
-            # In [6]: b
-            # Out[6]: [(0, 1, 2), (1, 2, 3), (2, 3, 4), (3, 4, 5), (4, 5, 6), (5, 6, 7), (6, 7, 8)]
-            aux = [i[1] for i in subject_list]
-            aux_cycle = list(islice(cycle(aux), len(aux)+group[1].numsubgroups))
-
-            windows = [aux_cycle[i:i+group[1].numsubgroups] for i in \
-                        range(len(aux))]
-            it += 1
-            i=0
-
-            if group[1].shift == 'M':
-                start_range, end_range = 0, self.time_table.shape[1] // 2
-
-            else:
-                start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
-
-
-            while self.__get_total_lab_hours__(subj_name_hours.items()) != 0:
-                while i < len(windows):
-                    window = windows[i]
-
-                    if sum([subj_name_hours[w.acronym][i] for (w,i) in \
-                            zip(window, range(group[1].numsubgroups))]) > 0:
-
-                        for hour in range(start_range, end_range):
-                            if self.time_table[it, hour, day].is_free(window, subj_name_hours):
-                                self.__assign_lab_cell__(window, it, hour,
-                                                         day, group[0], subj_name_hours)
-                                if hour == end_range-1:
-                                    i = (i + 1) % len(windows)
-
-                    else:
-                        i = (i + 1) % len(windows)
-                        break
-
-                    day = (day + 1) % self.time_table.shape[2]
-
-            print(self.time_table)
+            # subj_name_hours = {s[0]:[s[1].practical_hours for i in \
+            #                   range(group[1].numsubgroups)] for s in subject_list}
+            # subj_name_hours['']=[0,0,0]
+            # day = 0
+            #
+            # # create a window of size group.numsubgroups
+            # # In [4]: a
+            # # Out[4]: {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6}
+            # # In [5]: c = [i[1] for i in a.items()]
+            # # In [5]: b = [tuple(c[i:i+n]) for i in range(len(a)-(n-1))]
+            # # In [6]: b
+            # # Out[6]: [(0, 1, 2), (1, 2, 3), (2, 3, 4), (3, 4, 5), (4, 5, 6), (5, 6, 7), (6, 7, 8)]
+            # aux = [i[1] for i in subject_list]
+            # aux_cycle = list(islice(cycle(aux), len(aux)+group[1].numsubgroups))
+            #
+            # windows = [aux_cycle[i:i+group[1].numsubgroups] for i in \
+            #             range(len(aux))]
+            # it += 1
+            # i=0
+            #
+            # if group[1].shift == 'M':
+            #     start_range, end_range = 0, self.time_table.shape[1] // 2
+            #
+            # else:
+            #     start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
+            #
+            #
+            # while self.__get_total_lab_hours__(subj_name_hours.items()) != 0:
+            #     while i < len(windows):
+            #         window = windows[i]
+            #
+            #         if sum([subj_name_hours[w.acronym][i] for (w,i) in \
+            #                 zip(window, range(group[1].numsubgroups))]) > 0:
+            #
+            #             for hour in range(start_range, end_range):
+            #                 if self.time_table[it, hour, day].is_free(window, subj_name_hours):
+            #                     self.__assign_lab_cell__(window, it, hour,
+            #                                              day, group[0], subj_name_hours)
+            #                     if hour == end_range-1:
+            #                         i = (i + 1) % len(windows)
+            #
+            #         else:
+            #             i = (i + 1) % len(windows)
+            #             break
+            #
+            #         day = (day + 1) % self.time_table.shape[2]
+            #
+            # print(self.time_table)
 
     """
     Auxiliar function to iterate a list in pairs
@@ -245,10 +248,29 @@ class TimeTable:
         return zip(a,b)
 
     """
+    Function to know the number of theory and lab hours for a given group
+    """
+    def __group_hours__(self, group, semester):
+        # get subject list
+        subject_list = self.__get_subj_list__(group, semester)
+        # sum lab and theory hours
+        lab_hours = sum([s.practical_hours for s in subject_list])
+        th_hours  = sum([s.theoretical_hours for s in subject_list])
+
+        return th_hours, lab_hours
+
+
+    """
     Function to decide which are theory hours and lab hours for each pair of groups.
     """
-    def asign_hours(self):
-        # first, we asign lab hours for the 1st goup
-        for g1, g2 in self.__pairwise__(self.groups.items()):
-            print(g1[0], g2[0])
+    def asign_hours(self, semester):
+        # first, we compute lab/th hours for the 1st goup
+        th_hours2, lab_hours2 = self.__group_hours__(list(self.groups.values())[0], semester)
+
+        for g1, g2 in self.__pairwise__(self.groups.values()):
+            
+            th_hours1, lab_hours1 = th_hours2, lab_hours2
+            th_hours2, lab_hours2 = self.__group_hours__(g2, semester)
+
+            print(g1[0] + " " + th_hours1, g2[0] + " " + th_hours2)
 

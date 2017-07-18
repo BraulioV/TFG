@@ -80,3 +80,19 @@ class Subject:
                self.year == other.year and self.semester == other.semester and \
                self.special_requirements == other.special_requirements and self.split_th_hours == other.split_th_hours \
                and self.degree == other.degree and self.speciality == other.speciality
+
+    # override < operator
+    def __lt__(self, other):
+        return self.practical_hours < other.practical_hours
+
+    # override <= operator
+    def __le__(self, other):
+        return self.practical_hours <= other.practical_hours
+
+    # override > operator
+    def __gt__(self, other):
+        return self.practical_hours > other.practical_hours
+
+    # override >= operator
+    def __ge__(self, other):
+        return self.practical_hours >= other.practical_hours
