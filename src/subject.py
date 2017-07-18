@@ -2,7 +2,7 @@
 
 def create_subject(filename):
     # Empty dict of different subjects
-    subjects, n_years, last_year = {}, -1, -1
+    subjects, n_years, last_year = {}, 0, 0
     with open(filename, 'r') as f:
         # Skip column names
         f.readline()
@@ -80,3 +80,13 @@ class Subject:
                self.year == other.year and self.semester == other.semester and \
                self.special_requirements == other.special_requirements and self.split_th_hours == other.split_th_hours \
                and self.degree == other.degree and self.speciality == other.speciality
+
+
+    # less operator overload
+    def __lt__(self, other):
+        if self.year < other.year:
+            return True
+        elif self.year == other.year:
+            return self.n_students < other.n_students
+
+        return False
