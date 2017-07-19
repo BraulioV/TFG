@@ -33,6 +33,7 @@ class TimeTable:
         self.subjects = subjects
         self.semester = semester
         self.possible_pr_classrooms = {}
+        self.__get_possible_classrooms__()
 
     def __assign_class__(self, day, hour, subject, group, classroom):
         second_hour = hour + subject.theoretical_hours - 1

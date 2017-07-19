@@ -1,6 +1,8 @@
 import numpy as np
 from subject import Subject
 from cell import Cell
+from operator import itemgetter
+from itertools import takewhile, dropwhile
 
 class Exams:
 
@@ -25,7 +27,8 @@ class Exams:
         self.subjects = subjects
         self.semester = semester
         self.years = n_years
-
+        self.ordered_subjects = {}
+        self.__order_subjects__()
 
     """
                             Order subjects
@@ -38,7 +41,10 @@ class Exams:
     """
 
     def __order_subjects__(self):
+        sort = sorted(self.subjects.items(), key=itemgetter(1))
 
-        self.ordered_subjects = {1:[], 2:[], 3:[]}
+        for year in range(self.years):
+            self.ordered_subjects[year] = list(takewhile(lambda x: x[1].year == year+1, sort))
+            sort = list(dropwhile(lambda x: x[1].year == year+1, sort))
 
-        for subject in self.subjects:
+        print(self.ordered_subjects)

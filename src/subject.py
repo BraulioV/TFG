@@ -2,7 +2,7 @@
 
 def create_subject(filename):
     # Empty dict of different subjects
-    subjects, n_years, last_year = {}, -1, -1
+    subjects, n_years, last_year = {}, 0, 0
     with open(filename, 'r') as f:
         # Skip column names
         f.readline()
@@ -81,18 +81,13 @@ class Subject:
                self.special_requirements == other.special_requirements and self.split_th_hours == other.split_th_hours \
                and self.degree == other.degree and self.speciality == other.speciality
 
-    # override < operator
+
+    # less operator overload
     def __lt__(self, other):
-        return self.practical_hours < other.practical_hours
+        if self.year < other.year:
+            return True
 
-    # override <= operator
-    def __le__(self, other):
-        return self.practical_hours <= other.practical_hours
+        elif self.year == other.year:
+            return self.n_students < other.n_students
 
-    # override > operator
-    def __gt__(self, other):
-        return self.practical_hours > other.practical_hours
-
-    # override >= operator
-    def __ge__(self, other):
-        return self.practical_hours >= other.practical_hours
+        return False
