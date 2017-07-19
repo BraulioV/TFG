@@ -26,7 +26,7 @@ class TimeTable:
     def __init__(self, n_days, n_hours, groups, classrooms, practices_classrooms,
                 subjects, semester):
         self.time_table = np.full((len(groups), n_hours, n_days), fill_value = Cell(), dtype=Cell)
-        self.is_lab_hour = np.full((len(groups), n_hours, n_days), fill_value=False, dtype=bool)
+        self.is_lab_hour = np.full((len(groups), n_hours, n_days), fill_value='E', dtype=str) # empty
         self.groups = groups
         self.classrooms = classrooms
         self.practices_classrooms = practices_classrooms
@@ -55,9 +55,17 @@ class TimeTable:
         return list(filter(lambda x: x.year == group.year and x.semester == semester, self.subjects.values()))
 
     def __assign_cell__(self, group_name, group_classroom, acronym, hour, day, it, subj_name_hours):
-        self.time_table[it, hour, day] = Cell(group_name, group_classroom, acronym)
-        self.classrooms[group_classroom].time_table[hour,day] = True
-        subj_name_hours[acronym] -= 1
+        if subj_name_hours[acronym] >= 2:
+            self.time_table[it, hour, day] = Cell(group_name, group_classroom, acronym)
+            self.time_table[it, hour+1, day] = Cell(group_name, group_classroom, acronym)
+            self.classrooms[group_classroom].time_table[hour,day] = True
+            self.classrooms[group_classroom].time_table[hour+1, day] = True
+            subj_name_hours[acronym] -= 2
+        else:
+            self.time_table[it, hour, day] = Cell(group_name, group_classroom, acronym)
+            self.classrooms[group_classroom].time_table[hour, day] = True
+            subj_name_hours[acronym] -= 1
+
         return (day + 1) % self.time_table.shape[2]
 
 
@@ -83,17 +91,17 @@ class TimeTable:
         it = 0
         # for each group
         plus = 2 if random() < 0.5 else 0
-        for group in self.groups.items():
+        for group in self.groups.values():
 
             # we get the subjects and its, theoretical hours
             subject_list =self.__get_subj_list__(group, semester)
 
             shuffle(subject_list)
-            subj_name_hours = {subject[0]:subject[1].theoretical_hours for subject in subject_list}
+            subj_name_hours = {subject.acronym:subject.theoretical_hours for subject in subject_list}
             # day of the week
             day = 0
 
-            if group[1].shift == 'M':
+            if group.shift == 'M':
                 start_range, end_range = 0, self.time_table.shape[1] // 2
 
             else:
@@ -113,9 +121,9 @@ class TimeTable:
                         # search the hour
                         for hour in range(start_range + plus, end_range):
                             # if that hour it's empty, assign the group to that hour
-                            if not self.classrooms[group[1].classroom.classroom_name].time_table[hour,day]:
+                            if not self.classrooms[group.classroom.classroom_name].time_table[hour,day]:
 
-                                day = self.__assign_cell__(group[1].name, group[1].classroom.classroom_name,
+                                day = self.__assign_cell__(group.name, group.classroom.classroom_name,
                                                            name, hour, day, it, subj_name_hours)
 
                                 break
@@ -264,13 +272,48 @@ class TimeTable:
     Function to decide which are theory hours and lab hours for each pair of groups.
     """
     def asign_hours(self, semester):
+        # variable to iterate through the timetable
+        it = 0
         # first, we compute lab/th hours for the 1st goup
         th_hours2, lab_hours2 = self.__group_hours__(list(self.groups.values())[0], semester)
+        for hour in range(0, self.is_lab_hour.shape[1] // 2, 2):
+            for day in range(self.is_lab_hour.shape[2]):
+                if lab_hours2 > 0:
+                    self.is_lab_hour[it, hour, day] = 'L'
+                    self.is_lab_hour[it, hour+1, day] = 'L'
+                    lab_hours2 -= 2
+                elif th_hours2 > 0:
+                    self.is_lab_hour[it, hour, day] = 'T'
+                    self.is_lab_hour[it, hour+1, day] = 'T'
+                    th_hours2 -= 2
 
-        for g1, g2 in self.__pairwise__(self.groups.values()):
-            
-            th_hours1, lab_hours1 = th_hours2, lab_hours2
-            th_hours2, lab_hours2 = self.__group_hours__(g2, semester)
+        # iterate through all groups in pairs
+        for g in list(self.groups.values())[1:]:
 
-            print(g1[0] + " " + th_hours1, g2[0] + " " + th_hours2)
+            th_hours2, lab_hours2 = self.__group_hours__(g, semester)
+            it += 1
 
+            if g.shift == 'M':
+                start_range, end_range = 0, self.time_table.shape[1] // 2
+
+            else:
+                start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
+
+            for hour in range(start_range, end_range, 2):
+                for day in range(self.is_lab_hour.shape[2]):
+                    if self.is_lab_hour[it-1, hour, day] == 'T' and lab_hours2 > 0:
+                        self.is_lab_hour[it, hour, day] = 'L'
+                        self.is_lab_hour[it, hour+1, day] = 'L'
+                        lab_hours2 -= 2
+                    elif self.is_lab_hour[it-1, hour, day] == 'L' and th_hours2 > 0:
+                        self.is_lab_hour[it, hour, day] = 'T'
+                        self.is_lab_hour[it, hour + 1, day] = 'T'
+                        th_hours2 -= 2
+                    elif lab_hours2 > 0:
+                        self.is_lab_hour[it, hour, day] = 'L'
+                        self.is_lab_hour[it, hour+1, day] = 'L'
+                        lab_hours2 -= 2
+                    elif th_hours2 > 0:
+                        self.is_lab_hour[it, hour, day] = 'T'
+                        self.is_lab_hour[it, hour+1, day] = 'T'
+                        th_hours2 -= 2
