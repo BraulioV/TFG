@@ -12,3 +12,14 @@ Name,Shift,Year,NumSubGroups,Classroom,Degree,Speciality
 3A,T,3,3,1.2,GII,Troncal
 3B,T,3,3,1.2,GII,Troncal
 3C,T,3,2,1.1,GII,Troncal
+3IC,T,3,1,1.1,GII,IC
+3IS,T,3,3,1.2,GII,IS
+3CSI,T,3,3,0.2,GII,CSI
+3SI,T,3,2,1.3,GII,SI
+3TI,T,3,3,1.2,GII,TI
+4IC,M,4,1,1.1,GII,IC
+4IS,M,4,2,1.2,GII,IS
+4CSI,M,4,2,1.3,GII,CSI
+4SI,M,4,2,1.4,GII,SI
+4TI,M,4,2,1.5,GII,TI
+4FC,M,4,1,1.1,GII,FC

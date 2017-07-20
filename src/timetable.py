@@ -276,22 +276,22 @@ class TimeTable:
         # variable to iterate through the timetable
         it = 0
         # first, we compute lab/th hours for the 1st goup
-        th_hours2, lab_hours2 = self.__group_hours__(list(self.groups.values())[0], semester)
+        th_hours, lab_hours = self.__group_hours__(list(self.groups.values())[0], semester)
         for hour in range(0, self.is_lab_hour.shape[1] // 2, 2):
             for day in range(self.is_lab_hour.shape[2]):
-                if lab_hours2 > 0:
+                if lab_hours > 0:
                     self.is_lab_hour[it, hour, day] = 'L'
                     self.is_lab_hour[it, hour+1, day] = 'L'
-                    lab_hours2 -= 2
-                elif th_hours2 > 0:
+                    lab_hours -= 2
+                elif th_hours > 0:
                     self.is_lab_hour[it, hour, day] = 'T'
                     self.is_lab_hour[it, hour+1, day] = 'T'
-                    th_hours2 -= 2
+                    th_hours -= 2
 
         # iterate through all groups in pairs
         for g in list(self.groups.values())[1:]:
 
-            th_hours2, lab_hours2 = self.__group_hours__(g, semester)
+            th_hours, lab_hours = self.__group_hours__(g, semester)
             it += 1
 
             if g.shift == 'M':
@@ -302,19 +302,37 @@ class TimeTable:
 
             for hour in range(start_range, end_range, 2):
                 for day in range(self.is_lab_hour.shape[2]):
-                    if self.is_lab_hour[it-1, hour, day] == 'T' and lab_hours2 > 0:
+                    if self.is_lab_hour[it-1, hour, day] == 'T' and lab_hours >= 2:
                         self.is_lab_hour[it, hour, day] = 'L'
                         self.is_lab_hour[it, hour+1, day] = 'L'
-                        lab_hours2 -= 2
-                    elif self.is_lab_hour[it-1, hour, day] == 'L' and th_hours2 > 0:
+                        lab_hours -= 2
+                    elif self.is_lab_hour[it-1, hour, day] == 'L' and th_hours >= 2:
                         self.is_lab_hour[it, hour, day] = 'T'
                         self.is_lab_hour[it, hour + 1, day] = 'T'
-                        th_hours2 -= 2
-                    elif lab_hours2 > 0:
+                        th_hours -= 2
+                    elif lab_hours >= 2:
                         self.is_lab_hour[it, hour, day] = 'L'
                         self.is_lab_hour[it, hour+1, day] = 'L'
-                        lab_hours2 -= 2
-                    elif th_hours2 > 0:
+                        lab_hours -= 2
+                    elif th_hours >= 2:
                         self.is_lab_hour[it, hour, day] = 'T'
                         self.is_lab_hour[it, hour+1, day] = 'T'
-                        th_hours2 -= 2
+                        th_hours -= 2
+                    elif th_hours > 0:
+                        if self.is_lab_hour[it,hour,day] == 'E':
+                            self.is_lab_hour[it,hour,day] = 'T'
+                        elif self.is_lab_hour[it,hour-1,day] == 'E':
+                            self.is_lab_hour[it,hour-1,day] = 'T'
+                        else:
+                            self.is_lab_hour[it,hour+1,day] = 'T'
+                        th_hours -= 1
+                    elif lab_hours > 0:
+                        if self.is_lab_hour[it,hour,day] == 'E':
+                            self.is_lab_hour[it,hour,day] = 'L'
+                        elif self.is_lab_hour[it,hour-1,day] == 'E':
+                            self.is_lab_hour[it,hour-1,day] = 'L'
+                        else:
+                            self.is_lab_hour[it,hour+1,day] = 'L'
+                        lab_hours -= 1
+                    else:
+                        break
