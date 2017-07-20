@@ -21,6 +21,7 @@ def create_subject(filename):
                                      semester = int(l[8]),
                                      degree = l[9],
                                      students = int(l[10]))
+
             if l[7] != last_year:
                 last_year = l[7]
                 n_years += 1
@@ -84,10 +85,10 @@ class Subject:
 
     # less operator overload
     def __lt__(self, other):
-        if self.year < other.year:
-            return True
+        # if self.year < other.year:
+        #     return True
 
-        elif self.year == other.year:
+        # elif self.year == other.year:
             return self.n_students < other.n_students
 
-        return False
+        # return False

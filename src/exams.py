@@ -1,8 +1,7 @@
 import numpy as np
-from subject import Subject
 from cell import Cell
 from operator import itemgetter
-from itertools import takewhile, dropwhile
+# from itertools import takewhile, dropwhile
 
 class Exams:
 
@@ -21,14 +20,14 @@ class Exams:
     """
 
     def __init__(self, n_days, groups, classrooms, subjects, semester, n_years = 4):
-        self.time_table = np.full((len(subjects), 2, n_days), fill_value=Cell(), dtype=Cell)
+        self.time_table = np.full((n_years, 2, n_days), fill_value=Cell(), dtype=Cell)
         self.groups = groups
         self.classrooms = classrooms
         self.subjects = subjects
         self.semester = semester
         self.years = n_years
-        self.ordered_subjects = {}
-        self.__order_subjects__()
+        self.ordered_subjects = self.__order_subjects__()
+        print(self.time_table)
 
     """
                             Order subjects
@@ -41,10 +40,28 @@ class Exams:
     """
 
     def __order_subjects__(self):
-        sort = sorted(self.subjects.items(), key=itemgetter(1))
+        # sort = sorted(self.subjects.items(), key=itemgetter(1))
 
-        for year in range(self.years):
-            self.ordered_subjects[year] = list(takewhile(lambda x: x[1].year == year+1, sort))
-            sort = list(dropwhile(lambda x: x[1].year == year+1, sort))
+        return sorted(self.subjects.items(), key=itemgetter(1))
 
-        print(self.ordered_subjects)
+        # for year in range(self.years):
+        #     self.ordered_subjects[year] = list(takewhile(lambda x: x[1].year == year+1, sort))
+        #     sort = list(dropwhile(lambda x: x[1].year == year+1, sort))
+
+        # print(self.ordered_subjects)
+
+
+
+    def __compute_exams_weights__(self):
+        weights = np.array([subject[1].n_students for subject in self.ordered_subjects], dtype=np.float64)
+
+        weights = weights / np.sum(weights)
+
+        for subject, weight in zip(weights, self.ordered_subjects):
+            print(subject, weight)
+
+        return weights
+
+
+
+
