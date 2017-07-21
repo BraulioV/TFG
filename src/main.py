@@ -22,10 +22,13 @@ if __name__ == '__main__':
     pclassrooms = create_practice_classroom(filename="../Dataset/practiceclassrooms.csv",
                                             days=DAYS, hours_per_day = HOURS)
 
+    # filter subjects of 1st semester
+    subjects1 = dict(filter(lambda s: s[1].semester == 1, subjects.items()))
+
     # create a timetable object
     timetable = TimeTable(n_days=DAYS, n_hours=HOURS, groups=groups,
                           classrooms=classrooms, practices_classrooms=pclassrooms,
-                          subjects=subjects, semester=1)
+                          subjects=subjects1, semester=1)
 
     timetable.__get_possible_classrooms__()
 
