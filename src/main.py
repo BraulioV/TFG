@@ -17,6 +17,10 @@ if __name__ == '__main__':
     # print(classrooms)
     groups = create_group(filename="../Dataset/groups.csv", 
                           classroom_list=classrooms)
+
+    # filter groups of 1st semester
+    groups1 = dict(filter(lambda g: '1' in g[1].semester, groups.items()))
+
     # print(groups)
     subjects, n_years = create_subject(filename="../Dataset/subjects.csv")
     pclassrooms = create_practice_classroom(filename="../Dataset/practiceclassrooms.csv",
@@ -26,7 +30,7 @@ if __name__ == '__main__':
     subjects1 = dict(filter(lambda s: s[1].semester == 1, subjects.items()))
 
     # create a timetable object
-    timetable = TimeTable(n_days=DAYS, n_hours=HOURS, groups=groups,
+    timetable = TimeTable(n_days=DAYS, n_hours=HOURS, groups=groups1,
                           classrooms=classrooms, practices_classrooms=pclassrooms,
                           subjects=subjects1, semester=1)
 
