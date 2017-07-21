@@ -31,11 +31,12 @@ if __name__ == '__main__':
                           subjects=subjects1, semester=1)
 
     timetable.__get_possible_classrooms__()
+    timetable.compute_total_hours()
 
     # exams = Exams(n_days = 10, groups = groups, classrooms = classrooms,
     #               subjects = subjects, semester = 1, n_years = n_years)
 
-    timetable.asign_hours(1)
+    # timetable.asign_hours(1)
     for table, group in zip(timetable.is_lab_hour, groups):
         print(group)
         print(tabulate(table, tablefmt="grid"))
