@@ -336,3 +336,8 @@ class TimeTable:
                         lab_hours -= 1
                     else:
                         break
+
+
+
+    def preassignate_hour_by_year(self):
+        pass

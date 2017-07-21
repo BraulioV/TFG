@@ -8,8 +8,8 @@ from exams import *
 # pretty print
 from tabulate import tabulate
 
-HOURS = 12
-DAYS = 5
+HOURS = 2
+DAYS = 10
 
 if __name__ == '__main__':
     classrooms = create_classroom(filename="../Dataset/classrooms.csv", days=DAYS,
