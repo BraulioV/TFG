@@ -306,7 +306,7 @@ class TimeTable:
                         self.is_lab_hour[it, hour, day] = 'L'
                         self.is_lab_hour[it, hour+1, day] = 'L'
                         lab_hours -= 2
-                    elif self.is_lab_hour[it-1, hour, day] == 'L' and th_hours >= 2:
+                    elif self.is_lab_hour[it-1, hour, day] == 'L' and th_hours >= 2: # aquí para el jueves
                         self.is_lab_hour[it, hour, day] = 'T'
                         self.is_lab_hour[it, hour + 1, day] = 'T'
                         th_hours -= 2
@@ -314,7 +314,7 @@ class TimeTable:
                         self.is_lab_hour[it, hour, day] = 'L'
                         self.is_lab_hour[it, hour+1, day] = 'L'
                         lab_hours -= 2
-                    elif th_hours >= 2:
+                    elif th_hours >= 2: # aquí para la segunda hora del jueves
                         self.is_lab_hour[it, hour, day] = 'T'
                         self.is_lab_hour[it, hour+1, day] = 'T'
                         th_hours -= 2
