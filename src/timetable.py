@@ -3,7 +3,7 @@ from practice_cell import PracticeCell
 import numpy as np
 from random import shuffle, randint, random
 from functools import reduce
-from itertools import cycle, islice
+from itertools import takewhile, dropwhile
 from subject import Subject
 from itertools import tee
 
@@ -337,6 +337,33 @@ class TimeTable:
                     else:
                         break
 
+
+    """
+                            Compute total hours
+                    
+        This function compute the total theoretical hours and practical
+        hours for each year of the degree. Returns a dict.
+    """
+    def compute_total_hours(self):
+
+        hours_year, year = {}, 1
+
+        subjects = self.subjects.items()
+
+        while len(subjects) != 0:
+            th_ph_hours = [0,0]
+            aux = list(takewhile(lambda x: x[1].year == year, subjects))
+            subjects = list(dropwhile(lambda x: x[1].year == year, subjects))
+
+            for subject in aux:
+                th_ph_hours[0] += subject[1].theoretical_hours
+                th_ph_hours[1] += subject[1].practical_hours
+
+
+            hours_year[year] = th_ph_hours
+            year += 1
+
+        return hours_year
 
 
     def preassignate_hour_by_year(self):
