@@ -367,4 +367,12 @@ class TimeTable:
 
 
     def preassignate_hour_by_year(self):
-        pass
+
+        hours = self.compute_total_hours()
+        items = self.groups.items()
+        n_groups = {}
+
+        for year in range(len(hours)):
+            n_groups[year] = [len(list(filter(lambda x: x[1].year == year + 1 and x[1].shift == "M", items))),
+                              len(list(filter(lambda x: x[1].year == year + 1 and x[1].shift == "T", items)))]
+        print(n_groups)
