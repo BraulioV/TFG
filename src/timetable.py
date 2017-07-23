@@ -374,9 +374,11 @@ class TimeTable:
         hours = self.compute_total_hours()
         n_groups = {}
 
-        # compute total number of groups in each shift (morning/afternoon)
+        # compute total number of groups in given shift
         for year in hours.keys():
-            n_groups[year] = len(list(filter(lambda x: x.year == year and x.shift == shift, local_groups.values())))
+            n_g = len(list(filter(lambda x: x.year == year and x.shift == shift, local_groups.values())))
+            if n_g != 0:
+                n_groups[year] = n_g
 
         # for each year, compute theory/lab distribution
         # for it in range(self.is_lab_hour.shape[0]):
