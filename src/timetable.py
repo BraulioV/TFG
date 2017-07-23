@@ -1,7 +1,7 @@
 from cell import Cell
 from practice_cell import PracticeCell
 import numpy as np
-from random import shuffle, randint, random
+from random import shuffle, randint, random, sample
 from functools import reduce
 from itertools import takewhile, dropwhile
 from subject import Subject
@@ -367,12 +367,44 @@ class TimeTable:
 
 
     def preassignate_hour_by_year(self):
-
+        # compute total theory/lab hours for each year
         hours = self.compute_total_hours()
         items = self.groups.items()
         n_groups = {}
 
-        for year in range(len(hours)):
-            n_groups[year] = [len(list(filter(lambda x: x[1].year == year + 1 and x[1].shift == "M", items))),
-                              len(list(filter(lambda x: x[1].year == year + 1 and x[1].shift == "T", items)))]
-        print(n_groups)
+        # compute total number of groups in each shift (morning/afternoon)
+        for year in hours.keys():
+            n_groups[year] = [len(list(filter(lambda x: x[1].year == year and x[1].shift == "M", items))),
+                              len(list(filter(lambda x: x[1].year == year and x[1].shift == "T", items)))]
+
+        # for each year, compute theory/lab distribution
+        for it in range(self.is_lab_hour.shape[0]):
+            for year in n_groups.items(): # max length of list is 2
+                for y in year[1]:
+                    # compute total lab hours for this year
+                    total_lab = (hours[year[0]][1]*y) // 2
+                    # and total hours available in laboratories
+                    total_week = self.time_table.shape[2] * 2
+                    # if total_lab is greater than total_week, we must repeat
+                    # total_lab - total_week hours of laboratory. This must be
+                    # random to not collapse the labs at the same time.
+                    if total_lab > total_week:
+                        rep = sample(range(total_week), total_lab-total_week)
+                        days = list(map(lambda x: (x % 5, x % 2), rep))
+                    for i in range(y):
+                        # we need to know if the group has morning/afternoon shift
+                        if year[1].index(y) == 0:
+                            start_range, end_range = 0, self.time_table.shape[1] // 2
+
+                        else:
+                            start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
+
+                        for hour in range(start_range, end_range,2):
+                            for day in range(self.is_lab_hour.shape[2]):
+                                if all(x == 'L' for x in self.is_lab_hour[it-i:it+1,hour,day]) and \
+                                        (not (day,hour%2) in days):
+                                    self.is_lab_hour[it,hour,day] = 'T'
+                                elif (day,hour%2) in days:
+                                    self.is_lab_hour[it, hour, day] = 'L'
+                                else:
+                                    self.is_lab_hour[it, hour, day] = 'L'

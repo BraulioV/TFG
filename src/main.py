@@ -8,8 +8,8 @@ from exams import *
 # pretty print
 from tabulate import tabulate
 
-HOURS = 2
-DAYS = 10
+HOURS = 12
+DAYS = 5
 
 if __name__ == '__main__':
     classrooms = create_classroom(filename="../Dataset/classrooms.csv", days=DAYS,
@@ -41,9 +41,9 @@ if __name__ == '__main__':
     #               subjects = subjects, semester = 1, n_years = n_years)
 
     # timetable.asign_hours(1)
-    for table, group in zip(timetable.is_lab_hour, groups):
-        print(group)
-        print(tabulate(table, tablefmt="grid"))
+    # for table, group in zip(timetable.is_lab_hour, groups):
+    #     print(group)
+    #     print(tabulate(table, tablefmt="grid"))
     # exams.__compute_exams_weights__()
 
     # timetable.random_greedy_theory(1)

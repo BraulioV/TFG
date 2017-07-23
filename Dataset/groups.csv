@@ -2,9 +2,8 @@ Name,Shift,Year,NumSubGroups,Classroom,Degree,Speciality,Semester
 1A,M,1,3,0.2,GII,Troncal,1-2
 1B,M,1,3,0.3,GII,Troncal,1-2
 1C,M,1,3,0.4,GII,Troncal,1-2
-1D,M,1,3,0.7,GII,Troncal,1-2
+1D,T,1,3,0.7,GII,Troncal,1-2
 1E,T,1,3,0.3,GII,Troncal,1-2
-1F,T,1,3,0.4,GII,Troncal,1-2
 2A,M,2,3,0.1,GII,Troncal,1-2
 2B,M,2,3,0.1,GII,Troncal,1-2
 2C,T,2,3,0.7,GII,Troncal,1-2
