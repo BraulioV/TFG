@@ -52,8 +52,8 @@ class TimeTable:
 
         return totalhours
 
-    def __get_subj_list__(self, group, semester):
-        return list(filter(lambda x: x.year == group.year and x.semester == semester, self.subjects.values()))
+    def __get_subj_list__(self, group):
+        return list(filter(lambda x: x.year == group.year and x.semester == self.semester, self.subjects.values()))
 
     def __assign_cell__(self, group_name, group_classroom, acronym, hour, day, it, subj_name_hours):
         if subj_name_hours[acronym] >= 2:
@@ -259,9 +259,9 @@ class TimeTable:
     """
     Function to know the number of theory and lab hours for a given group
     """
-    def __group_hours__(self, group, semester):
+    def __group_hours__(self, group):
         # get subject list
-        subject_list = self.__get_subj_list__(group, semester)
+        subject_list = self.__get_subj_list__(group)
         # sum lab and theory hours
         lab_hours = sum([s.practical_hours for s in subject_list])
         th_hours  = sum([s.theoretical_hours for s in subject_list])
@@ -291,7 +291,7 @@ class TimeTable:
         # iterate through all groups in pairs
         for g in list(self.groups.values())[1:]:
 
-            th_hours, lab_hours = self.__group_hours__(g, semester)
+            th_hours, lab_hours = self.__group_hours__(g)
             it += 1
 
             if g.shift == 'M':
@@ -381,8 +381,15 @@ class TimeTable:
             if n_g != 0:
                 n_groups[year] = (n_g, gs)
 
+        # compute range of shift
+        if shift == 'M':
+            start_range, end_range = 0, self.time_table.shape[1] // 2
+
+        else:
+            start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
+
         # for each year, compute theory/lab distribution
-        for hour, groups in zip(hours.values(), n_groups.values()):
+        for hour, groups, it in zip(hours.values(), n_groups.values(), range(len(self.groups))):
             th, lab = hour
             numgroups, grs = groups
 
@@ -397,11 +404,15 @@ class TimeTable:
             # be repeated by choosing a random integer
             if total_lab > total_week:
                 rep  = sample(range(total_week), total_lab - total_week)
-                days = list(map(lambda x: (x % 5, 0 if x < 5 else 2), rep))
+                days = list(map(lambda x: (x % 5, start_range if x < 5 else end_range), rep))
 
             # auxiliar 2D matrix that tells if an hour is lab or not in a whole year.
             is_lab_hour = np.full(self.structure.shape[1:], fill_value=False, dtype=bool)
 
             # now we iterate in all groups in that year
             for g in grs:
-                pass
+                th_hours, lab_hours = self.__group_hours__(g)
+
+                for hour in range(start_range, end_range, 2):
+                    for day in range(days_week):
+                        pass
