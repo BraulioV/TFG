@@ -376,13 +376,15 @@ class TimeTable:
 
         # compute total number of groups in given shift
         for year in hours.keys():
-            n_g = len(list(filter(lambda x: x.year == year and x.shift == shift, local_groups.values())))
+            gs = list(filter(lambda x: x.year == year and x.shift == shift, local_groups.values()))
+            n_g = len(gs)
             if n_g != 0:
-                n_groups[year] = n_g
+                n_groups[year] = (n_g, gs)
 
         # for each year, compute theory/lab distribution
-        for hour, numgroups in zip(hours.values(), n_groups.values()):
+        for hour, groups in zip(hours.values(), n_groups.values()):
             th, lab = hour
+            numgroups, grs = groups
 
             # compute total lab hours of all groups
             total_lab = (lab * numgroups) // 2 # each lab hour is a block of two hours
@@ -399,3 +401,7 @@ class TimeTable:
 
             # auxiliar 2D matrix that tells if an hour is lab or not in a whole year.
             is_lab_hour = np.full(self.structure.shape[1:], fill_value=False, dtype=bool)
+
+            # now we iterate in all groups in that year
+            for g in grs:
+                pass
