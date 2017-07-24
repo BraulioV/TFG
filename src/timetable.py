@@ -414,9 +414,17 @@ class TimeTable:
 
 
             # now we iterate in all groups in that year
-            for g in grs:
+            for g, iter, it in zip(grs, range(len(grs)), shift_indexes):
                 th_hours, lab_hours = self.__group_hours__(g)
 
                 for hour in range(start_range, end_range, 2):
                     for day in range(days_week):
-                        pass
+                        if lab_hours > 0 and not is_lab_hour[hour, day]:
+                            self.structure[it, hour, day] = 'L'
+                            self.structure[it, hour + 1, day] = 'L'
+                            is_lab_hour[hour, day] = is_lab_hour[hour + 1, day] = True
+                            lab_hours -= 2
+                        elif th_hours > 0:
+                            self.structure[it, hour, day] = 'T'
+                            self.structure[it, hour + 1, day] = 'T'
+                            th_hours -= 2
