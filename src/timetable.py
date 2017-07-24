@@ -26,7 +26,7 @@ class TimeTable:
     def __init__(self, n_days, n_hours, groups, classrooms, practices_classrooms,
                 subjects, semester):
         self.time_table = np.full((len(groups), n_hours, n_days), fill_value = Cell(), dtype=Cell)
-        self.is_lab_hour = np.full((len(groups), n_hours, n_days), fill_value='E', dtype=str) # empty
+        self.structure = np.full((len(groups), n_hours, n_days), fill_value='E', dtype=str) # empty
         self.groups = groups
         self.classrooms = classrooms
         self.practices_classrooms = practices_classrooms
@@ -277,15 +277,15 @@ class TimeTable:
         it = 0
         # first, we compute lab/th hours for the 1st goup
         th_hours, lab_hours = self.__group_hours__(list(self.groups.values())[0], semester)
-        for hour in range(0, self.is_lab_hour.shape[1] // 2, 2):
-            for day in range(self.is_lab_hour.shape[2]):
+        for hour in range(0, self.structure.shape[1] // 2, 2):
+            for day in range(self.structure.shape[2]):
                 if lab_hours > 0:
-                    self.is_lab_hour[it, hour, day] = 'L'
-                    self.is_lab_hour[it, hour+1, day] = 'L'
+                    self.structure[it, hour, day] = 'L'
+                    self.structure[it, hour + 1, day] = 'L'
                     lab_hours -= 2
                 elif th_hours > 0:
-                    self.is_lab_hour[it, hour, day] = 'T'
-                    self.is_lab_hour[it, hour+1, day] = 'T'
+                    self.structure[it, hour, day] = 'T'
+                    self.structure[it, hour + 1, day] = 'T'
                     th_hours -= 2
 
         # iterate through all groups in pairs
@@ -301,38 +301,38 @@ class TimeTable:
                 start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
 
             for hour in range(start_range, end_range, 2):
-                for day in range(self.is_lab_hour.shape[2]):
-                    if self.is_lab_hour[it-1, hour, day] == 'T' and lab_hours >= 2:
-                        self.is_lab_hour[it, hour, day] = 'L'
-                        self.is_lab_hour[it, hour+1, day] = 'L'
+                for day in range(self.structure.shape[2]):
+                    if self.structure[it-1, hour, day] == 'T' and lab_hours >= 2:
+                        self.structure[it, hour, day] = 'L'
+                        self.structure[it, hour + 1, day] = 'L'
                         lab_hours -= 2
-                    elif self.is_lab_hour[it-1, hour, day] == 'L' and th_hours >= 2: # aquí para el jueves
-                        self.is_lab_hour[it, hour, day] = 'T'
-                        self.is_lab_hour[it, hour + 1, day] = 'T'
+                    elif self.structure[it-1, hour, day] == 'L' and th_hours >= 2: # aquí para el jueves
+                        self.structure[it, hour, day] = 'T'
+                        self.structure[it, hour + 1, day] = 'T'
                         th_hours -= 2
                     elif lab_hours >= 2:
-                        self.is_lab_hour[it, hour, day] = 'L'
-                        self.is_lab_hour[it, hour+1, day] = 'L'
+                        self.structure[it, hour, day] = 'L'
+                        self.structure[it, hour + 1, day] = 'L'
                         lab_hours -= 2
                     elif th_hours >= 2: # aquí para la segunda hora del jueves
-                        self.is_lab_hour[it, hour, day] = 'T'
-                        self.is_lab_hour[it, hour+1, day] = 'T'
+                        self.structure[it, hour, day] = 'T'
+                        self.structure[it, hour + 1, day] = 'T'
                         th_hours -= 2
                     elif th_hours > 0:
-                        if self.is_lab_hour[it,hour,day] == 'E':
-                            self.is_lab_hour[it,hour,day] = 'T'
-                        elif self.is_lab_hour[it,hour-1,day] == 'E':
-                            self.is_lab_hour[it,hour-1,day] = 'T'
+                        if self.structure[it, hour, day] == 'E':
+                            self.structure[it, hour, day] = 'T'
+                        elif self.structure[it, hour-1, day] == 'E':
+                            self.structure[it, hour - 1, day] = 'T'
                         else:
-                            self.is_lab_hour[it,hour+1,day] = 'T'
+                            self.structure[it, hour + 1, day] = 'T'
                         th_hours -= 1
                     elif lab_hours > 0:
-                        if self.is_lab_hour[it,hour,day] == 'E':
-                            self.is_lab_hour[it,hour,day] = 'L'
-                        elif self.is_lab_hour[it,hour-1,day] == 'E':
-                            self.is_lab_hour[it,hour-1,day] = 'L'
+                        if self.structure[it, hour, day] == 'E':
+                            self.structure[it, hour, day] = 'L'
+                        elif self.structure[it, hour-1, day] == 'E':
+                            self.structure[it, hour - 1, day] = 'L'
                         else:
-                            self.is_lab_hour[it,hour+1,day] = 'L'
+                            self.structure[it, hour + 1, day] = 'L'
                         lab_hours -= 1
                     else:
                         break
@@ -360,7 +360,7 @@ class TimeTable:
                 th_ph_hours[1] += subject[1].practical_hours
 
 
-            hours_year[year] = th_ph_hours
+            hours_year[year] = tuple(th_ph_hours)
             year += 1
 
         return hours_year
@@ -381,33 +381,21 @@ class TimeTable:
                 n_groups[year] = n_g
 
         # for each year, compute theory/lab distribution
-        # for it in range(self.is_lab_hour.shape[0]):
-        #     for year in n_groups.items(): # max length of list is 2
-        #         for y in year[1]:
-        #             # compute total lab hours for this year
-        #             total_lab = (hours[year[0]][1]*y) // 2
-        #             # and total hours available in laboratories
-        #             total_week = self.time_table.shape[2] * 2
-        #             # if total_lab is greater than total_week, we must repeat
-        #             # total_lab - total_week hours of laboratory. This must be
-        #             # random to not collapse the labs at the same time.
-        #             if total_lab > total_week:
-        #                 rep = sample(range(total_week), total_lab-total_week)
-        #                 days = list(map(lambda x: (x % 5, x % 2), rep))
-        #             for i in range(y):
-        #                 # we need to know if the group has morning/afternoon shift
-        #                 if year[1].index(y) == 0:
-        #                     start_range, end_range = 0, self.time_table.shape[1] // 2
-        #
-        #                 else:
-        #                     start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
-        #
-        #                 for hour in range(start_range, end_range,2):
-        #                     for day in range(self.is_lab_hour.shape[2]):
-        #                         if all(x == 'L' for x in self.is_lab_hour[it-i:it+1,hour,day]) and \
-        #                                 (not (day,hour%2) in days):
-        #                             self.is_lab_hour[it,hour,day] = 'T'
-        #                         elif (day,hour%2) in days:
-        #                             self.is_lab_hour[it, hour, day] = 'L'
-        #                         else:
-        #                             self.is_lab_hour[it, hour, day] = 'L'
+        for hour, numgroups in zip(hours.values(), n_groups.values()):
+            th, lab = hour
+
+            # compute total lab hours of all groups
+            total_lab = (lab * numgroups) // 2 # each lab hour is a block of two hours
+            # compute total lab hours available in a week
+            days_week = self.structure.shape[2]
+            total_week = days_week * 2 # total days * total lab hours in a day
+
+            # once computed total lab hours required and total lab hours available, we need to check out if
+            # there are more hours needed than available. If so, we need to decide which hours are going to
+            # be repeated by choosing a random integer
+            if total_lab > total_week:
+                rep  = sample(range(total_week), total_lab - total_week)
+                days = list(map(lambda x: (x % 5, 0 if x < 5 else 2), rep))
+
+            # auxiliar 2D matrix that tells if an hour is lab or not in a whole year.
+            is_lab_hour = np.full(self.structure.shape[1:], fill_value=False, dtype=bool)
