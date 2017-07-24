@@ -388,6 +388,9 @@ class TimeTable:
         else:
             start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
 
+        shift_indexes = list(filter(lambda x: x != -1, map(lambda x, y: x if y.shift == shift else -1,
+                                 range(len(self.groups.values())), self.groups.values())))
+
         # for each year, compute theory/lab distribution
         for hour, groups, it in zip(hours.values(), n_groups.values(), range(len(self.groups))):
             th, lab = hour
@@ -408,6 +411,7 @@ class TimeTable:
 
             # auxiliar 2D matrix that tells if an hour is lab or not in a whole year.
             is_lab_hour = np.full(self.structure.shape[1:], fill_value=False, dtype=bool)
+
 
             # now we iterate in all groups in that year
             for g in grs:
