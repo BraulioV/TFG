@@ -2,7 +2,7 @@ import random as rd
 from cell import Cell
 from practice_cell import PracticeCell
 import numpy as np
-from random import shuffle, randint, random, sample
+from random import shuffle, randint, random, sample, choices
 from functools import reduce
 from itertools import takewhile, dropwhile
 from subject import Subject
@@ -414,7 +414,7 @@ class TimeTable:
                 print("hehhwer")
 
             if total_lab > total_week:
-                rep  = sample(range(total_week), total_lab - total_week)
+                rep  = choices(range(total_week), k=total_lab - total_week)
                 days = list(map(lambda x: (x % 5, start_range if x < 5 else end_range), rep))
 
             # auxiliar 2D matrix that tells if an hour is lab or not in a whole year.
