@@ -1,3 +1,4 @@
+import random as rd
 from cell import Cell
 from practice_cell import PracticeCell
 import numpy as np
@@ -6,6 +7,7 @@ from functools import reduce
 from itertools import takewhile, dropwhile
 from subject import Subject
 from itertools import tee
+from math import ceil
 
 class TimeTable:
 
@@ -391,13 +393,16 @@ class TimeTable:
         shift_indexes = list(filter(lambda x: x != -1, map(lambda x, y: x if y.shift == shift else -1,
                                  range(len(self.groups.values())), self.groups.values())))
 
+        # split shift_indexes list into sublists that fits the number of groups of each year
+        index_years = [[shift_indexes.pop(0) for k in range(i[0])] for i in n_groups.values()]
+
         # for each year, compute theory/lab distribution
-        for hour, groups, it in zip(hours.values(), n_groups.values(), range(len(self.groups))):
-            th, lab = hour
+        for hour_aux, groups, years in zip(hours.values(), n_groups.values(), index_years):
+            th, lab = hour_aux
             numgroups, grs = groups
 
             # compute total lab hours of all groups
-            total_lab = (lab * numgroups) // 2 # each lab hour is a block of two hours
+            total_lab = ceil((lab * numgroups) / 2) # each lab hour is a block of two hours
             # compute total lab hours available in a week
             days_week = self.structure.shape[2]
             total_week = days_week * 2 # total days * total lab hours in a day
@@ -405,6 +410,9 @@ class TimeTable:
             # once computed total lab hours required and total lab hours available, we need to check out if
             # there are more hours needed than available. If so, we need to decide which hours are going to
             # be repeated by choosing a random integer
+            if numgroups > 3:
+                print("hehhwer")
+
             if total_lab > total_week:
                 rep  = sample(range(total_week), total_lab - total_week)
                 days = list(map(lambda x: (x % 5, start_range if x < 5 else end_range), rep))
@@ -412,19 +420,53 @@ class TimeTable:
             # auxiliar 2D matrix that tells if an hour is lab or not in a whole year.
             is_lab_hour = np.full(self.structure.shape[1:], fill_value=False, dtype=bool)
 
-
             # now we iterate in all groups in that year
-            for g, iter, it in zip(grs, range(len(grs)), shift_indexes):
+            for g, it in zip(grs, years):
                 th_hours, lab_hours = self.__group_hours__(g)
 
                 for hour in range(start_range, end_range, 2):
                     for day in range(days_week):
-                        if lab_hours > 0 and not is_lab_hour[hour, day]:
+                        if not is_lab_hour[hour,day] and lab_hours >= 2:
                             self.structure[it, hour, day] = 'L'
                             self.structure[it, hour + 1, day] = 'L'
-                            is_lab_hour[hour, day] = is_lab_hour[hour + 1, day] = True
+                            is_lab_hour[hour, day] = True
+                            is_lab_hour[hour+1, day] = True
                             lab_hours -= 2
-                        elif th_hours > 0:
+                        elif is_lab_hour[hour, day] and th_hours >= 2:
                             self.structure[it, hour, day] = 'T'
                             self.structure[it, hour + 1, day] = 'T'
                             th_hours -= 2
+                        elif not is_lab_hour[hour, day] and th_hours >= 2:
+                            self.structure[it, hour, day] = 'T'
+                            self.structure[it, hour + 1, day] = 'T'
+                            th_hours -= 2
+                        else:
+                            break
+                        # elif th_hours >= 2:
+                        #     self.structure[it, hour, day] = 'T'
+                        #     self.structure[it, hour + 1, day] = 'T'
+                        #     th_hours -= 2
+                        # elif lab_hours >= 2:
+                        #     self.structure[it, hour, day] = 'L'
+                        #     self.structure[it, hour + 1, day] = 'L'
+                        #     is_lab_hour[hour,day] = True
+                        #     is_lab_hour[hour+1, day] = True
+                        #     lab_hours -= 2
+                        # elif th_hours > 0:
+                        #     if self.structure[it, hour, day] == 'E':
+                        #         self.structure[it, hour, day] = 'T'
+                        #     elif self.structure[it, hour - 1, day] == 'E':
+                        #         self.structure[it, hour - 1, day] = 'T'
+                        #     else:
+                        #         self.structure[it, hour + 1, day] = 'T'
+                        #     th_hours -= 1
+                        # elif lab_hours > 0:
+                        #     if self.structure[it, hour, day] == 'E':
+                        #         self.structure[it, hour, day] = 'L'
+                        #     elif self.structure[it, hour - 1, day] == 'E':
+                        #         self.structure[it, hour - 1, day] = 'L'
+                        #     else:
+                        #         self.structure[it, hour + 1, day] = 'L'
+                        #     lab_hours -= 1
+                        #     is_lab_hour[hour,day]=True
+
