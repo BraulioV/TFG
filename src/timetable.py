@@ -415,7 +415,7 @@ class TimeTable:
 
             if total_lab > total_week:
                 rep  = choices(range(total_week), k=total_lab - total_week)
-                days = list(map(lambda x: (x % 5, start_range if x < 5 else end_range), rep))
+                days = list(map(lambda x: (x % 5, start_range if x < 5 else start_range + 2), rep))
 
             # auxiliar 2D matrix that tells if an hour is lab or not in a whole year.
             is_lab_hour = np.full(self.structure.shape[1:], fill_value=False, dtype=bool)
@@ -431,48 +431,24 @@ class TimeTable:
                             is_lab_hour[hour, day] = True
                             is_lab_hour[hour+1, day] = True
                             lab_hours -= 2
+                        elif is_lab_hour[hour,day] and lab_hours >= 2 and (day, hour) in days:
+                            del days[days.index((day,hour))]
+                            self.structure[it,hour,day] = 'L'
+                            self.structure[it,hour+1,day] = 'L'
+                            lab_hours -= 2
                         elif is_lab_hour[hour, day] and th_hours >= 2:
                             self.structure[it, hour, day] = 'T'
                             self.structure[it, hour + 1, day] = 'T'
                             th_hours -= 2
-                        elif not is_lab_hour[hour, day] and th_hours >= 2:
+                        elif th_hours >= 2:
                             self.structure[it, hour, day] = 'T'
-                            self.structure[it, hour + 1, day] = 'T'
+                            self.structure[it, hour+1, day] = 'T'
                             th_hours -= 2
-                        elif is_lab_hour[hour, day] and th_hours == 0 and lab_hours >= 2:
-                            self.structure[it, hour, day] = 'L'
-                            self.structure[it, hour + 1, day] = 'L'
-                            is_lab_hour[hour, day] = True
-                            is_lab_hour[hour + 1, day] = True
-                            lab_hours -= 2
-
-                        else:
-                            break
-                        # elif th_hours >= 2:
-                        #     self.structure[it, hour, day] = 'T'
-                        #     self.structure[it, hour + 1, day] = 'T'
-                        #     th_hours -= 2
-                        # elif lab_hours >= 2:
+                        # elif is_lab_hour[hour, day] and th_hours == 0 and lab_hours >= 2:
                         #     self.structure[it, hour, day] = 'L'
                         #     self.structure[it, hour + 1, day] = 'L'
-                        #     is_lab_hour[hour,day] = True
-                        #     is_lab_hour[hour+1, day] = True
+                        #     is_lab_hour[hour, day] = True
+                        #     is_lab_hour[hour + 1, day] = True
                         #     lab_hours -= 2
-                        # elif th_hours > 0:
-                        #     if self.structure[it, hour, day] == 'E':
-                        #         self.structure[it, hour, day] = 'T'
-                        #     elif self.structure[it, hour - 1, day] == 'E':
-                        #         self.structure[it, hour - 1, day] = 'T'
-                        #     else:
-                        #         self.structure[it, hour + 1, day] = 'T'
-                        #     th_hours -= 1
-                        # elif lab_hours > 0:
-                        #     if self.structure[it, hour, day] == 'E':
-                        #         self.structure[it, hour, day] = 'L'
-                        #     elif self.structure[it, hour - 1, day] == 'E':
-                        #         self.structure[it, hour - 1, day] = 'L'
-                        #     else:
-                        #         self.structure[it, hour + 1, day] = 'L'
-                        #     lab_hours -= 1
-                        #     is_lab_hour[hour,day]=True
-
+                        else:
+                            break
