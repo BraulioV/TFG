@@ -36,6 +36,7 @@ if __name__ == '__main__':
 
     timetable.__get_possible_classrooms__()
     timetable.preassignate_hour_by_year(shift='M')
+    print(timetable.structure)
 
     # exams = Exams(n_days = 10, groups = groups, classrooms = classrooms,
     #               subjects = subjects, semester = 1, n_years = n_years)

@@ -265,10 +265,18 @@ class TimeTable:
         # get subject list
         subject_list = self.__get_subj_list__(group)
         # sum lab and theory hours
-        lab_hours = sum([s.practical_hours for s in subject_list])
-        th_hours  = sum([s.theoretical_hours for s in subject_list])
+        if group.speciality == "Troncal":
+            lab_hours = sum([s.practical_hours for s in subject_list])
+            th_hours  = sum([s.theoretical_hours for s in subject_list])
+            return th_hours, lab_hours
 
-        return th_hours, lab_hours
+        else:
+            subject_group = list(filter(lambda x: x.speciality == group.speciality, subject_list))
+            group_lab_hours = sum([s.practical_hours for s in subject_group])
+            group_th_hours = sum([s.theoretical_hours for s in subject_group])
+            return group_th_hours, group_lab_hours
+
+
 
 
     """
@@ -410,45 +418,45 @@ class TimeTable:
             # once computed total lab hours required and total lab hours available, we need to check out if
             # there are more hours needed than available. If so, we need to decide which hours are going to
             # be repeated by choosing a random integer
-            if numgroups > 3:
-                print("hehhwer")
-
             if total_lab > total_week:
-                rep  = choices(range(total_week), k=total_lab - total_week)
+                rep = choices(range(total_week), k=total_lab - total_week)
                 days = list(map(lambda x: (x % 5, start_range if x < 5 else start_range + 2), rep))
 
-            # auxiliar 2D matrix that tells if an hour is lab or not in a whole year.
+                # auxiliar 2D matrix that tells if an hour is lab or not in a whole year.
             is_lab_hour = np.full(self.structure.shape[1:], fill_value=False, dtype=bool)
 
             # now we iterate in all groups in that year
             for g, it in zip(grs, years):
+                if g.year == 4:
+                    print("kfajsokfjokafjok")
                 th_hours, lab_hours = self.__group_hours__(g)
                 for hour in range(start_range, end_range, 2):
                     for day in range(days_week):
-                        if not is_lab_hour[hour,day] and lab_hours >= 2:
-                            self.structure[it, hour, day] = 'L'
-                            self.structure[it, hour + 1, day] = 'L'
-                            is_lab_hour[hour, day] = True
-                            is_lab_hour[hour+1, day] = True
-                            lab_hours -= 2
-                        elif is_lab_hour[hour,day] and lab_hours >= 2 and (day, hour) in days:
-                            del days[days.index((day,hour))]
-                            self.structure[it,hour,day] = 'L'
-                            self.structure[it,hour+1,day] = 'L'
-                            lab_hours -= 2
-                        elif is_lab_hour[hour, day] and th_hours >= 2:
-                            self.structure[it, hour, day] = 'T'
-                            self.structure[it, hour + 1, day] = 'T'
-                            th_hours -= 2
-                        elif th_hours >= 2:
-                            self.structure[it, hour, day] = 'T'
-                            self.structure[it, hour+1, day] = 'T'
-                            th_hours -= 2
-                        # elif is_lab_hour[hour, day] and th_hours == 0 and lab_hours >= 2:
-                        #     self.structure[it, hour, day] = 'L'
-                        #     self.structure[it, hour + 1, day] = 'L'
-                        #     is_lab_hour[hour, day] = True
-                        #     is_lab_hour[hour + 1, day] = True
-                        #     lab_hours -= 2
-                        else:
-                            break
+                        # if g.speciality == 'Troncal':
+                            if not is_lab_hour[hour, day] and lab_hours >= 2:
+                                self.structure[it, hour, day] = 'L'
+                                self.structure[it, hour + 1, day] = 'L'
+                                is_lab_hour[hour, day] = True
+                                is_lab_hour[hour + 1, day] = True
+                                lab_hours -= 2
+                            elif is_lab_hour[hour, day] and lab_hours >= 2 and (day, hour) in days:
+                                del days[days.index((day, hour))]
+                                self.structure[it, hour, day] = 'L'
+                                self.structure[it, hour + 1, day] = 'L'
+                                lab_hours -= 2
+                            elif is_lab_hour[hour, day] and th_hours >= 2:
+                                self.structure[it, hour, day] = 'T'
+                                self.structure[it, hour + 1, day] = 'T'
+                                th_hours -= 2
+                            elif th_hours >= 2:
+                                self.structure[it, hour, day] = 'T'
+                                self.structure[it, hour + 1, day] = 'T'
+                                th_hours -= 2
+                            # elif is_lab_hour[hour, day] and th_hours == 0 and lab_hours >= 2:
+                            #     self.structure[it, hour, day] = 'L'
+                            #     self.structure[it, hour + 1, day] = 'L'
+                            #     is_lab_hour[hour, day] = True
+                            #     is_lab_hour[hour + 1, day] = True
+                            #     lab_hours -= 2
+                            else:
+                                break
