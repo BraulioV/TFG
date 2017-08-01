@@ -375,6 +375,9 @@ class TimeTable:
 
         return hours_year
 
+    def change_structure(self, it, hour, day, kind):
+        self.structure[it, hour, day] = kind
+        self.structure[it, hour + 1, day] = kind
 
     def preassignate_hour_by_year(self, shift):
         # filter groups in given shift
@@ -427,36 +430,25 @@ class TimeTable:
 
             # now we iterate in all groups in that year
             for g, it in zip(grs, years):
-                if g.year == 4:
-                    print("kfajsokfjokafjok")
                 th_hours, lab_hours = self.__group_hours__(g)
                 for hour in range(start_range, end_range, 2):
                     for day in range(days_week):
-                        # if g.speciality == 'Troncal':
-                            if not is_lab_hour[hour, day] and lab_hours >= 2:
-                                self.structure[it, hour, day] = 'L'
-                                self.structure[it, hour + 1, day] = 'L'
-                                is_lab_hour[hour, day] = True
-                                is_lab_hour[hour + 1, day] = True
-                                lab_hours -= 2
-                            elif is_lab_hour[hour, day] and lab_hours >= 2 and (day, hour) in days:
-                                del days[days.index((day, hour))]
-                                self.structure[it, hour, day] = 'L'
-                                self.structure[it, hour + 1, day] = 'L'
-                                lab_hours -= 2
-                            elif is_lab_hour[hour, day] and th_hours >= 2:
-                                self.structure[it, hour, day] = 'T'
-                                self.structure[it, hour + 1, day] = 'T'
-                                th_hours -= 2
-                            elif th_hours >= 2:
-                                self.structure[it, hour, day] = 'T'
-                                self.structure[it, hour + 1, day] = 'T'
-                                th_hours -= 2
-                            # elif is_lab_hour[hour, day] and th_hours == 0 and lab_hours >= 2:
-                            #     self.structure[it, hour, day] = 'L'
-                            #     self.structure[it, hour + 1, day] = 'L'
-                            #     is_lab_hour[hour, day] = True
-                            #     is_lab_hour[hour + 1, day] = True
-                            #     lab_hours -= 2
-                            else:
-                                break
+                        if not is_lab_hour[hour, day] and lab_hours >= 2:
+                            self.change_structure(it, hour, day, 'L')
+                            is_lab_hour[hour, day] = True
+                            is_lab_hour[hour + 1, day] = True
+                            lab_hours -= 2
+                        elif is_lab_hour[hour, day] and lab_hours >= 2 and (day, hour) in days:
+                            del days[days.index((day, hour))]
+                            self.change_structure(it, hour, day, 'L')
+                            lab_hours -= 2
+                        elif is_lab_hour[hour, day] and th_hours >= 2:
+                            self.change_structure(it, hour, day, 'T')
+                            th_hours -= 2
+                        elif th_hours >= 2:
+                            self.change_structure(it, hour, day, 'T')
+                            th_hours -= 2
+                        elif lab_hours >= 2:
+                            self.change_structure(it, hour, day, 'L')
+                        else:
+                            break
