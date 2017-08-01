@@ -444,5 +444,6 @@ class TimeTable:
                             th_hours -= 2
                         elif lab_hours >= 2:
                             self.change_structure(it, hour, day, 'L')
+                            lab_hours -= 2
                         else:
                             break

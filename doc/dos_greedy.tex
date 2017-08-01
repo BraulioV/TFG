@@ -23,12 +23,14 @@ El siguiente pseudocódigo refleja de forma más clara el funcionamiento del alg
     final \GETS \CALL{FinalFranja}{turno}\\
     \FOREACH c \in cursos \DO
     \BEGIN
-       filtro\_cursos \GETS \CALL{FiltrarGruposCurso}{curso, filtro\_grupos}\\
-       h\_lab \GETS \CALL{CalcularHorasPracticasCurso}{curso}\\
-       h\_week \GETS dias\_semana * n\_turnos\\
+        filtro\_cursos \GETS \CALL{FiltrarGruposCurso}{curso, filtro\_grupos}\\
+        h\_lab \GETS \CALL{CalcularHorasPracticasCurso}{curso}\\
+        h\_week \GETS dias\_semana * n\_turnos\\
 
-       \IF h\_lab > h\_week \THEN
-       		dias\_rep \GETS \CALL{CalcularTurnosRepetidos}{ }\\
+        \IF h\_lab > h\_week \THEN
+   	    	dias\_rep \GETS \CALL{CalcularTurnosRepetidos}{ }\\
+        \ELSE 
+          dias\_rep \GETS \emptyset\\
 
        	tabla\_lab \GETS \CALL{Matriz}{dias\_semana, n\_turnos}\\
 
@@ -37,9 +39,40 @@ El siguiente pseudocódigo refleja de forma más clara el funcionamiento del alg
        		teoria \GETS \CALL{CalcularHorasTeoria}{g}\\
        		lab \GETS \CALL{CalcularHorasLab}{g}\\
 
-       		\FOR i \GETS 0 \TO final; i+=2 \DO
+       		\FOR hora \GETS 0 \TO final; i+=2 \DO
        		\BEGIN
-       		\CALL{hola}{ }
+       		   \FOR dia \in SEMANA \DO
+               \BEGIN
+                    \IF \NOT tabla\_lab[hora, dia] \AND lab \ge 2 \THEN
+                    \BEGIN
+                        \CALL{AsignarEstructura}{hora, dia, L}\\
+                        tabla\_lab[hora, dia] = True\\
+                        tabla\_lab[hora + 1, dia] = True\\
+                        lab \GETS lab - 2\\
+                    \END
+                    \ELSEIF tabla\_lab[hora, dia] \AND lab \ge 2 \AND (dia, hora) \in dias\_rep \THEN
+                    \BEGIN
+                        \CALL{delete}{dias\_rep(dia, hora)}\\
+                        \CALL{AsignarEstructura}{hora, dia, L}\\
+                        lab \GETS lab - 2\\
+                    \END
+                    \ELSEIF tabla\_lab[hora, dia] \AND teoria \ge 2 \THEN
+                    \BEGIN
+                        \CALL{AsignarEstructura}{hora, dia, T}\\
+                        teoria \GETS teoria - 2\\
+                    \END
+                    \ELSEIF teoria \ge 2 \THEN
+                    \BEGIN
+                        \CALL{AsignarEstructura}{hora, dia, T}\\
+                        teoria \GETS teoria - 2\\
+                    \END
+                    \ELSEIF lab \ge 2 \THEN
+                    \BEGIN
+                        \CALL{AsignarEstructura}{hora, dia, L}\\
+                        lab \GETS lab - 2\\
+                    \END
+                    \ELSE \CALL{break}{}
+               \END
        		\END
        	\END
     \END
