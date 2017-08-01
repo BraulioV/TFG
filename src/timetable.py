@@ -132,7 +132,6 @@ class TimeTable:
                                 break
             it += 1
 
-
     def __get_total_lab_hours__(self, hour_list):
         
         totalhours = 0
@@ -142,9 +141,7 @@ class TimeTable:
 
         return totalhours
 
-
     def __assign_lab_cell__(self, window, it, hour, day, group_name, subj_name_hours):
- 
         local_window = []
         for (w, i) in zip(window, range(len(window))):
             if subj_name_hours[w.acronym][i] > 0:
@@ -188,10 +185,8 @@ class TimeTable:
                         self.time_table[it, hour, day].subjects[h] = self.subjects[s]
                         subj_name_hours[s][h] -= 1
 
-
     def random_greedy_practice(self, semester):
         it = -1
-
         for group in self.groups.items():
             # get subjects and its practical hours
             subject_list = self.__get_subj_list__(group, semester)
@@ -250,7 +245,7 @@ class TimeTable:
             # print(self.time_table)
 
     """
-    Auxiliar function to iterate a list in pairs
+        Aux function to iterate a list in pairs
     """
     def __pairwise__(self, iterable):
         "s -> (s0,s1) (s1,s2) (s2,s3),..."
@@ -275,9 +270,6 @@ class TimeTable:
             group_lab_hours = sum([s.practical_hours for s in subject_group])
             group_th_hours = sum([s.theoretical_hours for s in subject_group])
             return group_th_hours, group_lab_hours
-
-
-
 
     """
     Function to decide which are theory hours and lab hours for each pair of groups.
@@ -424,6 +416,8 @@ class TimeTable:
             if total_lab > total_week:
                 rep = choices(range(total_week), k=total_lab - total_week)
                 days = list(map(lambda x: (x % 5, start_range if x < 5 else start_range + 2), rep))
+            else:
+                days = []
 
                 # auxiliar 2D matrix that tells if an hour is lab or not in a whole year.
             is_lab_hour = np.full(self.structure.shape[1:], fill_value=False, dtype=bool)
