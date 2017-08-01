@@ -402,7 +402,7 @@ Nuestro algoritmo elige las asignaturas más restrictivas (con una lista de mate
 A la hora de implementar esta versión nos hemos encontrado con varios problemas:
 
 \begin{enumerate}[---]
-    \item En primer lugar, todas las horas de teoría se asignaban en la misma franja horaria, haciendo muy difícil la asigación de aulas de prácticas. Para solucionar esto, antes de empezar a asignar asignaturas con nuestro algoritmo, debemos decidir qué horas son de prácticas y de teoría para cada grupo de forma que, cuando un grupo tenga teoría otro grupo tenga prácticas. Así, la ocupación de las aulas de prácticas se maximiza.
+    \item En primer lugar, todas las horas de teoría se asignaban en la misma franja horaria, haciendo muy difícil la asigación de aulas de prácticas. Para solucionar esto, antes de empezar a asignar asignaturas con nuestro algoritmo, debemos decidir qué horas son de prácticas y de teoría para cada grupo de forma que, cuando un grupo tenga teoría otro grupo tenga prácticas. Así, la ocupación de las aulas de prácticas se minimiza.
 
     \item No disponemos de los materiales que necesita cada asignatura para poder hacer sus prácticas. Nuestro tutor nos ha dicho que esta información es bastante difícil de conseguir. Como solución, hemos decidido añadir un requisito: en vez de asignar asignaturas a aulas según material vamos a añadir al Dataset las aulas de prácticas en las que se imparte cada asignatura consultando los actuales horarios.
 \end{enumerate}
