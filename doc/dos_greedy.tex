@@ -1,0 +1,46 @@
+\chapter{Segunda aproximación Greedy}
+Para resolver los problemas de la primera aproximación realizada, se ha desarrollado un segundo algoritmo greedy. A esta segunda aproximación se le ha añadido un algoritmo previo que sirve para hacer la estructura del horario y cuyo objetivo es minimizar la ocupación de los laboratorios de prácticas.
+
+\section{Preasignación de horas}
+En esta fase lo único que se decide es qué horas serán de prácticas y cuáles serán de teoría sin asignar ninguna asignatura en concreto. El objetivo de esta fase de preasignación es minimizar la ocupación de los laboratorios de prácticas y evitar así que se saturen.
+
+Por sencillez, el algoritmo recibe como parámetro una franja horaria (mañana o tarde) por lo que antes de empezar debe filtrar los grupos que pertenecen a dicha franja horaria.
+
+Una vez filtrados empieza a iterar sobre todos los cursos. 
+
+En primer lugar, calcula las horas de teoría y de prácticas que tiene cada curso y, después, calcula el número total de horas de prácticas que hay en los laboratorios. Por ejemplo, si los laboratorios están abiertos cinco días a la semana y cuatro horas al día tendríamos un total de 20 horas. Como cada turno de prácticas tiene dos horas, nos quedarían un total de diez turnos de prácticas por asignar. Si, por ejemplo, tuviésemos que asignar doce turnos de prácticas, tendríamos que elegir de forma aleatoria dos turnos que se repetirían. Debe ser de forma aleatoria para que los turnos ``repetidos'' no coincidan en los distintos cursos y se saturen los laboratorios un día en concreto.
+
+Después, el algoritmo empieza a iterar sobre cada grupo de ese curso y va asignando horas de prácticas y teoría en los huecos ``libres''. Para saber qué huecos están libres se usa una matriz auxiliar que registra qué horas de prácticas en cada curso.
+
+\subsection{Pseudocódigo del algoritmo}
+El siguiente pseudocódigo refleja de forma más clara el funcionamiento del algoritmo.
+
+
+\begin{pseudocode}{GreedyEstructura}{turno}
+    \label{greedyestructura}
+    filtro\_grupos \GETS \CALL{FiltrarGrupos}{turno}\\
+    principio \GETS \CALL{ComienzoFranja}{turno}\\
+    final \GETS \CALL{FinalFranja}{turno}\\
+    \FOREACH c \in cursos \DO
+    \BEGIN
+       filtro\_cursos \GETS \CALL{FiltrarGruposCurso}{curso, filtro\_grupos}\\
+       h\_lab \GETS \CALL{CalcularHorasPracticasCurso}{curso}\\
+       h\_week \GETS dias\_semana * n\_turnos\\
+
+       \IF h\_lab > h\_week \THEN
+       		dias\_rep \GETS \CALL{CalcularTurnosRepetidos}{ }\\
+
+       	tabla\_lab \GETS \CALL{Matriz}{dias\_semana, n\_turnos}\\
+
+       	\FOREACH g \in filtro\_cursos \DO
+       	\BEGIN
+       		teoria \GETS \CALL{CalcularHorasTeoria}{g}\\
+       		lab \GETS \CALL{CalcularHorasLab}{g}\\
+
+       		\FOR i \GETS 0 \TO final; i+=2 \DO
+       		\BEGIN
+       		\CALL{hola}{ }
+       		\END
+       	\END
+    \END
+\end{pseudocode}
