@@ -91,16 +91,13 @@ class TimeTable:
 
 
     def random_greedy_theory(self):
-        it = 0
-
-        for group in self.groups.values():
+        for group, it in zip(self.groups.values(), range(self.time_table.shape[0])):
             # we get the subjects and its, theoretical hours
             subject_list =self.__get_subj_list__(group)
 
             shuffle(subject_list)
             subj_name_hours = {subject.acronym:subject.theoretical_hours for subject in subject_list}
-            # day of the week
-            day = 0
+            s = 0
 
             if group.shift == 'M':
                 start_range, end_range = 0, self.time_table.shape[1] // 2
@@ -109,10 +106,44 @@ class TimeTable:
                 start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
 
             while self.__get_total_th_hours__(subj_name_hours.items()) != 0:
-                print(subj_name_hours)
-                # for each subject, the algorithm try to assign to an hour
-                # the theoretical group.
-            it += 1
+                for h in range(start_range, end_range, 2):
+                    for d in range(self.time_table.shape[2]):
+
+                        # 1st case: this hour is assigned to lab/is empty
+                        if self.structure[it,h,d] == 'L' or self.structure[it,h,d] == 'E':
+                            pass
+
+                        # 2nd case: this hour is assigned to theory and we can make a 2 hours block with actual
+                        # subject in s.
+                        elif self.structure[it,h,d] == 'T' and subj_name_hours[subject_list[s].acronym] >= 2\
+                                and self.time_table[it,h,d] == Cell() and self.time_table[it,h+1,d] == Cell():
+                            self.time_table[it,h,d] = Cell(group.name, group.classroom.classroom_name,
+                                                           subject_list[s].acronym)
+                            self.time_table[it, h+1, d] = Cell(group.name, group.classroom.classroom_name,
+                                                             subject_list[s].acronym)
+                            subj_name_hours[subject_list[s].acronym] -= 2
+                            s = (s+1)%len(subject_list)
+
+                        # 3rd case: this hour is assined to theory but there's only one hour left to assign with
+                        # actual subject in s.
+                        elif self.structure[it,h,d] == 'T' and subj_name_hours[subject_list[s].acronym] == 1 \
+                                and self.time_table[it, h, d] == Cell():
+                            # filter subjects with just one hour left to assign to make a block of two
+                            odd_subjects = list(filter(lambda x: x[1] == 1 and x[0] != subject_list[s].acronym,
+                                                       subj_name_hours.items()))
+
+                            # is there's more subjects, we make a block of two
+                            if odd_subjects != [] and self.time_table[it, h+1, d] == Cell():
+                                self.time_table[it, h+1, d] = Cell(group.name, group.classroom.classroom_name,
+                                                                   odd_subjects[0][0])
+                                subj_name_hours[odd_subjects[0][0]] -= 1
+
+                            self.time_table[it,h,d] = Cell(group.name, group.classroom.classroom_name,
+                                                           subject_list[s].acronym)
+                            subj_name_hours[subject_list[s].acronym] -= 1
+                            s = (s+1)%len(subject_list)
+
+
 
     def __get_total_lab_hours__(self, hour_list):
         
