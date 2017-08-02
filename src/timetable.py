@@ -29,10 +29,10 @@ class TimeTable:
                 subjects, semester):
         self.time_table = np.full((len(groups), n_hours, n_days), fill_value = Cell(), dtype=Cell)
         self.structure = np.full((len(groups), n_hours, n_days), fill_value='E', dtype=str) # empty
-        self.groups = groups
+        self.groups = dict(filter(lambda g: semester in g[1].semester, groups.items()))
         self.classrooms = classrooms
         self.practices_classrooms = practices_classrooms
-        self.subjects = subjects
+        self.subjects = dict(filter(lambda s: s[1].semester == semester, subjects.items()))
         self.semester = semester
         self.possible_pr_classrooms = {}
         self.__get_possible_classrooms__()
@@ -55,7 +55,7 @@ class TimeTable:
         return totalhours
 
     def __get_subj_list__(self, group):
-        return list(filter(lambda x: x.year == group.year and x.semester == self.semester, self.subjects.values()))
+        return list(filter(lambda x: x.year == group.year, self.subjects.values()))
 
     def __assign_cell__(self, group_name, group_classroom, acronym, hour, day, it, subj_name_hours):
         if subj_name_hours[acronym] >= 2:
@@ -90,14 +90,12 @@ class TimeTable:
             self.possible_pr_classrooms[subject] = possible_classrooms
 
 
-    def random_greedy_theory(self, semester):
+    def random_greedy_theory(self):
         it = 0
-        # for each group
-        plus = 2 if random() < 0.5 else 0
-        for group in self.groups.values():
 
+        for group in self.groups.values():
             # we get the subjects and its, theoretical hours
-            subject_list =self.__get_subj_list__(group, semester)
+            subject_list =self.__get_subj_list__(group)
 
             shuffle(subject_list)
             subj_name_hours = {subject.acronym:subject.theoretical_hours for subject in subject_list}
@@ -110,26 +108,10 @@ class TimeTable:
             else:
                 start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
 
-            plus = 2 if plus == 0 else 0
             while self.__get_total_th_hours__(subj_name_hours.items()) != 0:
-                # print(subj_name_hours)
+                print(subj_name_hours)
                 # for each subject, the algorithm try to assign to an hour
                 # the theoretical group.
-
-                for (name,th_hours) in subj_name_hours.items():
-                    # and only work with the not assign subjects
-
-                    if th_hours > 0:
-
-                        # search the hour
-                        for hour in range(start_range + plus, end_range):
-                            # if that hour it's empty, assign the group to that hour
-                            if not self.classrooms[group.classroom.classroom_name].time_table[hour,day]:
-
-                                day = self.__assign_cell__(group.name, group.classroom.classroom_name,
-                                                           name, hour, day, it, subj_name_hours)
-
-                                break
             it += 1
 
     def __get_total_lab_hours__(self, hour_list):
