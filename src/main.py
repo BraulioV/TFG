@@ -37,15 +37,14 @@ if __name__ == '__main__':
     timetable.__get_possible_classrooms__()
     timetable.preassignate_hour_by_year(shift='M')
     timetable.preassignate_hour_by_year(shift='T')
-    print(timetable.structure)
 
     # exams = Exams(n_days = 10, groups = groups, classrooms = classrooms,
     #               subjects = subjects, semester = 1, n_years = n_years)
 
     # timetable.asign_hours(1)
-    # for table, group in zip(timetable.is_lab_hour, groups):
-    #     print(group)
-    #     print(tabulate(table, tablefmt="grid"))
+    for table, group in zip(timetable.structure, groups1):
+        print(group)
+        print(tabulate(table, tablefmt="grid"))
     # exams.__compute_exams_weights__()
 
     # timetable.random_greedy_theory(1)
