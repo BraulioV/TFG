@@ -333,7 +333,6 @@ class TimeTable:
         # compute range of shift
         if shift == 'M':
             start_range, end_range = 0, self.time_table.shape[1] // 2
-
         else:
             start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
 
@@ -409,3 +408,31 @@ class TimeTable:
                             lab_hours -= 1
                         else:
                             break
+
+    def assign_lab_hours(self, semester):
+        for group, it in zip(self.groups.values(), range(len(self.groups.items()))):
+            # get subjects and its practical hours
+            subject_list = self.__get_subj_list__(group)
+            shuffle(subject_list)
+            # compute range of shift
+            if group.shift == 'M':
+                start_range, end_range = 0, self.time_table.shape[1] // 2
+            else:
+                start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
+
+            subjects_index = [i for i in range(group.numsubgroups)]
+
+            days_week = self.structure.shape[2]
+
+            for hour in range(start_range, end_range, 2):
+                for day in range(days_week):
+                    # if the cell is a lab cell, let's fill it
+                    if self.structure[it, hour, day] == 'L':
+                        cell = PracticeCell(group=group.name,
+                                            subjects=[subject_list[i] for i in subjects_index],
+                                            classrooms=[])
+                        self.time_table[it, hour, day] = cell
+                        self.time_table[it, hour + 1, day] = cell
+
+                        subjects_index = list(map(lambda x: (x + 1) % len(subject_list), subjects_index))
+

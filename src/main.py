@@ -6,7 +6,7 @@ from practice_classroom import *
 from timetable import *
 from exams import *
 # pretty print
-from tabulate import tabulate
+# from tabulate import tabulate
 
 HOURS = 12
 DAYS = 5
@@ -15,7 +15,7 @@ if __name__ == '__main__':
     classrooms = create_classroom(filename="../Dataset/classrooms.csv", days=DAYS,
                                   hours_per_day=HOURS)
     # print(classrooms)
-    groups = create_group(filename="../Dataset/groups.csv", 
+    groups = create_group(filename="../Dataset/groups.csv",
                           classroom_list=classrooms)
 
     # print(groups)
@@ -41,6 +41,7 @@ if __name__ == '__main__':
     #     print(tabulate(table, tablefmt="grid"))
     # exams.__compute_exams_weights__()
 
-    timetable.random_greedy_theory()
+    # timetable.random_greedy_theory()
+    timetable.assign_lab_hours('M')
     #timetable.random_greedy_practice(1)
-    # print(timetable.time_table)
+    print(timetable.time_table)
