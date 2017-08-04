@@ -41,7 +41,7 @@ if __name__ == '__main__':
     #     print(tabulate(table, tablefmt="grid"))
     # exams.__compute_exams_weights__()
 
-    # timetable.random_greedy_theory()
-    timetable.assign_lab_hours('M')
+    timetable.random_greedy_theory()
+    # timetable.assign_lab_hours('M')
     #timetable.random_greedy_practice(1)
     print(timetable.time_table)

@@ -96,7 +96,8 @@ class TimeTable:
                 for d in range(self.time_table.shape[2]):
 
                     # 1st case: this hour is assigned to lab/is empty
-                    if self.structure[it,h,d] == 'L' or self.structure[it,h,d] == 'E':
+                    if (self.structure[it,h,d] == 'L' or self.structure[it,h,d] == 'E') \
+                            and self.structure[it, h+1, d] != 'T':
                         pass
 
                     # 2nd case: this hour is assigned to theory and we can make a 2 hours block with actual
@@ -128,6 +129,14 @@ class TimeTable:
                                                        subject_list[s].acronym)
                         subj_name_hours[subject_list[s].acronym] -= 1
                         s = (s+1)%len(subject_list)
+                    # 4rd case: same as 3rd but without block of two
+                    elif self.structure[it, h+1, d] == 'T' and subj_name_hours[subject_list[s].acronym] == 1 \
+                         and self.time_table[it, h+1, d] == Cell():
+
+                        self.time_table[it, h+1, d] = Cell(group.name, group.classroom.classroom_name,
+                                                         subject_list[s].acronym)
+                        subj_name_hours[subject_list[s].acronym] -= 1
+                        s = (s + 1) % len(subject_list)
 
 
 
