@@ -105,43 +105,52 @@ class TimeTable:
             else:
                 start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
 
-            while self.__get_total_th_hours__(subj_name_hours.items()) != 0:
-                for h in range(start_range, end_range, 2):
-                    for d in range(self.time_table.shape[2]):
 
-                        # 1st case: this hour is assigned to lab/is empty
-                        if self.structure[it,h,d] == 'L' or self.structure[it,h,d] == 'E':
-                            pass
+            for h in range(start_range, end_range, 2):
+                for d in range(self.time_table.shape[2]):
 
-                        # 2nd case: this hour is assigned to theory and we can make a 2 hours block with actual
-                        # subject in s.
-                        elif self.structure[it,h,d] == 'T' and subj_name_hours[subject_list[s].acronym] >= 2\
-                                and self.time_table[it,h,d] == Cell() and self.time_table[it,h+1,d] == Cell():
-                            self.time_table[it,h,d] = Cell(group.name, group.classroom.classroom_name,
-                                                           subject_list[s].acronym)
+                    # 1st case: this hour is assigned to lab/is empty
+                    if (self.structure[it,h,d] == 'L' or self.structure[it,h,d] == 'E') \
+                            and self.structure[it, h+1, d] != 'T':
+                        pass
+
+                    # 2nd case: this hour is assigned to theory and we can make a 2 hours block with actual
+                    # subject in s.
+                    elif self.structure[it,h,d] == 'T' and subj_name_hours[subject_list[s].acronym] >= 2\
+                            and self.time_table[it,h,d] == Cell() and self.time_table[it,h+1,d] == Cell():
+                        self.time_table[it,h,d] = Cell(group.name, group.classroom.classroom_name,
+                                                       subject_list[s].acronym)
+                        self.time_table[it, h+1, d] = Cell(group.name, group.classroom.classroom_name,
+                                                         subject_list[s].acronym)
+                        subj_name_hours[subject_list[s].acronym] -= 2
+                        s = (s+1)%len(subject_list)
+
+                    # 3rd case: this hour is assined to theory but there's only one hour left to assign with
+                    # actual subject in s.
+                    elif self.structure[it,h,d] == 'T' and subj_name_hours[subject_list[s].acronym] == 1 \
+                            and self.time_table[it, h, d] == Cell():
+                        # filter subjects with just one hour left to assign to make a block of two
+                        odd_subjects = list(filter(lambda x: x[1] == 1 and x[0] != subject_list[s].acronym,
+                                                   subj_name_hours.items()))
+
+                        # is there's more subjects, we make a block of two
+                        if odd_subjects != [] and self.time_table[it, h+1, d] == Cell():
                             self.time_table[it, h+1, d] = Cell(group.name, group.classroom.classroom_name,
-                                                             subject_list[s].acronym)
-                            subj_name_hours[subject_list[s].acronym] -= 2
-                            s = (s+1)%len(subject_list)
+                                                               odd_subjects[0][0])
+                            subj_name_hours[odd_subjects[0][0]] -= 1
 
-                        # 3rd case: this hour is assined to theory but there's only one hour left to assign with
-                        # actual subject in s.
-                        elif self.structure[it,h,d] == 'T' and subj_name_hours[subject_list[s].acronym] == 1 \
-                                and self.time_table[it, h, d] == Cell():
-                            # filter subjects with just one hour left to assign to make a block of two
-                            odd_subjects = list(filter(lambda x: x[1] == 1 and x[0] != subject_list[s].acronym,
-                                                       subj_name_hours.items()))
+                        self.time_table[it,h,d] = Cell(group.name, group.classroom.classroom_name,
+                                                       subject_list[s].acronym)
+                        subj_name_hours[subject_list[s].acronym] -= 1
+                        s = (s+1)%len(subject_list)
+                    # 4rd case: same as 3rd but without block of two
+                    elif self.structure[it, h+1, d] == 'T' and subj_name_hours[subject_list[s].acronym] == 1 \
+                         and self.time_table[it, h+1, d] == Cell():
 
-                            # is there's more subjects, we make a block of two
-                            if odd_subjects != [] and self.time_table[it, h+1, d] == Cell():
-                                self.time_table[it, h+1, d] = Cell(group.name, group.classroom.classroom_name,
-                                                                   odd_subjects[0][0])
-                                subj_name_hours[odd_subjects[0][0]] -= 1
-
-                            self.time_table[it,h,d] = Cell(group.name, group.classroom.classroom_name,
-                                                           subject_list[s].acronym)
-                            subj_name_hours[subject_list[s].acronym] -= 1
-                            s = (s+1)%len(subject_list)
+                        self.time_table[it, h+1, d] = Cell(group.name, group.classroom.classroom_name,
+                                                         subject_list[s].acronym)
+                        subj_name_hours[subject_list[s].acronym] -= 1
+                        s = (s + 1) % len(subject_list)
 
 
 
@@ -333,6 +342,7 @@ class TimeTable:
         # compute range of shift
         if shift == 'M':
             start_range, end_range = 0, self.time_table.shape[1] // 2
+
         else:
             start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
 
@@ -388,6 +398,26 @@ class TimeTable:
                         elif lab_hours >= 2:
                             self.change_structure(it, hour, day, 'L')
                             lab_hours -= 2
+                        elif th_hours == 1 and lab_hours == 1:
+                            if is_lab_hour[hour, day]:
+                                self.structure[it, hour, day] = 'T'
+                                self.structure[it, hour+1, day] = 'L'
+                                is_lab_hour[hour+1, day] = True
+                            else:
+                                self.structure[it, hour, day] = 'L'
+                                self.structure[it, hour+1, day] = 'T'
+                                is_lab_hour[hour, day] = 'L'
+                            lab_hours -= 1
+                            th_hours -= 1
+                        elif th_hours == 1:
+                            self.structure[it, hour, day] = 'T'
+                            th_hours -= 1
+                        elif lab_hours == 1:
+                            self.structure[it, hour, day] = 'L'
+                            is_lab_hour[hour, day] = True
+                            lab_hours -= 1
+                        else:
+                            break
                         else:
                             break
 
