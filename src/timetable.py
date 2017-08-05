@@ -105,13 +105,17 @@ class TimeTable:
 
     __is_odd__ = lambda self, x: bool(x&1)
 
+    def __shuffle_priority__(self, my_list):
+        shuffle(my_list)
+        # we sort the subjects by theory_hours
+        my_list.sort(key=lambda s: s.theoretical_hours, reverse=True)
 
     def random_greedy_theory(self):
         for group, it in zip(self.groups.values(), range(self.time_table.shape[0])):
             # we get the subjects and its, theoretical hours
             subject_list =self.__get_subj_list__(group)
 
-            shuffle(subject_list)
+            self.__shuffle_priority__(subject_list)
             subj_name_hours = {subject.acronym:subject.theoretical_hours for subject in subject_list}
             s = 0
 
