@@ -195,15 +195,6 @@ class TimeTable:
 
 
     """
-        Aux function to iterate a list in pairs
-    """
-    def __pairwise__(self, iterable):
-        "s -> (s0,s1) (s1,s2) (s2,s3),..."
-        a, b = tee(iterable)
-        next (b, None)
-        return zip(a,b)
-
-    """
     Function to know the number of theory and lab hours for a given group
     """
     def __group_hours__(self, group):
