@@ -337,8 +337,7 @@ class TimeTable:
                             lab_hours -= 1
                         else:
                             break
-                        else:
-                            break
+
 
     def compute_best_cells(self, group, subject_list, subjects_index, n_hours):
         easy = True
@@ -383,7 +382,7 @@ class TimeTable:
         # join the subjects in ind
 
 
-    def assign_lab_hours(self, semester):
+    def assign_lab_hours(self):
         for group, it in zip(self.groups.values(), range(len(self.groups.items()))):
             # get subjects and its practical hours
             subject_list = self.__get_subj_list__(group)
