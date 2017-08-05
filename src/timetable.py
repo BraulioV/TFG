@@ -57,20 +57,6 @@ class TimeTable:
     def __get_subj_list__(self, group):
         return list(filter(lambda x: x.year == group.year, self.subjects.values()))
 
-    def __assign_cell__(self, group_name, group_classroom, acronym, hour, day, it, subj_name_hours):
-        if subj_name_hours[acronym] >= 2:
-            self.time_table[it, hour, day] = Cell(group_name, group_classroom, acronym)
-            self.time_table[it, hour+1, day] = Cell(group_name, group_classroom, acronym)
-            self.classrooms[group_classroom].time_table[hour,day] = True
-            self.classrooms[group_classroom].time_table[hour+1, day] = True
-            subj_name_hours[acronym] -= 2
-        else:
-            self.time_table[it, hour, day] = Cell(group_name, group_classroom, acronym)
-            self.classrooms[group_classroom].time_table[hour, day] = True
-            subj_name_hours[acronym] -= 1
-
-        return (day + 1) % self.time_table.shape[2]
-
 
     def __get_possible_classrooms__(self):
 
