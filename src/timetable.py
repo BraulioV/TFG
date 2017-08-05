@@ -372,26 +372,33 @@ class TimeTable:
                             break
 
 
-    def compute_best_cells(self, group, subject_list, subjects_index):
+    def compute_best_cells(self, group, subject_list, subjects_index, hours):
 
-            cell1 = PracticeCell(group=group.name)
-            cell2 = PracticeCell(group=group.name)
+        def subject_or_not(subject, index):
+            if hours[index] > 0:
+                hours[index] -= 1
+                return subject
+            else:
+                return Subject()
 
-            subjects_c1, subjects_c2 = [None] * 3, [None] * 3
-            it = 0
-            for i in subjects_index:
-                if type(subject_list[i]) == tuple:
-                    subjects_c1[it] = subject_list[i][0]
-                    subjects_c2[it] = subject_list[i][1]
-                else:
-                    subjects_c1[it] = subject_list[i]
-                    subjects_c2[it] = subject_list[i]
-                it += 1
+        cell1 = PracticeCell(group=group.name)
+        cell2 = PracticeCell(group=group.name)
 
-            cell1.subjects = subjects_c1
-            cell2.subjects = subjects_c2
+        subjects_c1, subjects_c2 = [None] * 3, [None] * 3
+        it = 0
+        for i in subjects_index:
+            if type(subject_list[i]) == tuple:
+                subjects_c1[it] = subject_or_not(subject_list[i][0], i)
+                subjects_c2[it] = subject_or_not(subject_list[i][1], i)
+            else:
+                subjects_c1[it] = subject_or_not(subject_list[i], i)
+                subjects_c2[it] = subject_or_not(subject_list[i], i)
+            it += 1
 
-            return cell1, cell2
+        cell1.subjects = subjects_c1
+        cell2.subjects = subjects_c2
+
+        return cell1, cell2
 
 
     def recalculate_subjects(self, subject_list):
@@ -411,7 +418,7 @@ class TimeTable:
                 ind.pop(0)
                 ind.pop(0)
         elif len(ind) > 0:
-            new_list.append(subject_list.append(ind[0]))
+            new_list.append(subject_list[ind[0]])
 
         return new_list
 
@@ -433,18 +440,18 @@ class TimeTable:
 
             days_week = self.structure.shape[2]
 
-            # n_hours = [i.practical_hours * group.numsubgroups for i in subject_list]
+            hours = list(map(lambda x: x*group.numsubgroups, [subject.practical_hours if type(subject) is not tuple
+                     else subject[0].practical_hours + subject[1].practical_hours
+                     for subject in subject_list]))
 
             for hour in range(start_range, end_range, 2):
                 for day in range(days_week):
                     # if the cell is a lab cell, let's fill it
-                    if self.structure[it, hour, day] == 'L':
-                        cell1, cell2 = self.compute_best_cells(group, subject_list, subjects_index)
-                        # cell = PracticeCell(group=group.name,
-                        #                     subjects=[subject_list[i] for i in subjects_index],
-                        #                     classrooms=[])
+                    if self.structure[it, hour, day] == 'L' or self.structure[it, hour, day] == 'E':
+                        cell1, cell2 = self.compute_best_cells(group, subject_list, subjects_index, hours)
                         self.time_table[it, hour, day] = cell1
                         self.time_table[it, hour + 1, day] = cell2
 
                         subjects_index = list(map(lambda x: (x + 1) % len(subject_list), subjects_index))
+                if sum(hours) == 0: break
 
