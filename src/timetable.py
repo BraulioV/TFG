@@ -82,7 +82,10 @@ class TimeTable:
             bloque = None
         else:
             # filter subjects with just one hour left to assign to make a block of two
-            odd_subjects = list(filter(lambda x: x[1] > 0 and x[0] != acronym, subj_name_hours.items()))
+            if any(self.__is_odd__(x[1]) and x[0] != acronym for x in subj_name_hours.items()):
+                odd_subjects = list(filter(lambda x: self.__is_odd__(x[1]) and x[0] != acronym, subj_name_hours.items()))
+            else:
+                odd_subjects = list(filter(lambda x: x[1] > 0 and x[0] != acronym, subj_name_hours.items()))
 
             # is there's more subjects, we make a block of two
             if odd_subjects != [] and self.time_table[it, h + 1, d] == Cell():
