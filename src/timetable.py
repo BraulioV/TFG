@@ -365,35 +365,27 @@ class TimeTable:
                             break
 
 
-    def compute_best_cells(self, group, subject_list, subjects_index, n_hours):
-        easy = True
-        indexes = []
-        for i in subjects_index:
-            if subject_list[i].practical_hours % 2 != 0:
-                easy = False
-                indexes.append(i)
+    def compute_best_cells(self, group, subject_list, subjects_index):
 
-        if easy:
-            cell1 = PracticeCell(group=group.name,
-                                subjects=[subject_list[i] for i in subjects_index],
-                                classrooms=[])
+            cell1 = PracticeCell(group=group.name)
+            cell2 = PracticeCell(group=group.name)
+
+            subjects_c1, subjects_c2 = [None] * 3, [None] * 3
+            it = 0
             for i in subjects_index:
-                n_hours[i] -= 2
-
-            return cell1, cell1
-
-        else:
-            cell = PracticeCell(group=group.name)
-            subjects = []
-            for i in subjects_index:
-                if subject_list[i].practical_hours % 2 == 0:
-                    n_hours[i] -= 2
-                    subjects.append(subject_list[i])
+                if type(subject_list[i]) == tuple:
+                    subjects_c1[it] = subject_list[i][0]
+                    subjects_c2[it] = subject_list[i][1]
                 else:
-                    subjects.append("EM")
-            cell.subjects=subjects
+                    subjects_c1[it] = subject_list[i]
+                    subjects_c2[it] = subject_list[i]
+                it += 1
 
-            return cell, cell
+            cell1.subjects = subjects_c1
+            cell2.subjects = subjects_c2
+
+            return cell1, cell2
+
 
     def recalculate_subjects(self, subject_list):
         ind = []
@@ -406,7 +398,15 @@ class TimeTable:
                 new_list.append(subject_list[i])
 
         # join the subjects in ind
+        if len(ind) >= 2:
+            while len(ind) > 1:
+                new_list.append((subject_list[ind[0]],subject_list[ind[1]] ))
+                ind.pop(0)
+                ind.pop(0)
+        elif len(ind) > 0:
+            new_list.append(subject_list.append(ind[0]))
 
+        return new_list
 
     def assign_lab_hours(self):
         for group, it in zip(self.groups.values(), range(len(self.groups.items()))):
@@ -414,7 +414,7 @@ class TimeTable:
             subject_list = self.__get_subj_list__(group)
             shuffle(subject_list)
 
-            self.recalculate_subjects(subject_list)
+            subject_list = self.recalculate_subjects(subject_list)
 
             # compute range of shift
             if group.shift == 'M':
@@ -426,13 +426,13 @@ class TimeTable:
 
             days_week = self.structure.shape[2]
 
-            n_hours = [i.practical_hours * group.numsubgroups for i in subject_list]
+            # n_hours = [i.practical_hours * group.numsubgroups for i in subject_list]
 
             for hour in range(start_range, end_range, 2):
                 for day in range(days_week):
                     # if the cell is a lab cell, let's fill it
                     if self.structure[it, hour, day] == 'L':
-                        cell1, cell2 = self.compute_best_cells(group, subject_list, subjects_index, n_hours)
+                        cell1, cell2 = self.compute_best_cells(group, subject_list, subjects_index)
                         # cell = PracticeCell(group=group.name,
                         #                     subjects=[subject_list[i] for i in subjects_index],
                         #                     classrooms=[])
