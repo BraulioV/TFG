@@ -75,6 +75,33 @@ class TimeTable:
 
             self.possible_pr_classrooms[subject] = possible_classrooms
 
+    def __assign_th_cell__(self, it, h, d, group, acronym, subj_name_hours, n_hours=2):
+        if n_hours == 2:
+            self.time_table[it, h, d] = Cell(group.name, group.classroom.classroom_name, acronym)
+            self.time_table[it, h + 1, d] = Cell(group.name, group.classroom.classroom_name, acronym)
+            bloque = None
+        else:
+            # filter subjects with just one hour left to assign to make a block of two
+            odd_subjects = list(filter(lambda x: self.__is_odd__(x[1]) and x[0] != acronym, subj_name_hours.items()))
+
+            # is there's more subjects, we make a block of two
+            if odd_subjects != [] and self.time_table[it, h + 1, d] == Cell():
+                bloque = odd_subjects[0][0]
+                self.time_table[it, h + 1, d] = Cell(group.name, group.classroom.classroom_name, odd_subjects[0][0])
+                subj_name_hours[odd_subjects[0][0]] -= 1
+            else:
+                bloque = None
+
+            self.time_table[it, h, d] = Cell(group.name, group.classroom.classroom_name, acronym)
+
+        subj_name_hours[acronym] -= n_hours
+        if subj_name_hours[acronym] == 0:
+            return True, bloque
+        else:
+            return False, bloque
+
+    __is_odd__ = lambda self, x: bool(x&1)
+
 
     def random_greedy_theory(self):
         for group, it in zip(self.groups.values(), range(self.time_table.shape[0])):
@@ -94,48 +121,43 @@ class TimeTable:
 
             for h in range(start_range, end_range, 2):
                 for d in range(self.time_table.shape[2]):
+                    if subject_list == []:
+                        break
 
                     # 1st case: this hour is assigned to lab/is empty
-                    if (self.structure[it,h,d] == 'L' or self.structure[it,h,d] == 'E') \
+                    elif (self.structure[it,h,d] == 'L' or self.structure[it,h,d] == 'E') \
                             and self.structure[it, h+1, d] != 'T':
-                        pass
+                        remove = False
+                        asignado = False
 
                     # 2nd case: this hour is assigned to theory and we can make a 2 hours block with actual
                     # subject in s.
                     elif self.structure[it,h,d] == 'T' and subj_name_hours[subject_list[s].acronym] >= 2\
                             and self.time_table[it,h,d] == Cell() and self.time_table[it,h+1,d] == Cell():
-                        self.time_table[it,h,d] = Cell(group.name, group.classroom.classroom_name,
-                                                       subject_list[s].acronym)
-                        self.time_table[it, h+1, d] = Cell(group.name, group.classroom.classroom_name,
-                                                         subject_list[s].acronym)
-                        subj_name_hours[subject_list[s].acronym] -= 2
-                        s = (s+1)%len(subject_list)
+                        remove, block = self.__assign_th_cell__(it, h, d, group, subject_list[s].acronym, subj_name_hours)
+                        asignado = True
 
                     # 3rd case: this hour is assined to theory but there's only one hour left to assign with
                     # actual subject in s.
                     elif self.structure[it,h,d] == 'T' and subj_name_hours[subject_list[s].acronym] == 1 \
                             and self.time_table[it, h, d] == Cell():
-                        # filter subjects with just one hour left to assign to make a block of two
-                        odd_subjects = list(filter(lambda x: x[1] == 1 and x[0] != subject_list[s].acronym,
-                                                   subj_name_hours.items()))
+                        remove, block = self.__assign_th_cell__(it, h, d, group, subject_list[s].acronym, subj_name_hours, 1)
+                        asignado = True
 
-                        # is there's more subjects, we make a block of two
-                        if odd_subjects != [] and self.time_table[it, h+1, d] == Cell():
-                            self.time_table[it, h+1, d] = Cell(group.name, group.classroom.classroom_name,
-                                                               odd_subjects[0][0])
-                            subj_name_hours[odd_subjects[0][0]] -= 1
-
-                        self.time_table[it,h,d] = Cell(group.name, group.classroom.classroom_name,
-                                                       subject_list[s].acronym)
-                        subj_name_hours[subject_list[s].acronym] -= 1
-                        s = (s+1)%len(subject_list)
                     # 4rd case: same as 3rd but without block of two
                     elif self.structure[it, h+1, d] == 'T' and subj_name_hours[subject_list[s].acronym] == 1 \
                          and self.time_table[it, h+1, d] == Cell():
+                        remove, block = self.__assign_th_cell__(it, h+1, d, group, subject_list[s].acronym, subj_name_hours, 1)
+                        asignado = True
 
-                        self.time_table[it, h+1, d] = Cell(group.name, group.classroom.classroom_name,
-                                                         subject_list[s].acronym)
-                        subj_name_hours[subject_list[s].acronym] -= 1
+                    if remove:
+                        del subject_list[s]
+                        if block is not None:
+                            if subj_name_hours[block] == 0:
+                                remove_block = [i for i in subject_list if i.acronym == block]
+                                del subject_list[subject_list.index(remove_block[0])]
+                        s = (s + 1) % len(subject_list) if s != 0 and subject_list != [] else 0
+                    elif asignado:
                         s = (s + 1) % len(subject_list)
 
 
@@ -275,6 +297,8 @@ class TimeTable:
         for hour_aux, groups, years in zip(hours.values(), n_groups.values(), index_years):
             th, lab = hour_aux
             numgroups, grs = groups
+            # if lab hours is an odd number, we increase this number by one
+            lab = lab+1 if self.__is_odd__(lab) else lab
 
             # compute total lab hours of all groups
             total_lab = ceil((lab * numgroups) / 2) # each lab hour is a block of two hours
@@ -297,6 +321,8 @@ class TimeTable:
             # now we iterate in all groups in that year
             for g, it in zip(grs, years):
                 th_hours, lab_hours = self.__group_hours__(g)
+                # if lab hours is an odd number, we increase this number by one
+                lab_hours = lab_hours + 1 if self.__is_odd__(lab_hours) else lab
                 for hour in range(start_range, end_range, 2):
                     for day in range(days_week):
                         if not is_lab_hour[hour, day] and lab_hours >= 2:
