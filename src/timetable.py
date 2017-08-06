@@ -374,7 +374,7 @@ class TimeTable:
         # if the subjects doesn't have anymore
         # hours to assign, returns an empty subject
         def subject_or_not(subject, index):
-            if hours[index] > 0:
+            if hours[index] > 0 and subject != Subject():
                 hours[index] -= 1
                 return subject
             else:
@@ -428,11 +428,7 @@ class TimeTable:
             new_list.append((aux_1_hour, Subject()))
 
         elif len(ind) == 1 and subject_list[ind[0]].practical_hours == 1:
-            new_list.append(subject_list[ind[0]])
-            # for i in range(n_groups):
-            #     aux = deepcopy(subject_list[ind[0]])
-            #     aux.practical_hours /= n_groups
-            #     new_list.append((aux, Subject()))
+            new_list.append((subject_list[ind[0]], Subject()))
 
         return new_list
 
