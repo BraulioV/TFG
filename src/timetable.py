@@ -113,7 +113,7 @@ class TimeTable:
     def random_greedy_theory(self):
         for group, it in zip(self.groups.values(), range(self.time_table.shape[0])):
             # we get the subjects and its, theoretical hours
-            subject_list =self.__get_subj_list__(group)
+            subject_list = self.__get_subj_list__(group)
 
             self.__shuffle_priority__(subject_list)
             subj_name_hours = {subject.acronym:subject.theoretical_hours for subject in subject_list}

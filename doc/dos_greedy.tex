@@ -85,3 +85,86 @@ final \GETS \CALL{FinalFranja}{turno}\\
    	\END
 \END
 \end{pseudocode}
+
+\section{Asignación de horas de teoría}
+Esta segunda versión del algoritmo de asignación de horas de teoría utiliza como base la estructura hecha por el algoritmo de preasignación. Así, sólo tiene permitido asignar horas en los huecos que estén marcados como \texttt{T} en la matriz de estructura. Usando esto como base y un diccionario con las horas por asignar de cada asignatura, el algoritmo distingue varios casos diferentes:
+
+\begin{enumerate}[---]
+  \item Si la hora actual no se corresponde a una de teoría en la matriz de estructura, el algoritmo no hace nada.
+  \item Si la hora actual sí es de teoría y además la asignatura a asignar tiene más de dos horas pendientes por asignar, se crea un bloque de dos horas con dicha asignatura.
+  \item Si la hora actual sí es de teoría pero la asignatura a asignar sólo tiene una hora más por asignar, el algoritmo trata de buscar otra con la que hacer un bloque de dos. En el caso de no existir, se asignaría esa hora únicamente.
+\end{enumerate}
+
+Cuando a una asignatura no le quedan más horas por asignar, se elimina automáticamente de la lista de asignaturas por asignar. El algoritmo pasa al siguiente grupo cuando dicha lista se queda vacía.
+
+\subsection{Comparación con la primera versión}
+En comparación con la primera versión, hay bastantes cosas que hemos mejorado:
+
+\begin{enumerate}[$\bullet$]
+  \item En la versión anterior, si no se conseguía hacer un bloque de dos con dos horas sueltas, el algoritmo o bien ciclaba o bien dejaba huecos en el horario, dando lugar a una estructura no deseada.
+  \item En consecuencia, el algoritmo es más rápido que el anterior desarrollado.
+  \item Usando el algoritmo de preasignación, hemos conseguido que el código sea mucho más sencillo y legible.
+  \item También, el algoritmo ha perdido esa alta diversidad que tenía la versión original puesto que en la nueva versión se ha acotado mucho la estructura del algoritmo y el espacio de búsqueda.
+\end{enumerate}
+
+En conclusión, aunque el algoritmo haya perdido su diversidad original, hemos ganado tanto en eficiencia como en calidad.
+
+\subsection{Pseudocódigo del algoritmo}
+El siguiente pseudocódigo refleja de forma más clara el funcionamiento del algoritmo.
+
+\begin{pseudocode}{GreedyTeoria}{ }
+\label{greedyteoria}
+\FOREACH g \in grupos
+\BEGIN
+  subject\_list \GETS \CALL{ObtenerListaAsignaturas}{g}\\
+  \CALL{Barajar}{subject\_list}\\
+  horas \GETS \CALL{DiccionarioHoras}{subject\_list}\\
+  s \GETS 0\\
+
+  \IF g.turno = M \THEN
+  \BEGIN
+    empezar \GETS 0 \\
+    acabar \GETS \frac{horas\_dia}{2}\\
+  \END
+  \ELSE 
+  \BEGIN
+    empezar \GETS \frac{horas\_dia}{2}\\
+    acabar \GETS horas\_dia\\
+  \END\\
+
+  \FOR h \GETS empezar \TO acabar; h+=2\\
+  \BEGIN
+    \FOR d \GETS 0 \TO W_d
+    \BEGIN
+      \IF subject\_list = \emptyset \THEN
+      \BREAK\\
+
+      \ELSEIF \NOT (\CALL{EsTeoria}{g, h, d} \AND \\ \;\;\; \CALL{EsTeoria}{g,h+1,d}) \THEN
+      \BEGIN
+        remove \GETS \FALSE\\
+        asignado \GETS \FALSE\\
+      \END\\
+
+      \ELSEIF \CALL{EsTeoria}{g, h, d} \AND \\ \;\;\; horas[subject\_list[s]] \geq 2 \THEN
+      \BEGIN
+        eliminar \GETS \CALL{AsignarCeldaT}{g,h,d,2}\\
+        asignado \GETS \TRUE\\
+      \END\\
+
+      \ELSEIF \CALL{EsTeoria}{g, h, d} \AND \\ \;\;\; horas[subject\_list[s]] = 1 \THEN
+      \BEGIN
+        eliminar \GETS \CALL{AsignarCeldaT}{g,h,d,1}\\
+        asignado \GETS \TRUE\\
+      \END\\
+      \ELSEIF \CALL{EsTeoria}{g, h+1, d} \AND \\ \;\;\; horas[subject\_list[s]] = 1 \THEN
+      \BEGIN
+        eliminar \GETS \CALL{AsignarCeldaT}{g,h+1,d,1}\\
+        asignado \GETS \TRUE\\
+      \END\\
+
+      \IF eliminar \THEN \CALL{EliminarAsignaturasCero}{ }\\
+      \ELSE s = s+1 \pmod{subject\_list.size()}\\
+    \END
+  \END 
+\END
+\end{pseudocode}
