@@ -1,13 +1,12 @@
-import random as rd
 from cell import Cell
 from practice_cell import PracticeCell
 import numpy as np
-from random import shuffle, randint, random, sample, choices
-from functools import reduce
+from random import shuffle, choices
 from itertools import takewhile, dropwhile
 from subject import Subject
-from itertools import tee
+from copy import deepcopy
 from math import ceil
+
 
 class TimeTable:
 
@@ -371,9 +370,9 @@ class TimeTable:
                         else:
                             break
 
-
     def compute_best_cells(self, group, subject_list, subjects_index, hours):
-
+        # if the subjects doesn't have anymore
+        # hours to assign, returns an empty subject
         def subject_or_not(subject, index):
             if hours[index] > 0:
                 hours[index] -= 1
@@ -381,15 +380,19 @@ class TimeTable:
             else:
                 return Subject()
 
+        # Generate two new cells
         cell1 = PracticeCell(group=group.name)
         cell2 = PracticeCell(group=group.name)
 
-        subjects_c1, subjects_c2 = [None] * 3, [None] * 3
+        subjects_c1, subjects_c2 = [None] * group.numsubgroups, [None] * group.numsubgroups
         it = 0
         for i in subjects_index:
+            # if the "subject" is the union of two,
+            # split them and assign them
             if type(subject_list[i]) == tuple:
                 subjects_c1[it] = subject_or_not(subject_list[i][0], i)
                 subjects_c2[it] = subject_or_not(subject_list[i][1], i)
+            # otherwise, just assign the subject
             else:
                 subjects_c1[it] = subject_or_not(subject_list[i], i)
                 subjects_c2[it] = subject_or_not(subject_list[i], i)
@@ -400,8 +403,7 @@ class TimeTable:
 
         return cell1, cell2
 
-
-    def recalculate_subjects(self, subject_list):
+    def recalculate_subjects(self, subject_list, n_groups):
         ind = []
         for i in range(len(subject_list)):
             if subject_list[i].practical_hours == 1 or subject_list[i].practical_hours == 3:
@@ -414,11 +416,23 @@ class TimeTable:
         # join the subjects in ind
         if len(ind) >= 2:
             while len(ind) > 1:
-                new_list.append((subject_list[ind[0]],subject_list[ind[1]] ))
-                ind.pop(0)
-                ind.pop(0)
-        elif len(ind) > 0:
+                new_list.append((subject_list[ind[0]], subject_list[ind[1]]))
+                ind.pop(0); ind.pop(0)
+
+        elif len(ind) == 1 and subject_list[ind[0]].practical_hours == 3:
+            aux_2_hours, aux_1_hour = deepcopy(subject_list[ind[0]]), deepcopy(subject_list[ind[0]])
+            aux_2_hours.practical_hours -= 1
+            aux_1_hour.practical_hours = 1
+
+            new_list.append(aux_2_hours)
+            new_list.append((aux_1_hour, Subject()))
+
+        elif len(ind) == 1 and subject_list[ind[0]].practical_hours == 1:
             new_list.append(subject_list[ind[0]])
+            # for i in range(n_groups):
+            #     aux = deepcopy(subject_list[ind[0]])
+            #     aux.practical_hours /= n_groups
+            #     new_list.append((aux, Subject()))
 
         return new_list
 
@@ -428,7 +442,7 @@ class TimeTable:
             subject_list = self.__get_subj_list__(group)
             shuffle(subject_list)
 
-            subject_list = self.recalculate_subjects(subject_list)
+            subject_list = self.recalculate_subjects(subject_list, group.numsubgroups)
 
             # compute range of shift
             if group.shift == 'M':
