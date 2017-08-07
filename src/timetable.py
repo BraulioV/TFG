@@ -25,7 +25,7 @@ class TimeTable:
 
     """
     def __init__(self, n_days, n_hours, groups, classrooms, practices_classrooms,
-                subjects, semester):
+                subjects, semester, class_dict):
         self.time_table = np.full((len(groups), n_hours, n_days), fill_value = Cell(), dtype=Cell)
         self.structure = np.full((len(groups), n_hours, n_days), fill_value='E', dtype=str) # empty
         self.groups = dict(filter(lambda g: semester in g[1].semester, groups.items()))
@@ -35,6 +35,7 @@ class TimeTable:
         self.semester = semester
         self.possible_pr_classrooms = {}
         self.__get_possible_classrooms__()
+        self.lab_class_dict = class_dict
 
     def __assign_class__(self, day, hour, subject, group, classroom):
         second_hour = hour + subject.theoretical_hours - 1
@@ -370,7 +371,34 @@ class TimeTable:
                         else:
                             break
 
-    def compute_best_cells(self, group, subject_list, subjects_index, hours):
+    def search_suitable_lab(self, subject, hour, day, two_cells = True):
+        # for each of the possible practices classrooms for that subject
+        classrooms = list(self.lab_class_dict[subject.acronym])
+        shuffle(classrooms)
+        for classroom in classrooms:
+            if two_cells:
+                # if it is free at that time, use that classroom and mark it as occupied
+                if not self.practices_classrooms[classroom].time_table[hour, day] and \
+                        not self.practices_classrooms[classroom].time_table[hour + 1, day]:
+                    self.practices_classrooms[classroom].time_table[hour, day] = True
+                    self.practices_classrooms[classroom].time_table[hour + 1, day] = True
+                    # return self.practices_classrooms[classroom]
+                    lab = self.practices_classrooms[classroom]
+                    break
+            else:
+                if not self.practices_classrooms[classroom].time_table[hour, day]:
+                    self.practices_classrooms[classroom].time_table[hour, day] = True
+                    lab = self.practices_classrooms[classroom]
+                    break
+                    # return self.practices_classrooms[classroom]
+        else:
+            return " "
+        return lab
+
+
+
+
+    def compute_best_cells(self, group, subject_list, subjects_index, hours, hour, day):
         # if the subjects doesn't have anymore
         # hours to assign, returns an empty subject
         def subject_or_not(subject, index):
@@ -380,11 +408,14 @@ class TimeTable:
             else:
                 return Subject()
 
+
         # Generate two new cells
         cell1 = PracticeCell(group=group.name)
         cell2 = PracticeCell(group=group.name)
 
         subjects_c1, subjects_c2 = [None] * group.numsubgroups, [None] * group.numsubgroups
+        lab_c1, lab_c2 = [''] * group.numsubgroups, [''] * group.numsubgroups
+
         it = 0
         for i in subjects_index:
             # if the "subject" is the union of two,
@@ -392,14 +423,25 @@ class TimeTable:
             if type(subject_list[i]) == tuple:
                 subjects_c1[it] = subject_or_not(subject_list[i][0], i)
                 subjects_c2[it] = subject_or_not(subject_list[i][1], i)
+                if subject_list[i][1] == Subject():
+                    lab = self.search_suitable_lab(subject_list[i][0], hour, day, False)
+                else:
+                    lab = self.search_suitable_lab(subject_list[i][0], hour, day)
+
+                lab_c1[it]= lab
+                if subject_list[i][1] != Subject():
+                    lab_c2[it] = lab
             # otherwise, just assign the subject
             else:
                 subjects_c1[it] = subject_or_not(subject_list[i], i)
                 subjects_c2[it] = subject_or_not(subject_list[i], i)
+                lab = self.search_suitable_lab(subject_list[i], hour, day)
+                lab_c1[it], lab_c2[it] = lab, lab
             it += 1
 
-        cell1.subjects = subjects_c1
-        cell2.subjects = subjects_c2
+        cell1.subjects, cell1.classrooms = subjects_c1, lab_c1
+        cell2.subjects, cell2.classrooms = subjects_c2, lab_c2
+
 
         return cell1, cell2
 
@@ -461,7 +503,7 @@ class TimeTable:
                 for day in range(days_week):
                     # if the cell is a lab cell, let's fill it
                     if self.structure[it, hour, day] == 'L' or self.structure[it, hour, day] == 'E':
-                        cell1, cell2 = self.compute_best_cells(group, subject_list, subjects_index, hours)
+                        cell1, cell2 = self.compute_best_cells(group, subject_list, subjects_index, hours, hour, day)
                         self.time_table[it, hour, day] = cell1
                         self.time_table[it, hour + 1, day] = cell2
 

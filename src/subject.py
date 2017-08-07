@@ -30,8 +30,14 @@ def create_subject(filename):
     return subjects, n_years
 
 def create_lab_subjects_dict(filename):
-    pass
-    # TO DO
+    dict = {}
+    with open(filename) as f:
+        csv_file = csv.reader(f, delimiter=';')
+        for i in csv_file:
+            dict[i[0]] = i[1].split(',')
+
+    return dict
+
 
 
 class Subject:

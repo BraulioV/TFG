@@ -24,4 +24,4 @@ class PracticeClassRoom (ClassRoom):
         
 
     def __repr__(self):
-        return str(self.capacity) + " " + self.classroom_name + " " + str(self.materials)
+        return self.classroom_name # + " " + str(self.capacity) + " " + str(self.materials)
