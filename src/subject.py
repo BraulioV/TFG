@@ -1,4 +1,5 @@
 ## import statements
+import csv
 
 def create_subject(filename):
     # Empty dict of different subjects
@@ -27,6 +28,11 @@ def create_subject(filename):
                 n_years += 1
 
     return subjects, n_years
+
+def create_lab_subjects_dict(filename):
+    pass
+    # TO DO
+
 
 class Subject:
 

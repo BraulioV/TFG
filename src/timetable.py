@@ -404,11 +404,13 @@ class TimeTable:
         return cell1, cell2
 
     def recalculate_subjects(self, subject_list, n_groups):
+        # search the subjects with odd lab hours
         ind = []
         for i in range(len(subject_list)):
             if subject_list[i].practical_hours == 1 or subject_list[i].practical_hours == 3:
                 ind.append(i)
         new_list = []
+        # and add all the subjects with even lab hours
         for i in range(len(subject_list)):
             if i not in ind:
                 new_list.append(subject_list[i])
@@ -446,14 +448,15 @@ class TimeTable:
             else:
                 start_range, end_range = self.time_table.shape[1] // 2, self.time_table.shape[1]
 
+            # compute the index
             subjects_index = [i for i in range(group.numsubgroups)]
 
             days_week = self.structure.shape[2]
-
+            # compute the total lab hours, for each subject
             hours = list(map(lambda x: x*group.numsubgroups, [subject.practical_hours if type(subject) is not tuple
                      else subject[0].practical_hours + subject[1].practical_hours
                      for subject in subject_list]))
-
+            # start loop
             for hour in range(start_range, end_range, 2):
                 for day in range(days_week):
                     # if the cell is a lab cell, let's fill it
