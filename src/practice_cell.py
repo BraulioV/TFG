@@ -1,5 +1,6 @@
 from cell import Cell
 from subject import Subject
+from practice_classroom import PracticeClassRoom
 """
 This class represents a lab cell in the time table, where there are
 subgroups of the original one. Each with a different subject
@@ -10,6 +11,8 @@ class PracticeCell (Cell):
         self.subjects = subjects
         self.classrooms = classrooms
 
+    def empty(self):
+        return self.subjects == [] and self.classrooms == []
 
     def is_free(self, window, subj_name_hours):
         # comprobamos si la celda está vacía
@@ -28,4 +31,4 @@ class PracticeCell (Cell):
             return False
 
     def __repr__(self):
-        return self.group + " " + str(self.subjects) + " " + str(self.classrooms)
+        return str(self.subjects) + " " + str(self.classrooms)

@@ -1,24 +1,24 @@
 Name,Shift,Year,NumSubGroups,Classroom,Degree,Speciality,Semester
-1A,M,1,3,0.2,GII,Troncal,1-2
-1B,M,1,3,0.3,GII,Troncal,1-2
-1C,M,1,3,0.4,GII,Troncal,1-2
-1D,T,1,3,0.7,GII,Troncal,1-2
-1E,T,1,3,0.3,GII,Troncal,1-2
-2A,M,2,3,0.1,GII,Troncal,1-2
-2B,M,2,3,0.1,GII,Troncal,1-2
-2C,T,2,3,0.7,GII,Troncal,1-2
-2D,T,2,3,0.1,GII,Troncal,1-2
-3A,T,3,3,1.2,GII,Troncal,1-2
-3B,T,3,3,1.2,GII,Troncal,1-2
-3C,T,3,2,1.1,GII,Troncal,1-2
-3IC,T,3,1,1.1,GII,IC,2
-3IS,T,3,3,1.2,GII,IS,2
-3CSI,T,3,3,0.2,GII,CSI,2
-3SI,T,3,2,1.3,GII,SI,2
-3TI,T,3,3,1.2,GII,TI,2
-4IC,M,4,1,1.1,GII,IC,1-2
-4IS,M,4,2,1.2,GII,IS,1-2
-4CSI,M,4,2,1.3,GII,CSI,1-2
-4SI,M,4,2,1.4,GII,SI,1-2
-4TI,M,4,2,1.5,GII,TI,1-2
-4FC,M,4,1,1.1,GII,FC,2
+1A,M,1,3,0.2,Grado en Ingeniería Informática,Troncal,1-2
+1B,M,1,3,0.3,Grado en Ingeniería Informática,Troncal,1-2
+1C,M,1,3,0.4,Grado en Ingeniería Informática,Troncal,1-2
+1D,T,1,3,0.7,Grado en Ingeniería Informática,Troncal,1-2
+1E,T,1,3,0.3,Grado en Ingeniería Informática,Troncal,1-2
+2A,M,2,3,0.1,Grado en Ingeniería Informática,Troncal,1-2
+2B,M,2,3,0.1,Grado en Ingeniería Informática,Troncal,1-2
+2C,T,2,3,0.7,Grado en Ingeniería Informática,Troncal,1-2
+2D,T,2,3,0.1,Grado en Ingeniería Informática,Troncal,1-2
+3A,T,3,3,1.2,Grado en Ingeniería Informática,Troncal,1-2
+3B,T,3,3,1.2,Grado en Ingeniería Informática,Troncal,1-2
+3C,T,3,2,1.1,Grado en Ingeniería Informática,Troncal,1-2
+3IC,T,3,1,1.1,Grado en Ingeniería Informática,IC,2
+3IS,T,3,3,1.2,Grado en Ingeniería Informática,IS,2
+3CSI,T,3,3,0.2,Grado en Ingeniería Informática,CSI,2
+3SI,T,3,2,1.3,Grado en Ingeniería Informática,SI,2
+3TI,T,3,3,1.2,Grado en Ingeniería Informática,TI,2
+4IC,M,4,1,1.1,Grado en Ingeniería Informática,IC,1-2
+4IS,M,4,2,1.2,Grado en Ingeniería Informática,IS,1-2
+4CSI,M,4,2,1.3,Grado en Ingeniería Informática,CSI,1-2
+4SI,M,4,2,1.4,Grado en Ingeniería Informática,SI,1-2
+4TI,M,4,2,1.5,Grado en Ingeniería Informática,TI,1-2
+4FC,M,4,1,1.1,Grado en Ingeniería Informática,FC,2

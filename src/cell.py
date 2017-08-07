@@ -13,7 +13,10 @@ class Cell:
 
 
     def __repr__(self):
-        return "| " + self.group + " " + self.subject + " " + self.classroom + " |"
+        if self.empty():
+            return ""
+        else:
+            return self.subject + " " + self.classroom
 
 
     def is_free(self, window=None, subj_name_hours=None):

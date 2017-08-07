@@ -5,6 +5,7 @@ from sub_group import *
 from practice_classroom import *
 from timetable import *
 from exams import *
+from printer import *
 # pretty print
 # from tabulate import tabulate
 
@@ -43,7 +44,8 @@ if __name__ == '__main__':
     #     print(tabulate(table, tablefmt="grid"))
     # exams.__compute_exams_weights__()
 
-    # timetable.random_greedy_theory()
+    timetable.random_greedy_theory()
     timetable.assign_lab_hours()
+    generate_pdf(timetable=timetable, name="prueba")
     #timetable.random_greedy_practice(1)
-    print(timetable.time_table)
+    # print(timetable.time_table)
