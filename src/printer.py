@@ -15,9 +15,9 @@ def timetable_for_one(timetable, group, sm, days_of_week, hours):
         semester = "2º Cuatrimestre"
 
     # Header of the table + days of the week
-    table="\\begin{tabular}{|c|c|c|c|c|c|}\n\\hline\n\\rowcolor{amarillo} \\multicolumn{6}{|c|}{\\textbf{" + \
-          str(group.year) + "º" + group.name[-1] + " " + group.degree + "}\\\\ \n\\rowcolor{amarillo} " + \
-          "\\multicolumn{6}{|c|}{\\textbf{" + semester + "}\\\\ \n\\hline \n & " + " & ".join(days_of_week) + \
+    table="\\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}\n\\hline\n\\rowcolor{amarillo} \\multicolumn{16}{|c|}{\\textbf{" + \
+          str(group.year) + "º" + group.name[-1] + " " + group.degree + "}}\\\\ \n\\rowcolor{amarillo} " + \
+          "\\multicolumn{16}{|c|}{\\textbf{" + semester + "}}\\\\ \n\\hline \n & " + " & ".join(days_of_week) + \
           "\\\\ \n\\hline"
 
     for h, fila in zip(hours, timetable):
@@ -27,19 +27,20 @@ def timetable_for_one(timetable, group, sm, days_of_week, hours):
                 if celda.empty():
                     table += " &"
                 elif type(celda).__name__ == "Cell":
-                    table += "& \\cellcolor{grisclaro}"
+                    table += "& \\multicolumn{3}{|c|}{ \\cellcolor{grisclaro}"
                     if i == 0:
                         table += " \\textbf{" + celda.subject.acronym + "}"
                     else:
-                        table += " {\\footnotesize" + celda.classroom.classroom_name + "}"
+                        table += " {\\footnotesize " + celda.classroom.classroom_name + "}"
+                    table += "}"
                 else: # is a PracticeCell
                     table += " & "
-                    if i == 0:
-                        for c in celda.subjects:
+                    for c in celda.subjects:
+                        if i == 0:
                             table += "\\textbf{" + c.acronym + "}"
+                        else:
+                            table += "{\\footnotesize " + c.classroom_name + "}"
                 table += "\\\\ \n \\hline"
-
-    print("hola")
 
 
 def generate_pdf(timetable, name, days_of_week=WEEK, hours=HOURS):
