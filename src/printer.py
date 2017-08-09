@@ -34,8 +34,8 @@ def timetable_for_one(timetable, group, sm, days_of_week, hours):
                         table += " {\\footnotesize " + celda.classroom.classroom_name + "}"
                     table += "}"
                 else: # is a PracticeCell
-                    table += " & "
                     for c in celda.subjects:
+                        table += " & "
                         if i == 0:
                             table += "\\textbf{" + c.acronym + "}"
                         else:
