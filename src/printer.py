@@ -15,36 +15,44 @@ def timetable_for_one(timetable, group, sm, days_of_week, hours):
         semester = "2º Cuatrimestre"
 
     # Header of the table + days of the week
-    table="\\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}\n\\hline\n\\rowcolor{amarillo} \\multicolumn{16}{|c|}{\\textbf{" + \
+    table="\\begin{tabular}{|c| c c c | c c c | c c c | c c c |c c c|}\n\\hline\n\\rowcolor{amarillo} \\multicolumn{16}{|c|}{\\textbf{" + \
           str(group.year) + "º" + group.name[-1] + " " + group.degree + "}}\\\\ \n\\rowcolor{amarillo} " + \
-          "\\multicolumn{16}{|c|}{\\textbf{" + semester + "}}\\\\ \n\\hline \n & " + " & ".join(days_of_week) + \
-          "\\\\ \n\\hline"
+          "\\multicolumn{16}{|c|}{\\textbf{" + semester + "}}\\\\ \n\\hline \n & \\multicolumn{3}{|c|}{" + "} & \\multicolumn{3}{|c|}{".join(days_of_week) + \
+          "} \\\\ \n\\hline"
 
     for h, fila in zip(hours, timetable):
-        table += "\\multirow{2}{*}{" + h + "} &"
+        table += "\\multirow{2}{*}{" + h + "} "
         for i in range(2):
             for celda in fila:
                 if celda.empty():
-                    table += " &"
+                    table += " & & &"
                 elif type(celda).__name__ == "Cell":
                     table += "& \\multicolumn{3}{|c|}{ \\cellcolor{grisclaro}"
                     if i == 0:
-                        table += " \\textbf{" + celda.subject.acronym + "}"
+                        table += " \\textbf{" + celda.subject + "}"
                     else:
-                        table += " {\\footnotesize " + celda.classroom.classroom_name + "}"
+                        table += " {\\footnotesize " + celda.classroom + "}"
                     table += "}"
                 else: # is a PracticeCell
-                    for c in celda.subjects:
+                    for s,c in zip(celda.subjects, celda.classrooms):
                         table += " & "
                         if i == 0:
-                            table += "\\textbf{" + c.acronym + "}"
+                            table += "\\textbf{" + s.acronym + "}"
                         else:
                             table += "{\\footnotesize " + c.classroom_name + "}"
-                table += "\\\\ \n \\hline"
+            if i==1:
+                table += "\\\\ \n \\hline\n"
+            else:
+                table += "\\\\ \n"
+
+    table += "\n\\end{tabular}\n"
+
+    return table
 
 
 def generate_pdf(timetable, name, days_of_week=WEEK, hours=HOURS):
-    timetable_for_one(timetable.time_table[0], timetable.groups['1A'], timetable.semester, days_of_week, hours)
+    a = timetable_for_one(timetable.time_table[0], timetable.groups['1A'], timetable.semester, days_of_week, hours)
+
     # with open(HEADER) as tex_header:
     #     header = tex_header.read()
     #
