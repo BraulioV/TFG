@@ -171,6 +171,8 @@ El siguiente pseudocódigo refleja de forma más clara el funcionamiento del alg
 
 \section{Asignación de horas de prácticas}
 
+\subsection{Análisis de la versión anterior}
+
 Esta nueva versión del algoritmo voraz para asignar las horas de prácticas y aulas a los distintos grupos, sigue la misma filosofía de la utilización de la ``\textit{ventana}'' para asignar los grupos. 
 
 En la versión anterior, lo que se hacía era, partiendo de una permutación inicial de las distintas asignaturas que tenía el grupo en un cuatrimiestre dado, se generaba una nueva permutación en la que los elementos de esta eran grupos de tres asignaturas o tantas como subgrupos de prácticas haya, que se correspondían con la asignación de las asignaturas, para cada día. A continuación, podemos ver un ejemplo de lo que realizaba esta ventana:
@@ -203,3 +205,11 @@ Esto hace que asignar las horas de prácticas a los distintos días de la semana
 El problema que tiene el realizar la asignación de esta forma, como se hacía en la primera versión, es que si todas las asignaturas del plan de estudio tuvieran la misma cantidad de horas de prácticas y teoría, esta asignación funcionaría sin problemas ninguno. Esto sería el caso ideal, pero la realidad no es así, sino que en un mismo año del plan de estudios, para un semestre dado, podemos encontrarnos asignaturas con una, dos o incluso tres horas de prácticas en un mismo grupo, por lo que este algoritmo, en esta versión tan simple, no funciona. 
 
 Además de esto, el consumo de memoria de esta versión del algoritmo es muy elevado, ya que a partir de la permutación inicial, generar una nueva lista con las ternas de asignaturas, supone repetir varias veces el mismo elemento, lo que supone un mal gasto de memoria innecesario, que podría hacer que máquinas con menor potencia de cálculo y/o recursos, se vean afectadas en su rendimiento.
+
+\subsection{Formulación de la siguiente versión}
+
+Teniendo estos problemas en mente de la versión anterior, procedimos a realizar una nueva versión del algoritmo de prácticas. Esta nueva versión parte desde un punto más ventajoso que la versión original, gracias a la preasignación de celdas, el algoritmo solo tiene que ir mirando qué celdas de la estructura del horario son para prácticas y cuáles no, y asignar las asignaturas donde corresponda.
+
+La elección de qué asignaturas van a cada día, se realizará con la misma idea que la versión anterior, utilizando la ventana deslizante. Pero en este caso, la idea se ha refinado mucho más que la versión anterior. 
+
+La diferencia más básica es que ya no se genera una lista con ternas de asignaturas, sino lo que se mantiene es una lista de índices, que marcan qué asignatura va para cada grupo, y se va sumando uno módulo número de asignaturas del grupo, para ese cuatrimestre. Esto reduce la memoria y simplifica mucho el código.
