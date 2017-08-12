@@ -38,7 +38,7 @@ def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours):
                         table += " & "
                         if i == 0:
                             table += "\\textbf{" + s.acronym + "}"
-                        else:
+                        elif type(c).__name__ == "PracticeClassRoom":
                             table += "{\\footnotesize " + c.classroom_name + "}"
             if i==1:
                 table += "\\\\ \n \\hline\n"
@@ -49,55 +49,27 @@ def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours):
     for s in subjects:
         table += s.acronym + ". " + s.name + "\\\\[0.5cm]\n"
 
+    table += "\n\\newpage"
     return table
 
 
 def generate_pdf(timetable, name, days_of_week=WEEK, hours=HOURS):
-    a = timetable_for_one(timetable.time_table[0], timetable.groups['1A'], timetable.semester,
-                          filter(lambda x: x.year == timetable.groups['1A'].year, timetable.subjects.values()),
-                          days_of_week, hours)
+    with open(HEADER) as tex_header:
+        header = tex_header.read()
 
-    # with open(HEADER) as tex_header:
-    #     header = tex_header.read()
-    #
-    # output_file = OUTPUT+name+".tex"
-    # if timetable.semester == 1:
-    #     semester = "1er. cuatrimestre"
-    # else:
-    #     semester = "2º cuatrimestre"
-    #
-    # with open(output_file, 'w') as output:
-    #     output.write(header)
-    #
-    #     days, n_cols = len(days_of_week), "|c"
-    #
-    #     for i in range(days):
-    #         n_cols += "|c"
-    #
-    #     n_cols += "|"
-    #
-    #     groups = timetable.groups.items()
-    #
-    #     for group in range(timetable.time_table.shape()[0]):
-    #         output.write("\\begin{tabular}{"+n_cols+"}\n\hline\n\\rowcolor{amarillo}\\multirow{2}{*}\\multicolumn{"
-    #                      + str(days + 1) + "}{|c|}{\\textbf{" + groups[group][0] + " " + groups[group][1].degree)
-    #
-    #         if groups[group][1].speciality != 'Troncal':
-    #             output.write(" (" + groups[group][1].speciality + ")}}\\\\")
-    #         else:
-    #             output.write("}}\\\\")
-    #
-    #         output.write("\\multicolumn{" + str(days + 1) + "}{|c|}{{\\footnotesize " + semester + "\\\\\\hline\n")
-    #
-    #         for day in days_of_week:
-    #             output.write(" & " + day)
-    #
-    #         output.write("\\\\\\hline")
-    #
-    #         """
-    #             Middle part
-    #         """
-    #
-    #         output.write("\\end{tabular}")
-    #
-    # call(['pdflatex', ])
+    output_file = OUTPUT+name+".tex"
+
+    with open(output_file, 'w') as output:
+        output.write(header)
+
+        for it, group in zip(timetable.time_table, timetable.groups.values()):
+            output.write("\n\n")
+            table = timetable_for_one(timetable=it, group=group, sm=timetable.semester,
+                                      subjects=filter(lambda x: x.year == group.year and x.speciality == group.speciality,
+                                                      timetable.subjects.values()),
+                                      days_of_week=days_of_week, hours=hours)
+            output.write(table)
+
+        output.write("\n\\end{document}\n")
+
+    call(['pdflatex', output_file])
