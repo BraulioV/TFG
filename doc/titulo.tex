@@ -18,7 +18,10 @@
 \usepackage{subfigure}
 \usepackage{tikz}
 \usepackage{pseudocode}
+\newcommand{\mintedoptions}{cachedir=./release,outputdir=./release}
+\usepackage[\mintedoptions]{minted}
 % \usepackage{multirow}
+
 
 \theoremstyle{plain}
 \newtheorem{exe}{Ejercicio} % reset theorem numbering for each chapter
@@ -67,6 +70,9 @@
 
 % Segunda aproximación greey
 \input{./dos_greedy.tex}
+
+% Impresión en PDF
+\input{./impresion_pdf.tex}
 
 %% Bibliografía y referencias
 \bibliography{bibliografia.bib} %archivo citas.bib que contiene las entradas 

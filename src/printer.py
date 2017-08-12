@@ -12,8 +12,9 @@ def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours):
     else:
         semester = "2º Cuatrimestre"
 
+    table="\\begin{minipage}{0.7\\textwidth}\n"
     # Header of the table + days of the week
-    table="\\begin{tabular}{|c|" + "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|" + \
+    table+="\\begin{tabular}{|c|" + "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|" + \
           "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|}\n\\hline\n" \
           "\\rowcolor{amarillo} \\multicolumn{" + str(5*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + \
           str(group.year) + "º" + group.name[-1] + " " + group.degree + "}}\\\\ \n\\rowcolor{amarillo} " + \
@@ -46,11 +47,11 @@ def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours):
             else:
                 table += "\\\\ \n"
 
-    table += "\n\\end{tabular}\n\\\\[0.25cm]\n"
+    table += "\n\\end{tabular}\n\\end{minipage}\n\\begin{minipage}{0.25\\textwidth}\n"
     for s in subjects:
         table += s.acronym + ". " + s.name + "\\\\[0.5cm]\n"
 
-    table += "\n\\newpage"
+    table += "\\end{minipage}\n\\newpage"
     return table
 
 
@@ -73,4 +74,4 @@ def generate_pdf(timetable, name, days_of_week=WEEK, hours=HOURS):
 
         output.write("\n\\end{document}\n")
 
-    call(['pdflatex', output_file])
+    call(['pdflatex', '-shell-escape', '-output-directory', OUTPUT, output_file])
