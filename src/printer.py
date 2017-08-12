@@ -8,7 +8,7 @@ WEEK   = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
 HOURS = ['8:30 - 9:30', '9:30 - 10:30', '10:30 - 11:30', '11:30 - 12:30', '12:30 - 13:30', '13:30 - 14:30',
          '15:30 - 16:30', '16:30 - 17:30', '17:30 - 18:30', '18:30 - 19:30', '19:30 - 20:30', '20:30 - 21:30']
 
-def timetable_for_one(timetable, group, sm, days_of_week, hours):
+def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours):
     if sm == 1:
         semester = "1er. Cuatrimestre"
     else:
@@ -45,13 +45,17 @@ def timetable_for_one(timetable, group, sm, days_of_week, hours):
             else:
                 table += "\\\\ \n"
 
-    table += "\n\\end{tabular}\n"
+    table += "\n\\end{tabular}\n\\\\[0.25cm]\n"
+    for s in subjects:
+        table += s.acronym + ". " + s.name + "\\\\[0.5cm]\n"
 
     return table
 
 
 def generate_pdf(timetable, name, days_of_week=WEEK, hours=HOURS):
-    a = timetable_for_one(timetable.time_table[0], timetable.groups['1A'], timetable.semester, days_of_week, hours)
+    a = timetable_for_one(timetable.time_table[0], timetable.groups['1A'], timetable.semester,
+                          filter(lambda x: x.year == timetable.groups['1A'].year, timetable.subjects.values()),
+                          days_of_week, hours)
 
     # with open(HEADER) as tex_header:
     #     header = tex_header.read()
