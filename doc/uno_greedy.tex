@@ -162,49 +162,49 @@ Al no quedar más horas por asignar, pasaríamos a repetir estos mismos pasos co
 \section{Greedy para inicializar horas de prácticas}
 En el caso del Greedy para inicializar las horas de prácticas, hemos hecho un algoritmo parecido al de las horas de teoría. Su funcionamiento básico consiste en ir desplazando una ventana, cuyo tamaño será el número de subgrupos de prácticas, e ir asignando dicha ventana cada día de la semana.
 
-% \begin{pseudocode}{GreedyPracticas}{ }
-%     \label{greedypracticas}
-%     \FOREACH g \in groups \DO
-%     \BEGIN
-%         d \GETS 0 \\
-%         subject\_list \GETS \CALL{shuffle}{\CALL{filter}{subjects, g}}\\
-%         \WHILE \sum subject\_list.pr\_hours \neq 0 \DO
-%         \BEGIN
-%             \FOREACH v \in ventana\_subjects \DO
-%             \BEGIN
-%                 \IF v.pr\_hours \neq 0 \DO
-%                 \BEGIN
-%                     \IF g.turno = ``Morning'' \DO
-%                     \BEGIN
-%                         \FOR h \GETS 0 \TO number\_of\_hours / 2 \DO
-%                         \BEGIN
-%                             \IF \CALL{libre}{h} \DO
-%                             \BEGIN
-%                                 tabla[d,h] \GETS (g, s)\\
-%                                 s.th\_hours \GETS s.th\_hours - 1\\
-%                                 d \GETS (d + 1) \bmod number\_of\_days\\
-%                                 \BREAK
-%                             \END
-%                         \END
-%                     \END
-%                     \ELSE \DO
-%                     \BEGIN
-%                         \FOR h \GETS number\_of\_hours / 2 \TO number\_of\_hours \DO
-%                         \BEGIN
-%                             \IF \CALL{libre}{h} \DO
-%                             \BEGIN
-%                                 tabla[d,h] \GETS (g, s, g.classroom)\\
-%                                 s.th\_hours \GETS s.th\_hours - 1\\
-%                                 d \GETS (d + 1) \bmod number\_of\_days\\
-%                                 \BREAK
-%                             \END
-%                         \END
-%                     \END
-%                 \END
-%             \END
-%         \END
-%     \END
-% \end{pseudocode}
+\begin{pseudocode}{GreedyPracticas}{ }
+    \label{greedypracticas}
+    \FOREACH g \in groups \DO
+    \BEGIN
+        d \GETS 0 \\
+        subject\_list \GETS \CALL{shuffle}{\CALL{filter}{subjects, g}}\\
+        \WHILE \sum subject\_list.pr\_hours \neq 0 \DO
+        \BEGIN
+            \FOREACH v \in ventana\_subjects \DO
+            \BEGIN
+                \IF v.pr\_hours \neq 0 \DO
+                \BEGIN
+                    \IF g.turno = ``Morning'' \DO
+                    \BEGIN
+                        \FOR h \GETS 0 \TO number\_of\_hours / 2 \DO
+                        \BEGIN
+                            \IF \CALL{libre}{h} \DO
+                            \BEGIN
+                                tabla[d,h] \GETS (g, s)\\
+                                s.th\_hours \GETS s.th\_hours - 1\\
+                                d \GETS (d + 1) \bmod number\_of\_days\\
+                                \BREAK
+                            \END
+                        \END
+                    \END
+                    \ELSE \DO
+                    \BEGIN
+                        \FOR h \GETS number\_of\_hours / 2 \TO number\_of\_hours \DO
+                        \BEGIN
+                            \IF \CALL{libre}{h} \DO
+                            \BEGIN
+                                tabla[d,h] \GETS (g, s, g.classroom)\\
+                                s.th\_hours \GETS s.th\_hours - 1\\
+                                d \GETS (d + 1) \bmod number\_of\_days\\
+                                \BREAK
+                            \END
+                        \END
+                    \END
+                \END
+            \END
+        \END
+    \END
+\end{pseudocode}
 
 \subsection{Ejemplo de funcionamiento}
 Supongamos que tenemos que asignar a un grupo con tres subgrupos de prácticas las siguientes asignaturas:
