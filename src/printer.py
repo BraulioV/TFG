@@ -1,6 +1,4 @@
 from subprocess import call
-from tabulate import tabulate
-import numpy as np
 
 HEADER = "../resources/header.tex"
 OUTPUT = "../resources/Outputs/"
