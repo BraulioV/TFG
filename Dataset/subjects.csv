@@ -1,96 +1,96 @@
 Name,THours,PHours,Materials,SplitHours,Acronym,Speciality,Year,Semester,Degree,Students
-Fundamentos de la Programacion,2,2,Ordenadores,False,FP,Troncal,1,1,GII,246
-Fundamentos Fisicos y Tecnologicos,2,2,Ordenadores-Resistencias,False,FFT,Troncal,1,1,GII,317
+Fundamentos de la Programación,2,2,Ordenadores,False,FP,Troncal,1,1,GII,246
+Fundamentos Físicos y Tecnológicos,2,2,Ordenadores-Resistencias,False,FFT,Troncal,1,1,GII,317
 Fundamentos del Software,2,2,Ordenadores,False,FS,Troncal,1,1,GII,192
-Calculo,3,1,Ordenadores,False,CA,Troncal,1,1,GII,260
-Algebra Lineal y Estructuras Matematicas,3,1,Ordenadores,False,ALEM,Troncal,1,1,GII,357
-Ingenieria Empresa y Sociedad,4,0,Nada,False,IES,Troncal,1,2,GII,0
-Estadistica,3,1,Ordenadores,False,ES,Troncal,1,2,GII,0
-Logica y Metodos Discretos,3,1,Ordenadores,False,LMD,Troncal,1,2,GII,0
-Metodologia de la Programacion,2,2,Ordenadores,False,MP,Troncal,1,2,GII,0
-Tecnologia y Organizacion de los Computadores,2,2,Ordenadores-Placas,False,TOC,Troncal,1,2,GII,0
+Cálculo,3,1,Ordenadores,False,CA,Troncal,1,1,GII,260
+Álgebra Lineal y Estructuras Matemáticas,3,1,Ordenadores,False,ALEM,Troncal,1,1,GII,357
+Ingeniería Empresa y Sociedad,4,0,Nada,False,IES,Troncal,1,2,GII,0
+Estadística,3,1,Ordenadores,False,ES,Troncal,1,2,GII,0
+Lógica y Métodos Discretos,3,1,Ordenadores,False,LMD,Troncal,1,2,GII,0
+Metodología de la Programación,2,2,Ordenadores,False,MP,Troncal,1,2,GII,0
+Tecnología y Organización de los Computadores,2,2,Ordenadores-Placas,False,TOC,Troncal,1,2,GII,0
 Estructura de Computadores,2,2,Ordenadores,False,EC,Troncal,2,1,GII,165
 Estructura de Datos,3,1,Ordenadores,False,ED,Troncal,2,1,GII,165
-Programacion y Diseño Orientado a Objetos,2,2,Ordenadores,False,PDOO,Troncal,2,1,GII,164
+Programación y Diseño Orientado a Objetos,2,2,Ordenadores,False,PDOO,Troncal,2,1,GII,164
 Sistemas Concurrentes y Distribuidos,2,2,Ordenadores,False,SCD,Troncal,2,1,GII,127
 Sistemas Operativos,2,2,Ordenadores,False,SO,Troncal,2,1,GII,177
 Arquitectura de Computadores,2,2,Ordenadores,False,AC,Troncal,2,2,GII,0
-Algoritmica,2,2,Ordenadores,False,ALG,Troncal,2,2,GII,0
+Algorítmica,2,2,Ordenadores,False,ALG,Troncal,2,2,GII,0
 Inteligencia Artificial,2,2,Ordenadores,False,IA,Troncal,2,2,GII,0
 Fundamentos de Bases de Datos,2,2,Ordenadores,False,FBD,Troncal,2,2,GII,0
 Fundamentos de Ingeniería del Software,2,2,Ordenadores,False,FIS,Troncal,2,2,GII,0
 Ingeniería de Servidores,2,2,Ordenadores,False,ISE,Troncal,3,1,GII,165
 Fundamentos de Redes,2,2,Ordenadores-Routers,False,FR,Troncal,3,1,GII,125
-Modelos de Computacion,2,2,Nada,False,MC,Troncal,3,1,GII,22
-Informatica Grafica,2,2,Ordenadores,False,IG,Troncal,3,1,GII,118
-Diseño y Desarrollo de Sistemas de Informacion,1,3,Ordenadores,False,DDSI,Troncal,3,1,GII,20
+Modelos de Computación,2,2,Nada,False,MC,Troncal,3,1,GII,22
+Informática Gráfica,2,2,Ordenadores,False,IG,Troncal,3,1,GII,118
+Diseño y Desarrollo de Sistemas de Información,1,3,Ordenadores,False,DDSI,Troncal,3,1,GII,20
 Desarrollo de Hardware Digital,2,2,Ordenadores,False,DHD,IC,3,2,GII,0
 Sistemas con Microprocesadores,2,2,Ordenadores,False,SMP,IC,3,2,GII,0
 Arquitectura de Sistemas,2,2,Ordenadores,False,AS,IC,3,2,GII,0
-Arquitectura y Computacion de Altas Prestaciones,2,2,Ordenadores,False,ACAP,IC,3,2,GII,0
-Diseño de Sistemas Electronicos,2,2,Ordenadores,False,DSE,IC,3,2,GII,0
+Arquitectura y Computación de Altas Prestaciones,2,2,Ordenadores,False,ACAP,IC,3,2,GII,0
+Diseño de Sistemas Electrónicos,2,2,Ordenadores,False,DSE,IC,3,2,GII,0
 Desarrollo de Software,2,2,Ordenadores,False,DS,IS,3,2,GII,0
-Sistemas Graficos,2,2,Ordenadores,False,SG,IS,3,2,GII,0
+Sistemas Gráficos,2,2,Ordenadores,False,SG,IS,3,2,GII,0
 Desarrollo de Sistemas Distribuidos,2,2,Ordenadores,False,DSD,IS,3,2,GII,0
 Diseño de Interfaces de Usuario,2,2,Ordenadores,False,DIU,IS,3,2,GII,0
-Sistemas de Informacion Basados en Web,2,2,Ordenadores,False,SIBW,IS,3,2,GII,0
-Modelos de Computacion Avanzados,2,2,Ordenadores,False,MCA,CSI,3,2,GII,0
-Metaheuristicas,2,2,Ordenadores,False,MH,CSI,3,2,GII,0
-Tecnicas de los Sistemas Inteligentes,2,2,Ordenadores,False,TSI,CSI,3,2,GII,0
-Ingenieria del Conocimiento,2,2,Ordenadores,False,IC,CSI,3,2,GII,0
-Aprendizaje Automatico,2,2,Ordenadores,False,AA,CSI,3,2,GII,0
-Sistemas de Informacion para Empresas,2,2,Ordenadores,False,SIE,SI,3,2,GII,0
-Progamacion Web,2,2,Ordenadores,False,PW,SI,3,2,GII,0
+Sistemas de Información Basados en Web,2,2,Ordenadores,False,SIBW,IS,3,2,GII,0
+Modelos de Computación Avanzados,2,2,Ordenadores,False,MCA,CSI,3,2,GII,0
+Metaheurísticas,2,2,Ordenadores,False,MH,CSI,3,2,GII,0
+Técnicas de los Sistemas Inteligentes,2,2,Ordenadores,False,TSI,CSI,3,2,GII,0
+Ingeniería del Conocimiento,2,2,Ordenadores,False,IC,CSI,3,2,GII,0
+Aprendizaje Automático,2,2,Ordenadores,False,AA,CSI,3,2,GII,0
+Sistemas de Información para Empresas,2,2,Ordenadores,False,SIE,SI,3,2,GII,0
+Progamación Web,2,2,Ordenadores,False,PW,SI,3,2,GII,0
 Sistemas Multidimensionales,2,2,Ordenadores,False,SMD,SI,3,2,GII,0
-Ingenieria de Sistemas de Informacion,2,2,Ordenadores,False,ISI,SI,3,2,GII,0
-Administracion de Bases de Datos,2,2,Ordenadores,False,ABD,SI,3,2,GII,0
-Transmision de Datos y Redes de Computadores,2,2,Ordenadores,False,TDRC,TI,3,2,GII,0
+Ingeniería de Sistemas de Información,2,2,Ordenadores,False,ISI,SI,3,2,GII,0
+Administración de Bases de Datos,2,2,Ordenadores,False,ABD,SI,3,2,GII,0
+Transmisión de Datos y Redes de Computadores,2,2,Ordenadores,False,TDRC,TI,3,2,GII,0
 Servidores Web de Altas Prestaciones,2,2,Ordenadores,False,SWAP,TI,3,2,GII,0
-Tecnologias Web,2,2,Ordenadores,False,TW,TI,3,2,GII,0
+Tecnologías Web,2,2,Ordenadores,False,TW,TI,3,2,GII,0
 Sistemas Multimedia,2,2,Ordenadores,False,SMM,TI,3,2,GII,0
-Computacion Ubicua e Inteligencia Ambiental,2,2,Ordenadores,False,CUIA,TI,3,2,GII,0
+Computación Ubicua e Inteligencia Ambiental,2,2,Ordenadores,False,CUIA,TI,3,2,GII,0
 Sistemas Empotrados,2,2,Ordenadores,False,SE,IC,4,1,GII,6
-Tecnologias de Red,2,2,Ordenadores,False,TR,IC,4,1,GII,11
+Tecnologías de Red,2,2,Ordenadores,False,TR,IC,4,1,GII,11
 Centros de Procesamiento de Datos,2,2,Ordenadores,False,CPD,IC,4,1,GII,0
-Implementacion de Algoritmos en Hardware,2,2,Ordenadores,False,IAH,IC,4,1,GII,0
-Tecnologias Emergentes,2,2,Ordenadores,False,TE,IC,4,1,GII,0
-Informatica Industrial,2,2,Ordenadores,False,II,IC,4,1,GII,0
+Implementación de Algoritmos en Hardware,2,2,Ordenadores,False,IAH,IC,4,1,GII,0
+Tecnologías Emergentes,2,2,Ordenadores,False,TE,IC,4,1,GII,0
+Informática Industrial,2,2,Ordenadores,False,II,IC,4,1,GII,0
 Circuitos Integrados e Impresos,2,2,Ordenadores,False,CII,IC,4,2,GII,0
 Mantenimiento de Equipos Informaticos,2,2,Ordenadores,False,MEI,IC,4,2,GII,0
-Metodologias de Desarrollo Agil,2,2,Ordenadores,False,MDA,IS,4,1,GII,5
+Metodologías de Desarrollo Ágil,2,2,Ordenadores,False,MDA,IS,4,1,GII,5
 Desarrollo Basado en Agentes,2,2,Ordenadores,False,DBA,IS,4,1,GII,7
-Direccion y Gestion de Proyectos,2,2,Ordenadores,False,DGP,IS,4,1,GII,5
-Programacion Grafica de Videojuegos,2,2,Ordenadores,False,PGV,IS,4,1,GII,4
+Dirección y Gestión de Proyectos,2,2,Ordenadores,False,DGP,IS,4,1,GII,5
+Programación Gráfica de Videojuegos,2,2,Ordenadores,False,PGV,IS,4,1,GII,4
 Seguridad en Sistemas Operativos,2,2,Ordenadores,False,SSO,IS,4,1,GII,4
-Logica y Programacion,2,2,Ordenadores,False,LP,IS,4,1,GII,1
-Animacion por Ordenador,2,2,Ordenadores,False,AO,IS,4,2,GII,0
+Lógica y Programación,2,2,Ordenadores,False,LP,IS,4,1,GII,1
+Animación por Ordenador,2,2,Ordenadores,False,AO,IS,4,2,GII,0
 Programaciones Paralelas,2,2,Ordenadores,False,PPR,IS,4,2,GII,0
-Nuevas Tecnologias de la Programacion,2,2,Ordenadores,False,NTP,IS,4,2,GII,0
-Vision por Computador,2,2,Ordenadores,False,VC,CSI,4,1,GII,8
-Nuevos Paradigmas de Interaccion,2,2,Ordenadores,False,NPI,CSI,4,1,GII,6
+Nuevas Tecnologías de la Programación,2,2,Ordenadores,False,NTP,IS,4,2,GII,0
+Visión por Computador,2,2,Ordenadores,False,VC,CSI,4,1,GII,8
+Nuevos Paradigmas de Interacción,2,2,Ordenadores,False,NPI,CSI,4,1,GII,6
 Procesadores de Lenguajes,2,2,Ordenadores,False,PL,CSI,4,1,GII,9
-Teoria de la Informacion y la Codificacion,2,2,Ordenadores,False,TIC,CSI,4,1,GII,0
-Simulacion de Sistemas,2,2,Ordenadores,False,SS,CSI,4,1,GII,1
-Programacion Tecnica y Cientifica,2,2,Ordenadores,False,PTC,CSI,4,1,GII,3
-Programacion Ludica,2,2,Ordenadores,False,PLD,CSI,4,2,GII,0
-Criptografia y Computacion,2,2,Ordenadores,False,CRIP,CSI,4,2,GII,0
-Robotica Industrial,2,2,Ordenadores,False,RI,CSI,4,2,GII,0
+Teoría de la Información y la Codificación,2,2,Ordenadores,False,TIC,CSI,4,1,GII,0
+Simulación de Sistemas,2,2,Ordenadores,False,SS,CSI,4,1,GII,1
+Programación Técnica y Científica,2,2,Ordenadores,False,PTC,CSI,4,1,GII,3
+Programación Lúdica,2,2,Ordenadores,False,PLD,CSI,4,2,GII,0
+Criptografía y Computación,2,2,Ordenadores,False,CRIP,CSI,4,2,GII,0
+Robótica Industrial,2,2,Ordenadores,False,RI,CSI,4,2,GII,0
 Inteligencia del Negocio,2,2,Ordenadores,False,IN,SI,4,1,GII,16
 Bases de Datos Distribuidas,2,2,Ordenadores,False,BDD,SI,4,1,GII,16
-Recuperacion de Informacion,2,2,Ordenadores,False,RINF,SI,4,1,GII,13
-Sistemas de Informacion Geograficos,2,2,Ordenadores,False,SIG,SI,4,1,GII,2
-Gestion de Recursos Digitales,2,2,Ordenadores,False,GRD,SI,4,1,GII,7
+Recuperación de Información,2,2,Ordenadores,False,RINF,SI,4,1,GII,13
+Sistemas de Información Geográficos,2,2,Ordenadores,False,SIG,SI,4,1,GII,2
+Gestión de Recursos Digitales,2,2,Ordenadores,False,GRD,SI,4,1,GII,7
 Redes y Sistemas Complejos,2,2,Ordenadores,False,RSC,SI,4,1,GII,1
-Sistemas Cooperativos y Gestion de Contenidos,2,2,Ordenadores,False,SCGC,SI,4,2,GII,0
-Perifericos y Dispositivos de Interfaz Humana,2,2,Ordenadores,False,PDIH,SI,4,2,GII,0
+Sistemas Cooperativos y Gestión de Contenidos,2,2,Ordenadores,False,SCGC,SI,4,2,GII,0
+Periféricos y Dispositivos de Interfaz Humana,2,2,Ordenadores,False,PDIH,SI,4,2,GII,0
 Desarrollo de Aplicaciones para Internet,2,2,Ordenadores,False,DAI,TI,4,1,GII,26
 Infraestructura Virtual,2,2,Ordenadores,False,IV,TI,4,1,GII,12
-Seguridad y Proteccion de Sistemas Informaticos,2,2,Ordenadores,False,SPSI,TI,4,1,GII,8
-Tratamiento de Imagenes Digitales,2,2,Ordenadores,False,TID,TI,4,1,GII,5
-Compresion y Recuperacion de Informacion Multimedia,2,2,Ordenadores,False,CRIM,TI,4,1,GII,5
-Programacion de Dispositivos Moviles,2,2,Ordenadores,False,PDM,TI,4,2,GII,0
+Seguridad y Protección de Sistemas Informáticos,2,2,Ordenadores,False,SPSI,TI,4,1,GII,8
+Tratamiento de Imágenes Digitales,2,2,Ordenadores,False,TID,TI,4,1,GII,5
+Compresión y Recuperación de Información Multimedia,2,2,Ordenadores,False,CRIM,TI,4,1,GII,5
+Programación de Dispositivos Móviles,2,2,Ordenadores,False,PDM,TI,4,2,GII,0
 Procesamiento Digital de Señales,2,2,Ordenadores,False,PDS,TI,4,2,GII,0
 Redes Multiservicio,2,2,Ordenadores,False,RMS,TI,4,2,GII,0
-Etica Informatica y Sociedad de la Informacion,2,2,Ordenadores,False,EISI,FC,4,2,GII,0
-Creacion de Empresas y Gestion Emprendedora,2,2,Ordenadores,False,CEGE,FC,4,2,GII,0
-Derecho Informatico,2,2,Ordenadores,False,DI,FC,4,2,GII,0
+Ética Informática y Sociedad de la Informacion,2,2,Ordenadores,False,EISI,FC,4,2,GII,0
+Creación de Empresas y Gestión Emprendedora,2,2,Ordenadores,False,CEGE,FC,4,2,GII,0
+Derecho Informático,2,2,Ordenadores,False,DI,FC,4,2,GII,0
