@@ -168,3 +168,38 @@ El siguiente pseudocódigo refleja de forma más clara el funcionamiento del alg
   \END 
 \END
 \end{pseudocode}
+
+\section{Asignación de horas de prácticas}
+
+Esta nueva versión del algoritmo voraz para asignar las horas de prácticas y aulas a los distintos grupos, sigue la misma filosofía de la utilización de la ``\textit{ventana}'' para asignar los grupos. 
+
+En la versión anterior, lo que se hacía era, partiendo de una permutación inicial de las distintas asignaturas que tenía el grupo en un cuatrimiestre dado, se generaba una nueva permutación en la que los elementos de esta eran grupos de tres asignaturas o tantas como subgrupos de prácticas haya, que se correspondían con la asignación de las asignaturas, para cada día. A continuación, podemos ver un ejemplo de lo que realizaba esta ventana:
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+FFT & CA & ALEM & FS & FP\\
+\hline
+\end{tabular}
+\caption{Permutación inicial.}
+\end{center}
+\end{table}
+Al haber en primero tres subgrupos de prácticas, tenemos lo siguiente:
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+(FFT, CA, ALEM) & (CA, ALEM, FS) & (ALEM, FS, FP) & $\cdots$ \\
+\hline
+\end{tabular}
+\caption{Permutaciones generadas por la ventana.}
+\end{center}
+\end{table}
+
+Con esto, podríamos ver cómo el primer día de prácticas correspondería a Fundamentos Físicos y Tecnológicos para el grupo 1, Cálculo para el grupo 2 y Álgebra Lineal y Estructuras Matemáticas para el grupo 3.
+
+Esto hace que asignar las horas de prácticas a los distintos días de la semana sea muy fácil, ya que, a partir de una permutación inicial, vamos moviendo una ventana que toma $n$ asignaturas, y se va desplazando una posición a la derecha para cada día de la semana. 
+
+El problema que tiene el realizar la asignación de esta forma, como se hacía en la primera versión, es que si todas las asignaturas del plan de estudio tuvieran la misma cantidad de horas de prácticas y teoría, esta asignación funcionaría sin problemas ninguno. Esto sería el caso ideal, pero la realidad no es así, sino que en un mismo año del plan de estudios, para un semestre dado, podemos encontrarnos asignaturas con una, dos o incluso tres horas de prácticas en un mismo grupo, por lo que este algoritmo, en esta versión tan simple, no funciona. 
+
+Además de esto, el consumo de memoria de esta versión del algoritmo es muy elevado, ya que a partir de la permutación inicial, generar una nueva lista con las ternas de asignaturas, supone repetir varias veces el mismo elemento, lo que supone un mal gasto de memoria innecesario, que podría hacer que máquinas con menor potencia de cálculo y/o recursos, se vean afectadas en su rendimiento.
