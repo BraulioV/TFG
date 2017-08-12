@@ -15,19 +15,22 @@ def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours):
         semester = "2º Cuatrimestre"
 
     # Header of the table + days of the week
-    table="\\begin{tabular}{|c| c c c | c c c | c c c | c c c |c c c|}\n\\hline\n\\rowcolor{amarillo} \\multicolumn{16}{|c|}{\\textbf{" + \
+    table="\\begin{tabular}{|c|" + "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|" + \
+          "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|}\n\\hline\n" \
+          "\\rowcolor{amarillo} \\multicolumn{" + str(5*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + \
           str(group.year) + "º" + group.name[-1] + " " + group.degree + "}}\\\\ \n\\rowcolor{amarillo} " + \
-          "\\multicolumn{16}{|c|}{\\textbf{" + semester + "}}\\\\ \n\\hline \n & \\multicolumn{3}{|c|}{" + "} & \\multicolumn{3}{|c|}{".join(days_of_week) + \
-          "} \\\\ \n\\hline"
+          "\\multicolumn{" + str(5*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + semester + "}}\\\\ \n\\hline \n " \
+          "& \\multicolumn{" + str(group.numsubgroups) + "}{|c|}{" + ("} & \\multicolumn{" + str(group.numsubgroups) + \
+          "}{|c|}{").join(days_of_week) + "} \\\\ \n\\hline"
 
     for h, fila in zip(hours, timetable):
         table += "\\multirow{2}{*}{" + h + "} "
         for i in range(2):
             for celda in fila:
                 if celda.empty():
-                    table += " & & &"
+                    table += " & "*group.numsubgroups
                 elif type(celda).__name__ == "Cell":
-                    table += "& \\multicolumn{3}{|c|}{ \\cellcolor{grisclaro}"
+                    table += "& \\multicolumn{" + str(group.numsubgroups) + "}{|c|}{ \\cellcolor{grisclaro}"
                     if i == 0:
                         table += " \\textbf{" + celda.subject + "}"
                     else:
