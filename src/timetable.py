@@ -37,23 +37,6 @@ class TimeTable:
         self.__get_possible_classrooms__()
         self.lab_class_dict = class_dict
 
-    def __assign_class__(self, day, hour, subject, group, classroom):
-        second_hour = hour + subject.theoretical_hours - 1
-        if not (classroom.time_table[day, hour:second_hour]).all():
-            self.time_table[day, hour, group] = subject
-            classroom.time_table[day, hour:second_hour] = True
-            return True
-        else:
-            return False
-
-
-    def __get_total_th_hours__(self, hour_list):
-        totalhours = 0
-        for i in hour_list:
-            totalhours += i[1]
-
-        return totalhours
-
     def __get_subj_list__(self, group):
         return list(filter(lambda x: x.year == group.year and x.speciality == group.speciality,
                            self.subjects.values()))
@@ -167,62 +150,6 @@ class TimeTable:
                         s = (s + 1) % len(subject_list) if s != 0 and subject_list != [] else 0
                     elif asignado:
                         s = (s + 1) % len(subject_list)
-
-
-
-    def __get_total_lab_hours__(self, hour_list):
-        
-        totalhours = 0
-
-        for i in hour_list:
-            totalhours += sum(i[1])
-
-        return totalhours
-
-    def __assign_lab_cell__(self, window, it, hour, day, group_name, subj_name_hours):
-        local_window = []
-        for (w, i) in zip(window, range(len(window))):
-            if subj_name_hours[w.acronym][i] > 0:
-                local_window.append(w)
-            else:
-                local_window.append(Subject())
-
-        # si la celda estaba previamente vacía: asignamos la ventana completa
-        if self.time_table[it, hour, day] == PracticeCell():
-
-            self.time_table[it, hour, day] = PracticeCell(group_name, subjects=local_window)
-
-            for (s, i) in zip(window, range(self.groups[group_name].numsubgroups)):
-                for classroom in self.possible_pr_classrooms[s.acronym]:
-
-                    if not self.practices_classrooms[classroom].time_table[hour, day]:
-
-                        self.practices_classrooms[classroom].time_table[hour, day] = True
-                        self.time_table[it, hour, day].classrooms.append(classroom)
-                        if subj_name_hours[s.acronym][i] > 0:
-                            subj_name_hours[s.acronym][i] -= 1
-
-                        break
-
-
-        # si la celda NO estaba vacía, sólo podemos asignar los huecos que tenga.
-        else:
-            # 1. Buscar índices de huecos
-            indices = {i for i, x in enumerate(self.time_table[it,hour,day].subjects) if x == Subject()}
-            # 2. Buscar índices de huecos de asignaturas
-            subj = {w.acronym:[] for w in window if sum(subj_name_hours[w.acronym])}
-            for s,l in subj.items():
-                for i,x in enumerate(subj_name_hours[s]):
-                    if x == 1:
-                        l.append(i)
-
-            # 3. Asignar al hueco la asignatura que le corresponda y restar 1
-            for s,l in subj.items():
-                for h in l:
-                    if self.time_table[it,hour,day].subjects[h] == Subject() and subj_name_hours[s][h] > 0:
-                        self.time_table[it, hour, day].subjects[h] = self.subjects[s]
-                        subj_name_hours[s][h] -= 1
-
 
     """
     Function to know the number of theory and lab hours for a given group
