@@ -402,7 +402,21 @@ Nuestro algoritmo elige las asignaturas más restrictivas (con una lista de mate
 A la hora de implementar esta versión nos hemos encontrado con varios problemas:
 
 \begin{enumerate}[---]
-    \item En primer lugar, todas las horas de teoría se asignaban en la misma franja horaria, haciendo muy difícil la asigación de aulas de prácticas. Para solucionar esto, antes de empezar a asignar asignaturas con nuestro algoritmo, debemos decidir qué horas son de prácticas y de teoría para cada grupo de forma que, cuando un grupo tenga teoría otro grupo tenga prácticas. Así, la ocupación de las aulas de prácticas se minimiza.
+    \item El principal problema de esta forma de asignar los horarios, es que las horas de prácticas se asignaban en la misma franja horaria, es decir, todas las horas de teoría se situaban de 8:30 a 10:30 en el caso del turno de mañana, o de 15:30 a 17:30 en el caso del horario de tarde.
+
+    Esto supone que, las clases de teoría estén muy saturadas, pudiendo darse el caso de que a la misma hora, haya dos grupos de teoría que tengan que dar la clase en el mismo aula, lo que produce una saturación en las aulas de teoría.
+
+    Este problema se agrava mucho más a la hora de asignar las aulas de prácticas, debido al espacio limitado y que todos los grupos de cada turno, comenzaban las prácticas a la misma hora, produciéndose tal saturación, que a la hora de asignar el aula, no acababa en la gran mayoría de los casos, siendo extremadamente difícil asignar aulas a los distintos subgrupos de prácticas de la escuela, y además, realizando una ejecución sólo para el Grado en Ingeniería Informática.
+
+    Un intento de solución que se hizo, que mejoró algo este problema, fue asignar cuándo comenzaban las clases de teoría para cada día lanzando un aleatorio, para elegir si las clases de teoría comenzarían de 8:30 a 10:30, o bien de 10:30 a 12:30, siendo igual para el turno de tarde. 
+
+    En este caso se dio la misma probabilidad a ambas franjas horarias, para no favorecer ninguna y permitir que las clases de prácticas estuvieran más distribuidas y disminuir la saturación de aulas que generaba este algoritmo.
+
+    Esta nueva versión, mejoró algo la situación para los cursos de primero y segundo, teniendo ya algunos problemas para las aulas de tercero, y volviendo a tener los mismos problemas de saturiación para los cursos de cuarto, siendo difícil realizar una asignación de aulas correcta.
+
+    Esto se soluciona haciendo primero una estructura de horarios, en la que hiremos marcando para cada una de las diferentes horas del horario, si corresponde a una hora de teoría de prácticas o de teoría, con el fin de que realizando esta estructura, el algoritmo sea capaz de no sobresaturar las horas de prácticas o teoría. Esto se hace antes de asignar asignaturas tanto de teoría o de prácticas, procurando que si a un grupo a cierta hora le ha asignado una hora de teoría, el siguiente grupo, a esa hora, tendrá una hora de prácticas. Más adelante se podrá encontrar esto con más detalle.
+
+    %En primer lugar, todas las horas de teoría se asignaban en la misma franja horaria, haciendo muy difícil la asigación de aulas de prácticas. Para solucionar esto, antes de empezar a asignar asignaturas con nuestro algoritmo, debemos decidir qué horas son de prácticas y de teoría para cada grupo de forma que, cuando un grupo tenga teoría otro grupo tenga prácticas. Así, la ocupación de las aulas de prácticas se minimiza.
 
     \item No es posible realizar una asignación óptima de las aulas de prácticas. Esto se debe a que para hacer una asignación óptima de las aulas, es necesario conocer de antemano los materiales de los que dispone cada aula. En el caso de la Escuela Técnica de Ingeniería Informática, es posible obtener la información exacta de cada aula en la página web de la escuela, como hemos mencionado anteriormente.
 
