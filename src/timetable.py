@@ -55,7 +55,8 @@ class TimeTable:
         return totalhours
 
     def __get_subj_list__(self, group):
-        return list(filter(lambda x: x.year == group.year, self.subjects.values()))
+        return list(filter(lambda x: x.year == group.year and x.speciality == group.speciality,
+                           self.subjects.values()))
 
 
     def __get_possible_classrooms__(self):

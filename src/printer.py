@@ -12,15 +12,19 @@ def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours):
     else:
         semester = "2º Cuatrimestre"
 
+    if group.speciality == "Troncal":
+        title = str(group.year) + "º" + group.name[-1] + " " + group.degree
+    else:
+        title = str(group.year) + "º " + group.degree + " (" + group.speciality + ")"
+
     table="\\begin{minipage}{0.7\\textwidth}\n"
     # Header of the table + days of the week
     table+="\\begin{tabular}{|c|" + "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|" + \
           "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|}\n\\hline\n" \
           "\\rowcolor{amarillo} \\multicolumn{" + str(5*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + \
-          str(group.year) + "º" + group.name[-1] + " " + group.degree + "}}\\\\ \n\\rowcolor{amarillo} " + \
-          "\\multicolumn{" + str(5*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + semester + "}}\\\\ \n\\hline \n " \
-          "& \\multicolumn{" + str(group.numsubgroups) + "}{|c|}{" + ("} & \\multicolumn{" + str(group.numsubgroups) + \
-          "}{|c|}{").join(days_of_week) + "} \\\\ \n\\hline"
+          title + "}}\\\\ \n\\rowcolor{amarillo}\\multicolumn{" + str(5*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + \
+          semester + "}}\\\\ \n\\hline \n & \\multicolumn{" + str(group.numsubgroups) + "}{|c|}{" + \
+          ("} & \\multicolumn{" + str(group.numsubgroups) + "}{|c|}{").join(days_of_week) + "} \\\\ \n\\hline"
 
     for h, fila in zip(hours, timetable):
         table += "\\multirow{2}{*}{" + h + "} "
