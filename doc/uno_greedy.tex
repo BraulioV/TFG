@@ -227,7 +227,24 @@ En el caso del Greedy para inicializar las horas de prácticas, hemos hecho un a
     \END
 \end{pseudocode}
 
+Este algoritmo, al igual que antes, recibe como entrada el semestre para el cual se va a calcular el horario. Además de esto, ya no parte de un horario vacío, sino del horario que le ha dejado el algoritmo greedy para las horas de teoría, por lo que ya tiene una cierta ``estructura'' de partida.
+
+Con esto, para cada uno de los grupos de prácticas, el algoritmo coge las asignaturas para ese grupo y para ese cuatrimestre, genera una permutación aleatoria de estas, y va asignando grupos de prácticas para cada día de la semana, siendo el siguiente día igual que el anterior, pero desplazada la ventana una posición hacia la derecha.
+
+Una vez asignada una asignatura a una celda, se le resta una hora a las horas de prácticas a esta asignatura, para así, tener un control de qué asignaturas han sido asignadas y cuales no, y no asignar de nuevo aquellas que tengan ya cero horas de prácticas.
+
+Este algoritmo funciona de forma parecida al algoritmo anterior, pero tiene la pecularidad de que, en función de las horas de prácticas que tengan las asignaturas, puede generar huecos en el horario o no. 
+
+Estos huecos se generan cuando la cantidad de horas de prácticas de una asignatura es impar, como puede ser \textit{Cálculo} o \textit{Diseño y Desarrollo de Sistemas de Información}, que tienen una y tres horas de prácticas respectivamente. Esto provoca un efecto contrario al que queremos conseguir, minimizar los huecos en el horario, para que sea lo más compacto posible. 
+
+Una forma de solucionar esto, fue que el algoritmo una vez asignadas todas las horas, en caso de quedar alguna hora sin asignar de alguna asignatura, asignara esa hora en alguno de los huecos que había en el horario, o bien, en una hora a parte. 
+
+Esta solución es a su vez, un arma de doble filo debido a la componente aleatoria del algoritmo. Esto se debe a que es altamente probable que por la permutación que haya calculado el algoritmo, las horas de prácticas se vean seriamente afectadas, obteniendo un resultado en el que la primera hora de prácticas se asigna de forma correcta, y la segunda está desplazada una casilla hacia delante, haciendo el horario muy caótico e inútil.
+
+Aun así, a continuación podemos ver un ejemplo de funcionamiento del algoritmo. 
+
 \subsection{Ejemplo de funcionamiento}
+
 Supongamos que tenemos que asignar a un grupo con tres subgrupos de prácticas las siguientes asignaturas:
 
 \begin{tabular}{c | c  c  c  c  c}
