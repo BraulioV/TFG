@@ -402,7 +402,7 @@ Nuestro algoritmo elige las asignaturas más restrictivas (con una lista de mate
 A la hora de implementar esta versión nos hemos encontrado con varios problemas:
 
 \begin{enumerate}[---]
-    \item En primer lugar, todas las horas de teoría se asignaban en la misma franja horaria, haciendo muy difícil la asigación de aulas de prácticas. Para solucionar esto, antes de empezar a asignar asignaturas con nuestro algoritmo, debemos decidir qué horas son de prácticas y de teoría para cada grupo de forma que, cuando un grupo tenga teoría otro grupo tenga prácticas. Así, la ocupación de las aulas de prácticas se minimiza.
+    \item En primer lugar, todas las horas de teoría se asignaban en la misma franja horaria, haciendo muy difícil la asigación de aulas de prácticas. ¿El por qué de esta dificultad? Todas las horas de prácticas se asignaban a la vez, lo que provocaba que las aulas de prácticas se saturasen mientras que las de teoría se quedasen vacías. Esto no es un correcto aprovechamiento de los recursos de los que disponemos en la escuela. Para solucionar esto, antes de empezar a asignar asignaturas con nuestro algoritmo, debemos decidir qué horas son de prácticas y de teoría para cada grupo de forma que, cuando un grupo tenga teoría otro grupo tenga prácticas. Así, la ocupación de las aulas de prácticas se minimiza.
 
     \item No es posible realizar una asignación óptima de las aulas de prácticas. Esto se debe a que para hacer una asignación óptima de las aulas, es necesario conocer de antemano los materiales de los que dispone cada aula. En el caso de la Escuela Técnica de Ingeniería Informática, es posible obtener la información exacta de cada aula en la página web de la escuela, como hemos mencionado anteriormente.
 
