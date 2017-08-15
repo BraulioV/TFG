@@ -245,15 +245,24 @@ Aun así, a continuación podemos ver un ejemplo de funcionamiento del algoritmo
 
 \subsection{Ejemplo de funcionamiento}
 
-Supongamos que tenemos que asignar a un grupo con tres subgrupos de prácticas las siguientes asignaturas:
+A continuación podemos ver un ejemplo de uso del algoritmo para asignar las horas de prácticas a los distintos subgrupos de un grupo determinado. En este caso, es un grupo de segundo curso del Grado en Ingeniería Informática, más concretamente del segundo semestre.
 
+En la \hyperref[pasig]{Tabla \ref*{pasig}}, podemos ver el conjunto de asignaturas del que se compone el semestre, junto con el número de horas de prácticas que corresponden a cada una de ellas.
+%Supongamos que tenemos que asignar a un grupo con tres subgrupos de prácticas las siguientes asignaturas:
+\begin{table}[H]
+\center
 \begin{tabular}{c | c  c  c  c  c}
 \textbf{Nombre} & AC & FBD & ALG & IA & FIS \\
 \hline
 \textbf{Horas de prácticas}  & 2 & 3 & 1 & 2 & 2 \\
 \end{tabular}
+\caption{Asignaturas y horas correspondientes del segundo curso.}
+\label{pasig}
+\end{table}
 
-Al tener tres subgrupos de prácticas, nuestra ventana tendrá tamaño 3. 
+En este caso, un grupo de segundo curso, tiene, como norma general, un número de alumnos lo suficientemente grande como para albergar tres subgrupos de prácticas, aunque esta información viene dada de antemano, antes de comenzar el algoritmo tanto de prácticas, para evitar cálculos innecesarios, que tienen una alta probabilidad de cambios y que pueden afectar al comportamiento del algoritmo.
+
+Como esto es un caso de ejemplo, supondremos que este grupo de segundo tiene tres subgrupos de prácticas, por lo que, el tamaño de ventana a utilizar será de tres casillas. Además de esto, cada subgrupo de prácticas sabrá el número de horas restantes de prácticas que tiene por asignar, como se puede ver a continuación.
 
 \begin{minipage}{0.5\textwidth}    
 \begin{tabular}{| c | c | c | c | c |}
@@ -279,7 +288,9 @@ FIS & (2, 2, 2)
 \end{tabular}
 \end{minipage}
 
-Seleccionamos las tres primeras asignaturas de la lista (AC, FBD, ALG), y las asignamos al primer día de la semana.
+En el primer paso, el algoritmo selecciona con la ventana las tres primeras asignauras de nuestra permutación de la \hyperref[pasig]{Tabla \ref*{pasig}}, (AC, FBD, ALG). Una vez seleccionados, el algoritmo empieza a recorrer el horario, y como el primer día que encuentra está libre, asigna las asignaturas de esta ventana a ese espacio libre.
+
+%Seleccionamos las tres primeras asignaturas de la lista (AC, FBD, ALG), y las asignamos al primer día de la semana.
 
 \begin{minipage}{0.5\textwidth}    
 \begin{tabular}{| c | c | c | c | c |}
@@ -309,7 +320,9 @@ FIS & (2, 2, 2)
 \end{tabular}
 \end{minipage}
 
-Movemos la ventana en una posición (FBD, ALG, IA) y volvemos a asignar las prácticas para el siguiente día de la semana:
+Una vez asignada la ventana, es necesario reducir el número de horas que quedan por asignar a las asignaturas que han sido asignadas con la ventana. Esto se puede ver en la tabla anterior en el número de horas restantes para cada grupo.
+
+%Movemos la ventana en una posición (FBD, ALG, IA) y volvemos a asignar las prácticas para el siguiente día de la semana:
 
 \begin{minipage}{0.5\textwidth}    
 \begin{tabular}{| c | c | c | c | c |}
