@@ -19,8 +19,7 @@ def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours):
 
     table="\\begin{minipage}{0.7\\textwidth}\n"
     # Header of the table + days of the week
-    table+="\\begin{tabular}{|c|" + "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|" + \
-          "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|" + "c"*group.numsubgroups + "|}\n\\hline\n" \
+    table+="\\begin{tabular}{|c|" + ("c"*group.numsubgroups + "|")*timetable.shape[1] + "}\n\\hline\n" \
           "\\rowcolor{amarillo} \\multicolumn{" + str(5*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + \
           title + "}}\\\\ \n\\rowcolor{amarillo}\\multicolumn{" + str(5*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + \
           semester + "}}\\\\ \n\\hline \n & \\multicolumn{" + str(group.numsubgroups) + "}{|c|}{" + \
