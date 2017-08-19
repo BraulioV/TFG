@@ -35,12 +35,27 @@ for file, obj_class_name in zip(files, classes):
     # get class
     obj_class = getattr(import_module(module_name), obj_class_name)
     # read data
-    data = pd.read_csv(filepath_or_buffer=file)
-
+    data = pd.read_csv(filepath_or_buffer=file, sep=";")
+    print(data)
     for row in data.iterrows():
         aux = obj_class()
-        d = dict(row[1])
+        d = dict(row[1]) # convert data row in dictionary
         for k,v in d.items():
             lk = str.lower(k)
-            if lk in dir(aux):
-                aux.__setattr__(lk, v)
+            if lk in dir(aux): # check if data header name is an attribute of actual object
+                if not obj_class._meta.get_field(lk).is_relation: 
+                    aux.__setattr__(lk, v)
+                else: # if it's a relation, search the object in database
+                    foreign_class = getattr(import_module(module_name), k)
+                    if obj_class._meta.get_field(lk).many_to_one:
+                        fk = foreign_class.objects.get(name=v)
+                        aux.__setattr__(lk, fk)
+                    else: #ManyToMany field
+                        aux.save()
+                        if 
+                        classes = str(v).split(',')
+                        for c in classes:
+                            print(c)
+                            fk = foreign_class.objects.get(name=c)
+                            aux.__getattribute__("practiceclassroom").add(fk)
+        aux.save()
