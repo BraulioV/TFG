@@ -1,6 +1,20 @@
 \chapter{Descripción del sistema y requisitos}
 
-% \section{Descripción del sistema}
+\section{Descripción del sistema}
+
+Este sistema está pensado para resolver uno de los problemas que existen cada año en las distintas facultades, y es el generar los horarios para el próximo curso. Actuálmente, los horarios, al menos en la Escuela Técnica Superior de Ingeniería Informática y Telecomunicaciones, se hacen de forma totalmente manual, lo que supone un coste en tiempo muy grande y una gran cantidad de quebraderos de cabeza para la persona encargada. 
+
+La solución actual que se le ha dado a este problema es la de partir de un horario ya creado, es decir, partir de la base del horario del año anterior y rotarlo. Esto quiere decir, que las asignaturas que había el lunes pasan al martes, la del martes al miércoles, etc. y el viernes pasa a ser el lunes. Esto genera un nuevo horario, en el que pueden surgir problemas por las aulas del centro, y que luego, habrá que modificar a posteriori.
+
+Esto a su vez trae otra serie de consecuencias, y es que el generar un nuevo horario desde cero es muy costoso, por lo que todos los años habrá una estructura similar en lo que se refiere a la asignación de horas de prácticas y teoría. Esto implica que no se pueda ``experimentar'' con el horario para generar, por ejemplo, un horario en el que la jornada se ve alargada y se reduce en uno el número de días a la semana lectivos.
+
+Esto es de utilidad en el caso de si se desea impartir una nueva titulación en el centro y se quiere comprobar de antemano si introducir una nueva titulación es posible, ya no por los profesores, sino por la propia estructura del centro, ya que, puede ser que posible que ajustando el horario, la jornada y la asignación de aulas, se pueda dar cabida a una nueva titulación en el centro.
+
+Esto nos lleva a un nuevo problema que surge durante la generación de un nuevo horario, y es la gestión de aulas de las que dispone el centro. Esto es casi tan importante como la propia estructura del horario, ya que es tan importante que todos los grupos tengan aulas de teoría asignadas para poder cursar las horas de teoría que tenga cada asignatura, como las aulas de prácticas o laboratorios que existen para cursar estas horas de prácticas, como el no saturar ni las aulas de prácticas ni las de teoría, ya que esto llevaría a un mal funcionamiento del centro.
+
+Realizar esta tarea a mano, como se viene haciendo hasta ahora, supone un gran esfuerzo mental, ya que no es una tarea fácil, y un alto coste en lo que se refiere al tiempo de dedicación que necesita esta tarea, ya que la cantidad de restricciones que existen es muy alta, y el número de posibilidades aún mayor, debido a que este problema es básicamente un problema de optimización combinatoria.
+
+Por lo tanto, este sistema ofrece una solución tanto al problema de la generación de un horario estándar para la escuela, como la posibilidad de poder realizar pruebas tipo ``\textit{¿Qué pasaría si...?}'' y el problema de asignación de aulas, de forma automática y lo más eficiente posible.
 
 % La idea general del sistema es ofrecer una forma automatizada de hacer los horarios de una escuela o facultad en base a restricciones tales como el profesorado y su disponibilidad, las aulas disponibles teniendo en cuenta su capacidad y el equipo del que disponen, el número de alumnos de una asignatura, bloques horarios, etc. 
 
@@ -25,6 +39,12 @@
 
 \section{Requisitos del sistema}
 
+Antes de comenzar el desarrollo de este sistema, recogimos una lista de requisitos que debía cumplir el sistema, para que realizara su tarea de forma adecuada. Esta tarea se llevó a cabo realizando entrevistas con nuestro tutor, que a su vez es el director de la escuela, lo que supone una alta relación en la tarea de la generación de horarios para cada curso. 
+
+Para completar y comprobar que estos requisitos son correctos, nuestro tutor nos recomendó que fueramos a hablar con Dº Jesús García Miranda, que fue quién hizo la estructura actual que tienen en la escuela, y quién se encarga principalmente de hacer los horarios todos los años para cada curso. Gracias a él, pudimos obtener una lista más extensa de requisitos que tenía que cumplir estrictamente el sistema, y corregir algunos de los que teníamos previamente. 
+
+A continuación, podemos ver la lista de requisitos que tiene este sistema.
+
 \begin{enumerate}[REQ-1]
     \item No pueden solaparse dos asignaturas el mismo día y a la misma hora en el mismo aula.
     \item Cómo máximo hay tres subgrupos de prácticas. Puede haber asignaturas en las que haya dos subgrupos y otras en las que haya sólo uno.
@@ -34,7 +54,7 @@
     \item Si el número de horas de prácticas de una asignatura es impar, se agrupará con otra asignatura que esté en la misma situación, generando un ``bloque''. Esto puede generar un problema en la generación del horario y es que puede ser que alguna hora de una asignatura sea imposible cuadrarla en el horario con las demás, por lo que esta hora se añadirá al principio o al final del turno según lo que elija el usuario de forma manual. Esta situación se puede evitar si las horas de prácticas las imparten profesores diferentes. El objetivo es conseguir un \textbf{equilibrio horas/día}, es decir, evitar agrupar en un día muchas otras dejando otro prácticamente vacío. 
     \item Se debe dar la posibilidad de para una asignatura, elegir si impartir las horas de teoría en un mismo turno de dos o más horas, o repartir las sesiones de teoría a lo largo de la semana en días distintos.
     \item El horario obtenido para cada grupo no debe de contener huecos, es decir, debe ser lo más compacto posible.
-    \item Las distintas especialidades tienen su horario en paralelo para no favorecer ninguna especialidad sobre otra.
+    \item Las distintas especialidades tienen su horario en paralelo para no favorecer ninguna especialidad sobre otra. 
     \item Se debe registrar el equipamiento disponible en cada laboratorio y el que cada asignatura necesita para llevar a cabo sus prácticas de forma que el sistema realice la asignación a laboratorios de forma automática en función del equipamiento que tiene el aula y del que necesita la asignatura. 
     \item Se debe poder elegir el número de días y la franja horaria para cada titulación por separado, dando la posibilidad de incluir restricciones fuertes de horas y días para ciertas titulaciones, como es el caso del Doble Grado en Ingeniería Informática y Matemáticas, donde su horario puede ocupar una franja completa ($8:30-14:30$).
     \item Se necesita saber en todo momento qué horas tienen disponibles las aulas del centro, para poder asignar una asignatura o no a un aula en concreto, dependiendo de si tiene horas libres como para albergar esa asignatura o no.
