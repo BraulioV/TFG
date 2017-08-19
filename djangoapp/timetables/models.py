@@ -6,8 +6,8 @@ class PracticeClassroom(models.Model):
 
 class Subject(models.Model):
     name       = models.CharField(max_length=200)
-    t_hours    = models.PositiveSmallIntegerField(default=0)
-    p_hours    = models.PositiveSmallIntegerField(default=0)
+    thours    = models.PositiveSmallIntegerField(default=0)
+    phours    = models.PositiveSmallIntegerField(default=0)
     acronym    = models.CharField(max_length=10)
     speciality = models.CharField(max_length=200)
     year       = models.PositiveSmallIntegerField(default=0)
