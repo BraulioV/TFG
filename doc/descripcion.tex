@@ -10,7 +10,9 @@ Esto a su vez trae otra serie de consecuencias, y es que el generar un nuevo hor
 
 Esto es de utilidad en el caso de si se desea impartir una nueva titulación en el centro y se quiere comprobar de antemano si introducir una nueva titulación es posible, ya no por los profesores, sino por la propia estructura del centro, ya que, puede ser que posible que ajustando el horario, la jornada y la asignación de aulas, se pueda dar cabida a una nueva titulación en el centro.
 
-Esto nos lleva a un nuevo problema que surge durante la generación de un nuevo horario, y es la gestión de aulas de las que dispone el centro. Esto es casi tan importante como la propia estructura del horario, ya que es tan importante que todos los grupos tengan aulas de teoría asignadas para poder cursar las horas de teoría que tenga cada asignatura, como las aulas de prácticas o laboratorios que existen para cursar estas horas de prácticas, como el no saturar ni las aulas de prácticas ni las de teoría, ya que esto llevaría a un mal funcionamiento del centro.
+Esto nos lleva a un nuevo problema que surge durante la generación de un nuevo horario, y es la gestión de aulas de las que dispone el centro, que es casi tan importante como la propia estructura del horario. Esto se debe a que es igual de importante el que los grupos tengan aulas de teoría suficientes como para poder cursar las horas de teoría, como el que existan suficientes aulas de prácticas o laboratorios como para albergar a todos los subgrupos de prácticas que existen. También es sumamente importante el no saturar ni las aulas de teoría ni las aulas de prácticas, ya que esto llevaría a un mal funcionamiento del centro, y por ende, a un mal horario.
+
+% ya que es tan importante que todos los grupos tengan aulas de teoría asignadas para poder cursar las horas de teoría que tenga cada asignatura, como las aulas de prácticas o laboratorios que existen para cursar estas horas de prácticas, como el no saturar ni las aulas de prácticas ni las de teoría, ya que esto llevaría a un mal funcionamiento del centro.
 
 Realizar esta tarea a mano, como se viene haciendo hasta ahora, supone un gran esfuerzo mental, ya que no es una tarea fácil, y un alto coste en lo que se refiere al tiempo de dedicación que necesita esta tarea, ya que la cantidad de restricciones que existen es muy alta, y el número de posibilidades aún mayor, debido a que este problema es básicamente un problema de optimización combinatoria.
 
@@ -41,7 +43,7 @@ Por lo tanto, este sistema ofrece una solución tanto al problema de la generaci
 
 Antes de comenzar el desarrollo de este sistema, recogimos una lista de requisitos que debía cumplir el sistema, para que realizara su tarea de forma adecuada. Esta tarea se llevó a cabo realizando entrevistas con nuestro tutor, que a su vez es el director de la escuela, lo que supone una alta relación en la tarea de la generación de horarios para cada curso. 
 
-Para completar y comprobar que estos requisitos son correctos, nuestro tutor nos recomendó que fueramos a hablar con Dº Jesús García Miranda, que fue quién hizo la estructura actual que tienen en la escuela, y quién se encarga principalmente de hacer los horarios todos los años para cada curso. Gracias a él, pudimos obtener una lista más extensa de requisitos que tenía que cumplir estrictamente el sistema, y corregir algunos de los que teníamos previamente. 
+Para completar y comprobar que estos requisitos son correctos, nuestro tutor nos recomendó que fueramos a hablar con Dº Jesús García Miranda, que fue quien hizo la estructura actual que tienen en la escuela, y quien se encarga principalmente de hacer los horarios todos los años para cada curso. Gracias a él, pudimos obtener una lista más extensa de requisitos que tenía que cumplir estrictamente el sistema, y corregir algunos de los que teníamos previamente. 
 
 A continuación, podemos ver la lista de requisitos que tiene este sistema.
 
@@ -63,14 +65,21 @@ A continuación, podemos ver la lista de requisitos que tiene este sistema.
 
 \section{Interacción de los distintos elementos}
 
-A partir de los requisitos extraídos anteriormente, vemos que hay cuatro elementos fundamentales que interaccionan entre sí:
+Una vez obtenidos y verificados los requisitos que debe cumplir el sistema, pasamos a realizar un análisis de estos en profundidad. De este análisis, extraímos cuatro elementos fundamentales que interactúan entre sí. Estos cuatro elementos podemos verlos a continuación.
+
+% A partir de los requisitos extraídos anteriormente, vemos que hay cuatro elementos fundamentales que interaccionan entre sí:
 
 \begin{enumerate}[---]
-    \item \textbf{Grupo}: representa un grupo de teoría (o \textit{grupo grande}) al que se le asigna de forma manual un único aula de teoría. En los casos en los el número de matriculados en una o más de las asignaturas del grupo se dispare, será necesario asignar otro aula de teoría distinta. Por tanto, \textbf{puede darse la excepción de que un grupo tenga asignadas dos aulas de teoría}. Esto puede darse sobre todo en los grupos que tengan asignadas aulas con una menor capacidad. 
-    \item \textbf{Aula de teoría}: representa un aula en las que se impartirán las clases de teoría para los grupos grandes. A estas aulas se le pueden asignar varios grupos de teoría en función de las horas disponibles que tenga.
+    
+    \item \textbf{Grupo}: representa un grupo de teoría (o \textit{grupo grande}) al que se le asigna de forma manual un único aula de teoría. En los casos en los que el número de matriculados en una o más de las asignaturas del grupo se dispare, será necesario asignar otro aula de teoría distinta. Por tanto, \textbf{puede darse la excepción de que un grupo tenga asignadas dos aulas de teoría}. Esto puede darse sobre todo en los grupos que tengan asignadas aulas con una menor capacidad, como puede ser en el grado de Ingeniería Informática, donde el número de alumnos en ciertas asignaturas se ha disparado de una especialidad se han disparado, y tienen asignadas como aulas de teoría una de la primera planta con menor capacidad, y otra de la planta baja con mucha más capacidad.
+    
+    \item \textbf{Aula de teoría}: representa un aula en las que se impartirán las clases de teoría para los grupos grandes. A estas aulas se le pueden asignar varios grupos de teoría en función de las horas disponibles que tenga. A cada grupo de teoría se le preasigna un aula de este tipo antes de comenzar la elaboración del horario, para reducir la complejidad del problema.
+
     \item \textbf{Aula de prácticas}: define los distintos laboratorios de prácticas, junto al \textbf{material} del que disponen. Hay que tener en cuenta, que algunas aulas de teoría pueden ser a la vez aulas de prácticas. Un ejemplo de ello son las aulas que hay en la primera planta del aulario de la Escuela.
-    \item \textbf{Asignatura}: representa las distintas asignaturas que se imparten en cada curso, junto con sus horas de prácticas y teoría, el material que necesita y más aspectos específicos las asignaturas.
-    \item \textbf{Grupo de prácticas}: es un subgrupo que existe por haber una conexión de un grupo de teoría con uno de prácticas, puediendo existir más de un subgrupo de prácticas para una asignatura asignada a un grupo. Siempre se sabe a priori el número de grupos de prácticas que tendrá una asignatura, aunque pueden crearse o destruirse nuevos si fuese necesario.
+
+    \item \textbf{Asignatura}: representa las distintas asignaturas que se imparten en cada curso, junto con sus horas de prácticas y teoría, el material que necesita y más aspectos específicos las asignaturas, como puede ser el año en que se imparte, especialidad, número de alumnos, etc. Datos útiles para la generación del horario.
+
+    \item \textbf{Grupo de prácticas}: es un subgrupo que existe por haber una conexión de un grupo de teoría con uno de prácticas, puediendo existir más de un subgrupo de prácticas para una asignatura asignada a un grupo. Siempre se sabe a priori el número de grupos de prácticas que tendrá una asignatura, aunque pueden crearse o destruirse nuevos si fuese necesario, dependiendo de si hay alumnos suficientes como para tener $n$ subgrupos de prácticas o no.
 \end{enumerate}
 
 \begin{figure}[!h]
@@ -80,11 +89,13 @@ A partir de los requisitos extraídos anteriormente, vemos que hay cuatro elemen
     \label{interaccion}
 \end{figure}
 
-En la \hyperref[interaccion]{Figura \ref*{interaccion}} vemos un esquema de la interacción de los diferentes elementos del sistema entre sí. 
+En la \hyperref[interaccion]{Figura \ref*{interaccion}} vemos un esquema de la interacción de los diferentes elementos del sistema entre sí, en un diagrama de clases simplificado del problema, para mejorar la interpretación de la idea general. 
 
-En primer lugar, el usuario debe asignar manualmente a cada grupo, el aula de teoría correspondiente, para proporcionarle a los algoritmos que vienen detrás un punto de partida que se ajuste lo mejor posible a lo que se desea como resultado. Conforme el usuario vaya realizando asignaciones de grupos a aulas, el sistema estará comprobando si existe alguna incompatibilidad o no, para que, en caso de que haya una, avisar al usuario y evitar que se realice esa asignación. Una vez finalizada la asignación de aulas a los grupos de teoría, el sistema comenzará a asignarle a los subgrupos de prácticas, qué aula y hora les corresponden para cada asignatura, cumpliendo con las restricciones de material que imponga cada asignatura, y de que no ocurran solapamientos.
+En primer lugar, el usuario debe asignar manualmente a cada grupo el aula de teoría correspondiente, para proporcionarle a los algoritmos que vienen detrás un punto de partida que se ajuste lo mejor posible a lo que se desea como resultado. Actuálmente, esta asignación de aulas la hemos cogido de la asignación que existe actuálmente en el horario de este año, consultándolo con Jesús García Miranda. De esta forma, podríamos ajustar el sistema para que los resultados de los algoritmos hicieran horarios similares a los que hay ahora en nuestra escuela, pero con la optimización que hace el algoritmo detrás.
 
-Para cuadrar las horas de forma eficiente es necesario tener una estructura de datos adicional (una tabla hash o un diccionario) en el que se tenga constancia de las asignaciones que ha recibido un aula, el número de horas disponibles que tiene y cuándo las tiene disponibles.
+Una vez finalizada la asignación de aulas a los grupos de teoría, el sistema comenzará a crear el horario para el curso, comenzando primero asignado las horas de teoría, para después pasar a asignar los subgrupos de prácticas, comprobando qué aula y hora les corresponden para cada asignatura, cumpliendo con las restricciones de material que imponga cada asignatura, y de que no ocurran solapamientos.
+
+Para cuadrar las horas de forma eficiente es necesario tener una estructura de datos adicional (una tabla hash o un diccionario) en el que se tenga constancia de las asignaciones que ha recibido un aula, el número de horas disponibles que tiene y cuándo las tiene disponibles. En nuestro caso, esta estructura es una matriz 2D de tamaño $(n_{horas} \times n_{dias})$, en la que se irán marcando para cada hora y día cúando el aula está ocupada o no.
 
 \begin{figure}[!h]
     \centering
@@ -96,14 +107,16 @@ Para cuadrar las horas de forma eficiente es necesario tener una estructura de d
 A partir del diagrama de interacción (\hyperref[interaccion]{Figura \ref*{interaccion}}) hemos extraído una serie de clases que representan cada uno de los elementos junto con la información que deben almacenar. Dicho diagrama está representado en la \hyperref[clases]{Figura \ref*{clases}} y destacamos los siguientes aspectos:
 
 \begin{enumerate}[$\bullet$]
-    \item El elemento \textit{Aula de teoría} está representado por la clase \textit{Aula}, que almacena la capacidad de la misma y su nombre. El elemento \textit{Aula de prácticas} es una especialización de la clase \textit{Aula}, que además almacena el material del que dispone ese laboratorio. Para representar este material, hemos optado por usar un \texttt{string} aunque no descartamos la posibilidad de usar un \texttt{struct} si vemos que necesitamos almacenar información adicional para caracterizar los distintos materiales que puede haber en un laboratorio.
+    \item El elemento \textit{Aula de teoría} está representado por la clase \textit{Aula}, que almacena la capacidad de la misma y su nombre. El elemento \textit{Aula de prácticas} es una especialización de la clase \textit{Aula}, que además almacena el material del que dispone ese laboratorio. Para representar los materiales que almacena un aula, hemos decidido usar un conjunto de elementos de tipo \textit{string}, ya que esto nos permite hacer operaciones como pueden ser la intersección, que nos será útil para asignar aulas de prácticas a ciertas asignaturas, en función de los materiales que albergue.
 
-    \item El atributo referente al \textit{número de subgrupos de prácticas} está colocado tanto en la clase \textit{Grupo} como en la clase \textit{Asignatura} porque no sabemos dónde correspondería. Es decir, la idea es que tras un breve análisis podamos ponernos de acuerdo. Los argumentos para poner ese atributo en cada clase son:
-    \begin{enumerate}[---]
-        \item \textbf{Grupo}: cada grupo tiene un número distinto de alumnos. Por ejemplo, el grupo A de una asignatura puede tener 100 matriculados y el grupo F, 50. Por tanto al grupo A le corresponderían 3 grupos de prácticas mientras que al F sólo 2.
-        \item \textbf{Asignatura}: cada asignatura de un mismo grupo puede tener un número distinto de alumnos matriculados: no es lo mismo una asignatura obligatoria que una asignatura optativa. Además, al hacer el horario no sabemos el número de alumnos matriculados sino las plazas ofertadas, y en caso de no llenar todas las plazas, siempre está la opción de corregir el horario manualmente.
-    \end{enumerate}
-    Respecto a esto, hemos decidido hacer una mezcla de ambas opciones. En cada asignatura de un grupo determinado habrá un número de alumnos matriculados que no tiene que ser igual al número de alumnos matriculados en otra asignatura en ese mismo grupo. Por tanto, será el grupo quién decida, para cada asignatura, el número de subgrupos de prácticas que tendrá.
+     \item El atributo referente al \textit{número de subgrupos de prácticas} está colocado tanto en la clase \textit{Grupo} ya que será éste quien conoce el número de alumnos matriculados en este grupo. Por ejemplo, el grupo A de una asignatura puede tener 100 matriculados y el grupo F, 50. Por tanto al grupo A le corresponderían 3 grupos de prácticas mientras que al F sólo 2.
+
+     A pesar de esto, pueden existir ciertas asignaturas que para un cierto grupo, el número de alumnos sea mucho mayor que en el resto de asignaturas. En este caso, tras una consulta con nuestro tutor, se decidió que para estas excepciones, el nuevo grupo se asignaría una vez hecho el horario de forma manual, gracias a la interfaz. 
+    % \begin{enumerate}[---]
+    %     \item \textbf{Grupo}: cada grupo tiene un número distinto de alumnos. Por ejemplo, el grupo A de una asignatura puede tener 100 matriculados y el grupo F, 50. Por tanto al grupo A le corresponderían 3 grupos de prácticas mientras que al F sólo 2.
+    %     \item \textbf{Asignatura}: cada asignatura de un mismo grupo puede tener un número distinto de alumnos matriculados: no es lo mismo una asignatura obligatoria que una asignatura optativa. Además, al hacer el horario no sabemos el número de alumnos matriculados sino las plazas ofertadas, y en caso de no llenar todas las plazas, siempre está la opción de corregir el horario manualmente.
+    % \end{enumerate}
+    % Respecto a esto, hemos decidido hacer una mezcla de ambas opciones. En cada asignatura de un grupo determinado habrá un número de alumnos matriculados que no tiene que ser igual al número de alumnos matriculados en otra asignatura en ese mismo grupo. Por tanto, será el grupo quién decida, para cada asignatura, el número de subgrupos de prácticas que tendrá.
 \end{enumerate} 
 
 \section{Función de evaluación}
@@ -135,4 +148,4 @@ donde se reflejan las condiciones que debe penalizar:
     Donde $i$ es un día de la semana y $f_i$, las asignaturas fuera de la franja horaria que hay ese día.
 \end{enumerate}
 
-Con esta función de evaluación hemos cubierto los requisitos de minimizar los huecos en el horario y que haya asignaturas que queden fuera de la franja horaria establecida.
+Con esta función de evaluación hemos cubierto los requisitos de minimizar los huecos en el horario y que haya asignaturas que queden fuera de la franja horaria establecida. Esto, a su vez, nos sirve tanto como para medir la calidad de un algoritmo Greedy, como de un algoritmo \textit{Iterated Local Search}, conocidos como ILS, o el algoritmo genético que se encargará de optimizar estos horarios.

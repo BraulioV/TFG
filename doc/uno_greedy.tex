@@ -1,15 +1,13 @@
 \chapter{Primera aproximación Greedy}
-Para el desarrollo del proyecto, se han desarrollado dos algoritmos \textit{Greedy} para realizar tanto la asignación de las horas de teoría, como la asignación de horas y aulas de prácticas para cada grupo. Con esto en mente, podríamos ser capaces de inicializar una población inicial para un algoritmo genético, con el fin de optimizar más el horario generado, intentando que las soluciones generadas, saturen lo menos posible las aulas, no generen huecos a lo largo del turno de mañana o tarde, etc.
+Para el desarrollo del proyecto, se han desarrollado dos algoritmos \textit{Greedy} para realizar tanto la asignación de las horas de teoría, como la asignación de horas y aulas de prácticas para cada grupo. Con esto en mente, podríamos ser capaces de inicializar una población inicial para un algoritmo genético, con el fin de optimizar más el horario generado, intentando que las soluciones generadas, saturen lo menos posible las aulas, no generen huecos a lo largo del turno de mañana o tarde, etc. 
 
-Aunque la filosofía de los algoritmos es bastante similar, hemos decidido dividir esta tarea en dos procesos, haciendo más fácil el desarrollo del código y la legibilidad de estos, además de facilizar la tarea al tener que ir examinando menos restricciones en cada paso del algoritmo. 
+Aunque la filosofía de los algoritmos es bastante similar, hemos decidido dividir esta tarea en dos procesos, haciendo más fácil el desarrollo del código y la legibilidad de estos, además de facilizar la tarea al tener que ir examinando menos restricciones en cada paso del algoritmo. Además de esto, ambos algoritmos, aunque sean algoritmos voraces, ambos son algoritmos \textbf{\textit{no deterministas}}, ya que se apoyan mucho en la aleatoriedad para poder generar soluciones con diversidad, cosa que el algoritmo genético agradecerá mucho en los resultados, ya que si la población inicial no tiene diversidad, el algoritmo convergerá muy pronto en un óptimo local o bien, convergerá hacia un espacio de búsqueda donde las soluciones finales no tengan calidad.
 
 Para empezar, vamos a ver detalladamente el desarrollo del algoritmo voraz para las horas de teoría.
 
 \section{Greedy para asignar horas de teoría}
 
 Para que el algoritmo genético funcione bien, debemos asegurar que este tenga una buena diversidad en su población de soluciones. Como nuestra población inicial la generarán los algoritmos voraces, ambos tendrán un componente aleatorio para garantizar la diversidad en esta población. En \hyperref[greedyteoria]{Algoritmo \ref*{greedyteoria}}, podemos ver el pseudocódigo del algoritmo voraz para las horas de teoría.
-
-% Para inicializar una población para el algoritmo genético, hemos desarrollado un algoritmo \textit{Greedy} aleatorio. El pseudocódigo se ve explicado en el \hyperref[greedyteoria]{Algoritmo \ref*{greedyteoria}} 
 
 \begin{pseudocode}{GreedyTeoria}{ }
     \label{greedyteoria}
@@ -84,7 +82,7 @@ Además de esto, tenemos que el horario escogido corresponde con una semana de t
 
 % Vamos a hacer los pasos para cuadrar las asignaturas del grupo $A$:
 
-A continuación, vamos a ver paso a paso cómo actúa el algoritmo para asignar las horas de teoría de forma correcta en nuestro horario.
+A continuación, vamos a ver paso a paso cómo actúa el algoritmo para asignar las horas de teoría de forma correcta en nuestro horario.\\
 
 \begin{minipage}{0.5\textwidth}    
 \begin{tabular}{| c | c | c |}
@@ -108,7 +106,8 @@ FBD & 1
 \end{tabular}
 \end{minipage}
 
-Seleccionamos la primera asignatura de nuestra lista filtrada y mezclada de asignaturas, \textbf{AC} y colocamos una de sus horas en el primer hueco disponible del horario. 
+~\\
+Seleccionamos la primera asignatura de nuestra lista filtrada y mezclada de asignaturas, \textbf{AC} y colocamos una de sus horas en el primer hueco disponible del horario.\\
 
 \begin{minipage}{0.5\textwidth}    
 \begin{tabular}{| c | c | c |}
@@ -132,7 +131,8 @@ FBD & 1
 \end{tabular}
 \end{minipage}
 
-Ahora, hacemos lo mismo con \textbf{ALG} y \textbf{FBD}.
+~\\
+Al hacer esto, restamos uno a las horas de teoría restantes que quedan por asignar para esa asignatura, y se pasa al día siguiente. Ahora, hacemos lo mismo con \textbf{ALG} y \textbf{FBD}.\\
 
 \begin{minipage}{0.5\textwidth}    
 \begin{tabular}{| c | c | c |}
@@ -155,8 +155,8 @@ ALG & 2 \\
 FBD & 0
 \end{tabular}
 \end{minipage}
-
-Como aún siguen quedando horas por asignar, damos otra vuelta más.
+~\\
+Tras completar una primera vuelta, como se puede ver en la tabla, aún siguen quedando horas por asignar para AC y ALG. Por tanto, el algoritmo vuelva a realizar una nueva iteración para terminar de asignar las horas teoría restantes.\\
 
 \begin{minipage}{0.5\textwidth}    
 \begin{tabular}{| c | c | c |}
@@ -183,7 +183,9 @@ FBD & 0
 Al no quedar más horas por asignar, pasaríamos a repetir estos mismos pasos con el grupo $B$.
 
 \section{Greedy para inicializar horas de prácticas}
-En el caso del Greedy para inicializar las horas de prácticas, hemos hecho un algoritmo parecido al algoritmo voraz de las horas de teoría. Su funcionamiento básico consiste en ir desplazando una ventana, cuyo tamaño será el número de subgrupos de prácticas, e ir asignando dicha ventana cada día de la semana.
+En el caso del Greedy para inicializar las horas de prácticas, hemos hecho un algoritmo parecido al algoritmo voraz de las horas de teoría. Su funcionamiento básico consiste en ir desplazando una ventana, cuyo tamaño será el número de subgrupos de prácticas que tenga el grupo asignado, e ir asignando dicha ventana cada día de la semana. 
+
+A continuación, podemos ver el pseudocódigo del algoritmo de prácticas.
 
 \begin{pseudocode}{GreedyPracticas}{ }
     \label{greedypracticas}
@@ -231,7 +233,7 @@ En el caso del Greedy para inicializar las horas de prácticas, hemos hecho un a
 
 Este algoritmo, al igual que antes, recibe como entrada el semestre para el cual se va a calcular el horario. Además de esto, ya no parte de un horario vacío, sino del horario que le ha dejado el algoritmo greedy para las horas de teoría, por lo que ya tiene una cierta ``estructura'' de partida.
 
-Con esto, para cada uno de los grupos de prácticas, el algoritmo coge las asignaturas para ese grupo y para ese cuatrimestre, genera una permutación aleatoria de estas, y va asignando grupos de prácticas para cada día de la semana, siendo el siguiente día igual que el anterior, pero desplazada la ventana una posición hacia la derecha.
+Con esto, para cada uno de los grupos de prácticas, el algoritmo toma las asignaturas para ese grupo y para ese cuatrimestre, genera una permutación aleatoria de estas, y va asignando grupos de prácticas para cada día de la semana, siendo el siguiente día igual que el anterior, pero desplazada la ventana una posición hacia la derecha.
 
 Una vez asignada una asignatura a una celda, se le resta una hora a las horas de prácticas a esta asignatura, para así, tener un control de qué asignaturas han sido asignadas y cuales no, y no asignar de nuevo aquellas que tengan ya cero horas de prácticas.
 
@@ -249,7 +251,7 @@ Aun así, a continuación podemos ver un ejemplo de funcionamiento del algoritmo
 
 A continuación podemos ver un ejemplo de uso del algoritmo para asignar las horas de prácticas a los distintos subgrupos de un grupo determinado. En este caso, es un grupo de segundo curso del Grado en Ingeniería Informática, más concretamente del segundo semestre.
 
-En la \hyperref[pasig]{Tabla \ref*{pasig}}, podemos ver el conjunto de asignaturas del que se compone el semestre, junto con el número de horas de prácticas que corresponden a cada una de ellas.
+En la \hyperref[pasig]{Tabla \ref*{pasig}}, podemos ver el conjunto de asignaturas del que se compone el semestre, junto con el número de horas de prácticas que corresponden a cada una de ellas. En esta tabla también podemos ver la irregularidad en el número de horas de prácticas que tienen las asignaturas del segundo semestre, lo que puede complicar la tarea y reducir el rendimiento del algoritmo.
 %Supongamos que tenemos que asignar a un grupo con tres subgrupos de prácticas las siguientes asignaturas:
 \begin{table}[H]
 \center
@@ -264,7 +266,7 @@ En la \hyperref[pasig]{Tabla \ref*{pasig}}, podemos ver el conjunto de asignatur
 
 En este caso, un grupo de segundo curso, tiene, como norma general, un número de alumnos lo suficientemente grande como para albergar tres subgrupos de prácticas, aunque esta información viene dada de antemano, antes de comenzar el algoritmo tanto de prácticas, para evitar cálculos innecesarios, que tienen una alta probabilidad de cambios y que pueden afectar al comportamiento del algoritmo.
 
-Como esto es un caso de ejemplo, supondremos que este grupo de segundo tiene tres subgrupos de prácticas, por lo que, el tamaño de ventana a utilizar será de tres casillas. Además de esto, cada subgrupo de prácticas sabrá el número de horas restantes de prácticas que tiene por asignar, como se puede ver a continuación.
+Como esto es un caso de ejemplo, supondremos que este grupo de segundo tiene tres subgrupos de prácticas, por lo que, el tamaño de ventana a utilizar será de tres casillas. Además de esto, cada subgrupo de prácticas sabrá el número de horas restantes de prácticas que tiene por asignar, como se puede ver a continuación.\\
 
 \begin{minipage}{0.5\textwidth}    
 \begin{tabular}{| c | c | c | c | c |}
@@ -281,7 +283,7 @@ Como esto es un caso de ejemplo, supondremos que este grupo de segundo tiene tre
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \begin{tabular}{c | c}
-Asignatura & Nº horas restantes \\
+Asignatura & Nº horas \\
 AC & (2, 2, 2) \\
 FBD & (3, 3, 3) \\
 ALG & (1, 1, 1) \\
@@ -289,20 +291,21 @@ IA & (2, 2, 2) \\
 FIS & (2, 2, 2)
 \end{tabular}
 \end{minipage}
+~\\
 
-En el primer paso, el algoritmo selecciona con la ventana las tres primeras asignauras de nuestra permutación de la \hyperref[pasig]{Tabla \ref*{pasig}}, (AC, FBD, ALG). Una vez seleccionados, el algoritmo empieza a recorrer el horario, y como el primer día que encuentra está libre, asigna las asignaturas de esta ventana a ese espacio libre.
+En el primer paso, el algoritmo selecciona con la ventana las tres primeras asignauras de nuestra permutación de la \hyperref[pasig]{Tabla \ref*{pasig}}, (AC, FBD, ALG). Una vez seleccionados, el algoritmo empieza a recorrer el horario, y como el primer día que encuentra está libre, asigna las asignaturas de esta ventana a ese espacio libre.\\
 
 %Seleccionamos las tres primeras asignaturas de la lista (AC, FBD, ALG), y las asignamos al primer día de la semana.
 
 \begin{minipage}{0.5\textwidth}    
 \begin{tabular}{| c | c | c | c | c |}
 \hline
- (AC, A1), &  &  &  & \\
- (FBD, A2), &  &  &  & \\
+ (AC, A1) &  &  &  & \\
+ (FBD, A2) &  &  &  & \\
  (ALG, A3) &  &  &  & \\
  \hline
- (AC, A1), &  &  &  & \\
- (FBD, A2), &  &  &  & \\
+ (AC, A1) &  &  &  & \\
+ (FBD, A2) &  &  &  & \\
  (FBD, A3) &  &  &  & \\
  \hline
  &  &  &  & \\
@@ -313,7 +316,7 @@ En el primer paso, el algoritmo selecciona con la ventana las tres primeras asig
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \begin{tabular}{c | c}
-Asignatura & Nº horas restantes \\
+Asignatura & Nº horas \\
 AC & (0, 2, 2) \\
 FBD & (3, 1, 2) \\
 ALG & (1, 1, 0) \\
@@ -321,21 +324,22 @@ IA & (2, 2, 2) \\
 FIS & (2, 2, 2)
 \end{tabular}
 \end{minipage}
+~\\
 
 Una vez asignada la ventana, es necesario reducir el número de horas que quedan por asignar a las asignaturas que han sido asignadas con la ventana. Esto se puede ver en la tabla anterior en el número de horas restantes para cada grupo.
 
-Como siguiente paso, el algoritmo desplaza una posición a la derecha la ventana anterior, pasando de ser (AC, FBD, ALG) a ser (FBD, ALG, IA), y se vuelve a repetir la operación anterior.
+Como siguiente paso, el algoritmo desplaza una posición a la derecha la ventana anterior, pasando de ser (AC, FBD, ALG) a ser (FBD, ALG, IA), y se vuelve a repetir la operación anterior.\\
 %Movemos la ventana en una posición (FBD, ALG, IA) y volvemos a asignar las prácticas para el siguiente día de la semana:
 
 \begin{minipage}{0.5\textwidth}    
 \begin{tabular}{| c | c | c | c | c |}
 \hline
- (AC, A1), & (FBD, A1), &  &  & \\
- (FBD, A2), & (ALG, A2) &  &  & \\
+ (AC, A1) & (FBD, A1) &  &  & \\
+ (FBD, A2) & (ALG, A2) &  &  & \\
  (ALG, A3) &  (IA, A3) &  &  & \\
  \hline
- (AC, A1), & (FBD, A1) &  &  & \\
- (FBD, A2), & (FBD, A2) &  &  & \\
+ (AC, A1) & (FBD, A1) &  &  & \\
+ (FBD, A2) & (FBD, A2) &  &  & \\
  (FBD, A3) & (IA, A3) &  &  & \\
  \hline
  &  &  &  & \\
@@ -346,7 +350,7 @@ Como siguiente paso, el algoritmo desplaza una posición a la derecha la ventana
 \end{minipage}
 \begin{minipage}{0.5\textwidth}
 \begin{tabular}{c | c}
-Asignatura & Nº horas restantes \\
+Asignatura & Nº horas \\
 AC & (0, 2, 2) \\
 FBD & (1, 0, 2) \\
 ALG & (1, 0, 0) \\
@@ -354,18 +358,19 @@ IA & (2, 2, 0) \\
 FIS & (2, 2, 2)
 \end{tabular}
 \end{minipage}
+~\\
 
-Volvemos a mover la ventana una posición más (ALG, IA, FIS) y repetimos la operación del día anterior. En este caso, el grupo A1 tendrá un hueco en su segunda hora de prácticas, debido a que la asignatura ALG (Algorítmica) tiene una sola hora de prácticas, a diferencia del resto que tienen 2 y como excepción, FBD (Fundamentos de Bases de Datos) que tiene tres. Este hueco que queda ahí, se asignará más adelante, si es posible.
+Volvemos a mover la ventana una posición más (ALG, IA, FIS) y repetimos la operación del día anterior. En este caso, el grupo A1 tendrá un hueco en su segunda hora de prácticas, debido a que la asignatura ALG (Algorítmica) tiene una sola hora de prácticas, a diferencia del resto que tienen 2 y como excepción, FBD (Fundamentos de Bases de Datos) que tiene tres. Este hueco que queda ahí, se asignará más adelante, si es posible.\\
 
 \begin{minipage}{0.7\textwidth}    
 \begin{tabular}{| c | c | c | c | c |}
 \hline
- (AC, A1), & (FBD, A1), & (ALG, A1) &  & \\
- (FBD, A2), & (ALG, A2) & (IA, A2) &  & \\
+ (AC, A1) & (FBD, A1) & (ALG, A1) &  & \\
+ (FBD, A2) & (ALG, A2) & (IA, A2) &  & \\
  (ALG, A3) &  (IA, A3) & (FIS, A3) &  & \\
  \hline
- (AC, A1), & (FBD, A1) & () &  & \\
- (FBD, A2), & (FBD, A2) & (IA, A2) &  & \\
+ (AC, A1) & (FBD, A1) & () &  & \\
+ (FBD, A2) & (FBD, A2) & (IA, A2) &  & \\
  (FBD, A3) & (IA, A3) & (FIS, A3) &  & \\
  \hline
  &  &  &  & \\
@@ -376,7 +381,7 @@ Volvemos a mover la ventana una posición más (ALG, IA, FIS) y repetimos la ope
 \end{minipage}
 \begin{minipage}{0.8\textwidth}
 \begin{tabular}{c | c}
-Asignatura & Nº horas restantes \\
+Asignatura & Nº horas \\
 AC & (0, 2, 2) \\
 FBD & (1, 0, 2) \\
 ALG & (0, 0, 0) \\
@@ -384,18 +389,19 @@ IA & (2, 0, 0) \\
 FIS & (2, 2, 0)
 \end{tabular}
 \end{minipage}
+~\\
 
-Esta se repetirá hasta que se haya rellenado la semana completa, repitiendo el mismo proceso detallado anteriormente. 
+Esta se repetirá hasta que se haya rellenado la semana completa, repitiendo el mismo proceso detallado anteriormente. \\
 
-\begin{minipage}{0.8\textwidth}    
+\begin{minipage}{0.745\textwidth}    
 \begin{tabular}{| c | c | c | c | c |}
 \hline
- (AC, A1), & (FBD, A1), & (ALG, A1) & (IA, A1) & (FIS, A1) \\
- (FBD, A2), & (ALG, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
+ (AC, A1) & (FBD, A1) & (ALG, A1) & (IA, A1) & (FIS, A1) \\
+ (FBD, A2) & (ALG, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
  (ALG, A3) &  (IA, A3) & (FIS, A3) & (AC, A3) & (FBD, A3) \\
  \hline
- (AC, A1), & (FBD, A1) & () & (IA, A1) & (FIS, A1) \\
- (FBD, A2), & (FBD, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
+ (AC, A1) & (FBD, A1) & () & (IA, A1) & (FIS, A1) \\
+ (FBD, A2) & (FBD, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
  (FBD, A3) & (IA, A3) & (FIS, A3) & (AC, A3) & (FBD, A3) \\
  \hline
  &  &  &  & \\
@@ -406,7 +412,7 @@ Esta se repetirá hasta que se haya rellenado la semana completa, repitiendo el 
 \end{minipage}
 \begin{minipage}{1\textwidth}
 \begin{tabular}{c | c}
-Asignatura & Nº horas restantes \\
+Asignatura & Nº horas \\
 AC & (0, 0, 0) \\
 FBD & (1, 0, 0) \\
 ALG & (0, 0, 0) \\
@@ -414,21 +420,22 @@ IA & (0, 0, 0) \\
 FIS & (0, 0, 0)
 \end{tabular}
 \end{minipage}
+~\\
 
 En este caso, se puede ver que la asignatura de FBD, tienen aún una hora por asignar, por lo que el algoritmo, tratará de asignarla en algún espacio en blanco que haya dejado el uso de la ventana, para reducir los ``huecos'' que puedan quedar en el horario. En este caso, se asignará en el hueco que dejó la asignatura de Algorítmica, optimizando el espacio. 
 
-Pero en caso de que esta operación no sea posible, el algoritmo la asignará en un espacio donde no haya nada, como se puede ver en la \hyperref[horario]{Figura \ref*{horario}}.
+Pero en caso de que esta operación no sea posible, el algoritmo la asignará en un espacio donde no haya nada, como se puede ver en la \hyperref[horario]{Figura \ref*{horario}}.\\
 % Como aún queda una hora por asignar, el algoritmo buscaría un hueco posible donde asignarla.
 
-\begin{minipage}{0.8\textwidth}    
+\begin{minipage}{0.745\textwidth}    
 \begin{tabular}{| c | c | c | c | c |}
 \hline
- (AC, A1), & (FBD, A1), & (ALG, A1) & (IA, A1) & (FIS, A1) \\
- (FBD, A2), & (ALG, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
+ (AC, A1) & (FBD, A1) & (ALG, A1) & (IA, A1) & (FIS, A1) \\
+ (FBD, A2) & (ALG, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
  (ALG, A3) &  (IA, A3) & (FIS, A3) & (AC, A3) & (FBD, A3) \\
  \hline
- (AC, A1), & (FBD, A1) & (FBD, A1) & (IA, A1) & (FIS, A1) \\
- (FBD, A2), & (FBD, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
+ (AC, A1) & (FBD, A1) & (FBD, A1) & (IA, A1) & (FIS, A1) \\
+ (FBD, A2) & (FBD, A2) & (IA, A2) & (FIS, A2) & (AC, A2) \\
  (FBD, A3) & (IA, A3) & (FIS, A3) & (AC, A3) & (FBD, A3) \\
  \hline
  &  &  &  & \\
@@ -439,7 +446,7 @@ Pero en caso de que esta operación no sea posible, el algoritmo la asignará en
 \end{minipage}
 \begin{minipage}{1\textwidth}
 \begin{tabular}{c | c}
-Asignatura & Nº horas restantes \\
+Asignatura & Nº horas \\
 AC & (0, 0, 0) \\
 FBD & (0, 0, 0) \\
 ALG & (0, 0, 0) \\
@@ -447,6 +454,7 @@ IA & (0, 0, 0) \\
 FIS & (0, 0, 0)
 \end{tabular}
 \end{minipage}
+~\\
 
 \begin{figure}[H]
     \centering
@@ -458,11 +466,49 @@ FIS & (0, 0, 0)
 Con esto, el algoritmo de asignación de horas de prácticas finaliza, quedando todas las asignaturas asignadas a días, para todos los grupos de prácticas.
 
 \subsection{Asignación de aulas de prácticas}
-Consideramos que la mejor asignación es la que tiene en cuenta el material que necesita cada asignatura para llevar a cabo sus prácticas y el material del que dispone cada aula. Por ejemplo, para la asignatura \textit{Fundamentos de Redes} se necesita usar un aula con una instalación de red especial, por lo que no puede ser asignada en un aula que no disponga de dicha instalación. 
 
-Por tanto, para calcular qué aula es la óptima para cada asignatura, debemos saber qué materiales necesita cada asignatura y qué materiales dispone cada aula. Para saber los materiales de los que dispone cada aula, hemos consultado la página web de la escuela: \url{http://etsiit.ugr.es/pages/instalaciones_servicios/aulas_etsiit2017/!}.
+Para asignar las aulas de prácticas, esta tarea se ha divido en dos: una primera etapa en la que se obtienen cuáles de las posibles aulas que ofrece el centro son las mejores en las que se puede impartir cierta asignatura en función de los materiales que necesite, y una segunda en la que ya se produce la verdadera asignación de un aula a un grupo de prácticas específico a una hora específica.
 
-Nuestro algoritmo elige las asignaturas más restrictivas (con una lista de materiales más larga) y les asigna las aulas óptimas. Termina con las asignaturas que \textit{podrían} impartirse en ``cualquier'' aula.
+\subsubsection{Cálculo de las mejores aulas}
+
+Consideramos que la mejor asignación es la que tiene en cuenta el material que necesita cada asignatura para llevar a cabo sus prácticas y el material del que dispone cada aula. De esta forma, se puede optimizar mucho más el espacio del centro y asignar aulas en función de las necesidades de las distintas asignaturas. Por ejemplo, para la asignatura \textit{Fundamentos de Redes} se necesita usar un aula con una instalación de red especial que sólo se encuentra en un aula específica del centro, por lo que no puede ser asignada en un aula que no disponga de dicha instalación, ya que no se podrían realizar estas prácticas de forma adecuada.
+
+Tampoco tiene mucho sentido asignar un aula a una asignatura que no necesita ordenadores que tengan muchos recursos, cuando las necesidades de la asignatura son básicamente tener un ordenador capaz de ejecutar programas de poca carga, dejando sin espacio a otras asignaturas que puedan necesitar este tipo de máquinas, como podría ser, en el caso de Ing. Informática, las asignaturas de \textit{Informática Gráfica} o \textit{Animación por Ordenador}.
+
+Por tanto, para calcular qué aula es la óptima para cada asignatura, debemos saber qué materiales necesita cada asignatura y qué materiales dispone cada aula. Para saber los materiales de los que dispone cada aula, hemos consultado la página web de la escuela: \url{http://etsiit.ugr.es/pages/instalaciones_servicios/aulas_etsiit2017/!}, donde se puede encontrar un listado de todas y cada una de las aulas de las que dispone el centro donde se indica qué materiales tiene cada una de ellas. 
+
+Una vez hecho esto, se puede hacer un algoritmo muy sencillo para organizar en un diccionario las posibles aulas de prácticas a las que se puede asignar una asignatura, viendo los requisitos que tienen cada una de las asignaturas en lo que a materiales se refiere, y los materiales que ofrecen las distintas asignaturas. A continuación, podemos ver el pseudocódigo del algoritmo que se encarga de realizar esto:
+
+\begin{pseudocode}[shadowbox]{compute\_suitable\_classrooms}{materials}
+    possible\_classrooms \GETS []\\
+    \FOREACH class \in lab\_classrooms \DO
+    \BEGIN
+        \IF class.materials \cap materials = materials \DO
+        \BEGIN
+            possible\_classrooms.\CALL{append}{class.name}\\
+        \END
+    \END\\
+    \RETURN {possible\_classrooms}\\
+    \label{computeclass}
+\end{pseudocode}
+
+Este algoritmo, nos devuelve todas las posibles clases en las que se pueda impartir una asignatura específica. El algoritmo recibe los materiales que necesita esa asignatura y devuelve aquellas asignaturas donde la intersección de sus materiales con la de los materiales que necesita la asignatura, es igual a los propios materiales que necesita la asignatura.
+
+Su implementación en \textit{Python} es mucho más sencilla que tal y como aparece en el algoritmo anterior, gracias al uso de la \textbf{programación funcional}, como se puede comprobar en el siguiente trozo de código:
+
+\begin{minted}[breaklines, breakafter=d, frame=single]{python}
+possible_classrooms = list(map(lambda x: labs[x].materials & materials == materials, labs))
+\end{minted}
+
+Hay que tener en cuenta que la restricción que hace esta línea de código es muy fuerte, ya que sólo devuelve aquellas que tengan exactamente los mismos materiales que necesita la asignatura, por lo que puede eliminar muchas aulas en las que sería ``posible'' impartir una asignatura.
+
+Una mejora que se introdujo a este algoritmo, fue dividir los materiales en dos conjuntos. Uno que representaba los materiales que ejercían fuertes restricciones (como puede ser el \textit{rack de comunicaciones} para las prácticas de \textit{Fundamentos de Redes}), y otras que pueden no cumplirse de forma estricta, representando las restricciones débiles.
+
+De esta forma, la ``poda'' de aulas que se hacía al calcular las mejores aulas para asignarlas a una asignatura, se reducía y se producía una menor saturación de aulas, mejorando los resultados del algoritmo.
+
+\subsubsection{Asignación de las aulas a grupos}
+
+Una vez que tenemos qué aula es posible asignar
 
 \section{Problemas con esta primera aproximación}
 A la hora de implementar esta versión nos hemos encontrado con varios problemas:
