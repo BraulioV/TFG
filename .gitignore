@@ -231,3 +231,6 @@ target/
 .idea/*
 resources/Outputs/prueba.tex
 doc/release/release/
+
+# Database
+*.sqlite3
