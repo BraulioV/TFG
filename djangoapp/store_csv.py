@@ -36,7 +36,7 @@ for file, obj_class_name in zip(files, classes):
     obj_class = getattr(import_module(module_name), obj_class_name)
     # read data
     data = pd.read_csv(filepath_or_buffer=file, sep=";")
-    print(data)
+
     for row in data.iterrows():
         aux = obj_class()
         d = dict(row[1]) # convert data row in dictionary
@@ -52,10 +52,9 @@ for file, obj_class_name in zip(files, classes):
                         aux.__setattr__(lk, fk)
                     else: #ManyToMany field
                         aux.save()
-                        if 
-                        classes = str(v).split(',')
-                        for c in classes:
-                            print(c)
-                            fk = foreign_class.objects.get(name=c)
-                            aux.__getattribute__("practiceclassroom").add(fk)
+                        if row[1].isnull().sum() == 0:
+                            classes = str(v).split(',')
+                            for c in classes:
+                                fk = foreign_class.objects.get(name=c)
+                                aux.__getattribute__(lk).add(fk)
         aux.save()
