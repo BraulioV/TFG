@@ -508,7 +508,63 @@ De esta forma, la ``poda'' de aulas que se hacía al calcular las mejores aulas 
 
 \subsubsection{Asignación de las aulas a grupos}
 
-Una vez que tenemos qué aula es posible asignar
+Una vez que tenemos qué aulas son las que podemos asignar a las distintas asignaturas, podemos pasar a asignarle a cada grupo de prácticas un aula específica para cada asignatura. Para ello, hemos desarrollado el siguiente algoritmo:
+
+\begin{pseudocode}{assign\_lab\_cell}{window, it, hour, day, group\_name, left\_hours}
+    \label{greedyaulas}
+    local\_window \GETS []\\
+    \FOREACH subject, i \in window, \CALL{range}{window.len} \DO
+    \BEGIN
+        \IF left\_hours[subject.acronym][i] > 0 \DO
+            local\_window.\CALL{append}{subject}
+        \ELSE 
+            local\_window.\CALL{append}{\CALL{Subject}{}}\\
+    \END\\
+
+    \IF time\_table[it, hour, day] = \CALL{PracticeCell}{} \DO
+    \BEGIN
+        time\_table[it, hour, day] = \CALL{PracticeCell}{group\_name, subjects=local\_window}\\
+        \FOREACH sbj, i \in window, \CALL{range}{groupos[group\_name].numsubgroups} \DO
+        \BEGIN
+            \FOREACH lab \in window, possible\_classrooms[group\_name] \DO
+            \BEGIN
+                \IF \NOT practices\_classrooms[lab].time\_table[hour, day] \DO
+                \BEGIN
+                    practices\_classrooms[lab].time\_table[hour, day] \GETS True\\
+                    time\_table.classrooms.\CALL{append}{lab}\\
+                    \IF left\_hours[sbj.acronym] > 0 \DO
+                    \BEGIN
+                        left\_hours[sbj.acronym] \GETS left\_hours[sbj.acronym] - 1\\
+                    \END
+                \END
+            \END    
+        \END
+    \END
+    \ELSE \DO
+    \BEGIN
+        indexes \GETS \CALL{gets\_empty\_subjects}{time\_table[it, hour,day]subjects}\\
+        subjs \GETS \CALL {gets\_empty\_cells}{window}\\
+        \FOREACH subject, l \in window, possible\_classrooms[group\_name] \DO
+        \BEGIN
+            \FOREACH h \in l \DO
+            \BEGIN
+                \IF time\_table[it, hour, day].subjects[h] = \CALL{Subject}{} \AND left\_hours[s][h] > 0 \DO
+                \BEGIN
+                    time\_table[it, hour, day].subjects[h] \GETS subjects[s]\\
+                    left\_hours[s][h] \GETS left\_hours[s][h] - 1 \\
+                \END
+            \END
+        \END            
+    \END
+\end{pseudocode}
+
+Este algoritmo toma como entradas la ventana actuál que estamos usando para asignar las asignaturas de prácticas, la iteración en la que se encuentra (es decir, el grupo al que se le está asignando las aulas), la hora, el día, el nombre del grupo y las horas restantes para la ventana.
+
+En la primera parte del algoritmo, el algoritmo calcula una nueva ventana local, en la que se introducen aquellas asignaturas de la ventana que tienen aún horas por asignar, mientras que, si alguna de las asignaturas tiene ya todas sus horas asignadas, se introduce una asignatura vacía. Esto es así por varios motivos. 
+
+El primero de estos motivos es que si existe alguna asignatura como puede ser \textit{Algorítmica} que tienen una sola hora de prácticas, se asignará la primera hora, y en la siguiente dejará un hueco. En este caso, ese hueco lo rellenará una asignatura vacía cuyo uso, nos lleva a la siguiente razón de la existencia de esta asignatura vacía.
+
+El uso de esta asignatura vacía viene en que, una vez haya terminado el algoritmo de asignar aulas, es posible que alguna asignatura tenga horas aún por asignar. Por tanto, en vez de ocupar una nueva hora en el horario, el algoritmo buscará los huecos que hayan dejado las asignaturas vacías, ocupándolos con estas asignaturas que aún tienen horas por asignar.
 
 \section{Problemas con esta primera aproximación}
 A la hora de implementar esta versión nos hemos encontrado con varios problemas:
