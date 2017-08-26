@@ -1,8 +1,9 @@
 from django.db import models
 
 class Classroom(models.Model):
-    name     = models.CharField(max_length=50)
-    capacity = models.PositiveSmallIntegerField(default=0)
+    name       = models.CharField(max_length=50)
+    capacity   = models.PositiveSmallIntegerField(default=0)
+    ispractice = models.BooleanField(default=True)
 
     def __str__(self):
         return "{}, {}".format(self.name, self.capacity)
