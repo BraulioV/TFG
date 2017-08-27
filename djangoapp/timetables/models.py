@@ -8,7 +8,7 @@ class Classroom(models.Model):
     def __str__(self):
         return "{}, {}".format(self.name, self.capacity)
 
-class Subject(models.Model):
+class Subjects(models.Model):
     name       = models.CharField(max_length=200)
     thours     = models.PositiveSmallIntegerField(default=0)
     phours     = models.PositiveSmallIntegerField(default=0)
@@ -23,7 +23,7 @@ class Subject(models.Model):
     def __str__(self):
         return "{}, {}".format(self.name, self.acronym)
 
-class Group(models.Model):
+class Groups(models.Model):
     name          = models.CharField(max_length=50)
     shift         = models.CharField(max_length=2)
     year          = models.PositiveSmallIntegerField(default=0)

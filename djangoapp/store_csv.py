@@ -35,7 +35,7 @@ for file, obj_class_name in zip(files, classes):
     # get class
     obj_class = getattr(import_module(module_name), obj_class_name)
     # read data
-    data = pd.read_csv(filepath_or_buffer=file, sep=";")
+    data = pd.read_csv(filepath_or_buffer=file, sep=";", true_values=["T"], false_values=["F"])
 
     for row in data.iterrows():
         aux = obj_class()
