@@ -5,6 +5,7 @@ from os import environ
 environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoapp.settings")
 import django
 django.setup()
+from django.db.models import Q
 
 
 def create_practice_classroom(filename, days, hours_per_day):
@@ -23,7 +24,7 @@ def create_practice_classroom(filename, days, hours_per_day):
     return classroom
 
 def create_classroom_from_db(days, hours_per_day):
-    classes = Classroom.objects.filter(ispractice=True) # retrieve all labs
+    classes = Classroom.objects.filter(Q(ispractice="No") | Q(ispractice="Both")) # retrieve all labs
     classroom = {}
     for c in classes:
         classroom[c.name] = PracticeClassRoom([], days, hours_per_day, c.name, c.capacity)
