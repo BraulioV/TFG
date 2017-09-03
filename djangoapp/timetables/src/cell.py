@@ -21,3 +21,6 @@ class Cell:
 
     def is_free(self, window=None, subj_name_hours=None):
         return self.subject == '-'
+
+    def dict_cell(self):
+        return {'classroom': self.classroom, 'subject': self.subject, 'ispractice':False}

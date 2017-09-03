@@ -1,5 +1,9 @@
 import numpy as np
-import sub_group
+from os import environ
+from timetables.models import Groups
+environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoapp.settings")
+import django
+django.setup()
 
 def create_group(filename, classroom_list):
     groups = {}
@@ -15,13 +19,23 @@ def create_group(filename, classroom_list):
 
     return groups
 
+def create_group_from_db(classroom_list):
+    group = {}
+    groups = Groups.objects.all()
+    for g in groups:
+        semesters = map(int, g.semester.split(','))
+        group[g.name] = Group(g.name, g.shift, g.year, g.numsubgroups, 
+                              classroom_list[g.classroom.name], g.degree, 
+                              g.speciality, semesters)
+    return group
+
 class Group:
 
     """ Class to model a group of students """
 
-    def __init__(self, name, franja, year, numsubgroups, classroom, 
+    def __init__(self, name, shift, year, numsubgroups, classroom, 
                  degree, speciality, semester):
-        self.shift = franja
+        self.shift = shift
         self.year = year
         self.numsubgroups = numsubgroups
         self.classroom = classroom
