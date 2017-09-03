@@ -10,7 +10,8 @@ def index(request):
 def senddata(request):
     days = int(request.POST['days'])
     hours = int(request.POST['hours'])
-    timetable = compute_timetable(days, hours)
+    semester = int(request.POST['semester'])
+    timetable = compute_timetable(days, hours, semester)
 
     request.session['days']  = days
     request.session['hours'] = hours
