@@ -1,5 +1,11 @@
 import numpy as np
-from classroom import ClassRoom
+from .classroom import ClassRoom
+from timetables.models import Classroom
+from os import environ
+environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoapp.settings")
+import django
+django.setup()
+
 
 def create_practice_classroom(filename, days, hours_per_day):
     # Empty list of different classrooms
@@ -13,6 +19,14 @@ def create_practice_classroom(filename, days, hours_per_day):
             materials = set(l[-1].split('-'))
             classroom[l[0]] = PracticeClassRoom(set(map(lambda x: str.upper(x), materials)),
                                                 days, hours_per_day, l[0], int(l[1]))
+
+    return classroom
+
+def create_classroom_from_db(days, hours_per_day):
+    classes = Classroom.objects.filter(ispractice=True) # retrieve all labs
+    classroom = {}
+    for c in classes:
+        classroom[c.name] = PracticeClassRoom([], days, hours_per_day, c.name, c.capacity)
 
     return classroom
 

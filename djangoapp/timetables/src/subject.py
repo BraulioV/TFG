@@ -1,5 +1,10 @@
 ## import statements
 import csv
+from timetables.models import Subjects, Classroom
+from os import environ
+environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoapp.settings")
+import django
+django.setup()
 
 def create_subject(filename):
     # Empty dict of different subjects
@@ -38,7 +43,16 @@ def create_lab_subjects_dict(filename):
 
     return dict
 
+def create_subject_from_db():
+    subjects = Subjects.objects.all()
+    subject = {}
+    classes_subjects = {}
+    for s in subjects:
+        subject[s.acronym] = Subject(s.name, s.acronym, s.thours, s.phours, s.year,
+                                     s.semester, s.degree, s.speciality)
+        classes_subjects[s.acronym] = list(map(lambda x: x.name, s.classroom.all()))
 
+    return subject, classes_subjects
 
 class Subject:
 

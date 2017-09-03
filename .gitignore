@@ -229,5 +229,8 @@ target/
 # Pycharm stuff
 .idea
 .idea/*
-resources/Outputs/prueba.tex
+djangoapp/timetables/src/resources/Outputs/prueba.tex
 doc/release/release/
+
+# Database
+*.sqlite3

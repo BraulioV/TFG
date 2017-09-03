@@ -1,7 +1,12 @@
 import numpy as np
+from timetables.models import Classroom
+from os import environ
+environ.setdefault("DJANGO_SETTINGS_MODULE", "djangoapp.settings")
+import django
+django.setup()
 
 
-def create_classroom(filename, days, hours_per_day):
+def create_classroom_from_csv(filename, days, hours_per_day):
     # Empty list of different classrooms
     classroom = {}
     with open(filename, 'r') as f:
@@ -14,6 +19,13 @@ def create_classroom(filename, days, hours_per_day):
 
     return classroom
 
+def create_classroom_from_db(days, hours_per_day):
+    classes = Classroom.objects.filter(ispractice=False) # retrieve all theory classes
+    classroom = {}
+    for c in classes:
+        classroom[c.name] = ClassRoom(days, hours_per_day, c.name, c.capacity)
+
+    return classroom
 
 class ClassRoom:
 
