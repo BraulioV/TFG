@@ -11,26 +11,34 @@
 </head>
 <body>
 <div class="container-fluid">
-	<div class="dropdown">
-		<button class="btn btn-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		Groups
-		</button>
-		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-			{% for group in request.session.full_timetable.keys %}
-				<a class="dropdown-item" href="{% url 'timetables:showdata' group %}">{{ group }}</a>
-			{% endfor %}
+	<div class="row">
+		<div class="col">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Groups
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					{% for group in request.session.full_timetable.keys %}
+						<a class="dropdown-item" href="{% url 'timetables:showdata' group %}">{{ group }}</a>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+
+		<div class="col" style="text-align: right">
+			<a href="{% url 'timetables:pdf' %}"><button type="button" class="btn btn-primary">Generate PDF</button></a>
 		</div>
 	</div>
 
-	<table class="table table-responsive table-bordered" style="text-align: center">
+	<table class="table table-responsive table-bordered">
 		<thead class="thead-inverse">
 			<tr>
-				<th>Hora</th>
-				<th colspan="{{ request.session.numsubgroups }}">Lunes</th>
-				<th colspan="{{ request.session.numsubgroups }}">Martes</th>
-				<th colspan="{{ request.session.numsubgroups }}">Miércoles</th>
-				<th colspan="{{ request.session.numsubgroups }}">Jueves</th>
-				<th colspan="{{ request.session.numsubgroups }}">Viernes</th>
+				<th>Hour</th>
+				<th colspan="{{ request.session.numsubgroups }}">Monday</th>
+				<th colspan="{{ request.session.numsubgroups }}">Tuesday</th>
+				<th colspan="{{ request.session.numsubgroups }}">Wednesday</th>
+				<th colspan="{{ request.session.numsubgroups }}">Thursday</th>
+				<th colspan="{{ request.session.numsubgroups }}">Friday</th>
 			</tr>
 		</thead>
 		<tbody>

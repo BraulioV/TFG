@@ -25,6 +25,8 @@ class TimeTable:
     """
     def __init__(self, n_days, n_hours, groups, classrooms, practices_classrooms,
                 subjects, semester, class_dict):
+        self.days = n_days
+        self.hours = n_hours
         self.time_table = np.full((len(groups), n_hours, n_days), fill_value = Cell(), dtype=Cell)
         self.structure = np.full((len(groups), n_hours, n_days), fill_value='E', dtype=str) # empty
         self.groups = dict(filter(lambda g: semester in g[1].semester, groups.items()))
@@ -37,10 +39,25 @@ class TimeTable:
         self.lab_class_dict = class_dict
 
     # define default json encoder
-    def default(self):
+    def dict_timetable(self):
         hours = ['08:30 - 09:30', '09:30 - 10:30', '10:30 - 11:30', '11:30 - 12:30', '12:30 - 13:30', '13:30 - 14:30',
          '15:30 - 16:30', '16:30 - 17:30', '17:30 - 18:30', '18:30 - 19:30', '19:30 - 20:30', '20:30 - 21:30']
-        return {g:{h:[c.default() for c in r] for h,r in zip(hours, t)} for g,t in zip(self.groups.keys(), self.time_table)}
+        return {g:{h:[c.dict_cell() for c in r] for h,r in zip(hours, t)} for g,t in zip(self.groups.keys(), self.time_table)}
+
+    def get_timetable_from_json(self, timetable_json):
+        it = 0
+        for g,timetable_group in timetable_json.items():
+            for timetable_week,h in zip(timetable_group.values(), range(self.hours)):
+                for timetable_cell,d in zip(timetable_week, range(self.days)):
+                    if not timetable_cell['ispractice'] and timetable_cell['subject'] == '-':
+                        cell = Cell()
+                    else:
+                        cell = PracticeCell(subjects=timetable_cell['subject'], classrooms=timetable_cell['classroom']) \
+                               if timetable_cell['ispractice'] \
+                               else Cell(group=g, subject=timetable_cell['subject'], classroom=timetable_cell['classroom'])
+
+                    self.time_table[it,h,d] = cell
+            it+=1
 
     def __get_subj_list__(self, group):
         return list(filter(lambda x: x.year == group.year and x.speciality == group.speciality,

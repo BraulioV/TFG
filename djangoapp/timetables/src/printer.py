@@ -1,7 +1,7 @@
 from subprocess import call
 
-HEADER = "../resources/header.tex"
-OUTPUT = "../resources/Outputs/"
+HEADER = "timetables/src/resources/header.tex"
+OUTPUT = "timetables/src/resources/Outputs/"
 WEEK   = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
 HOURS = ['8:30 - 9:30', '9:30 - 10:30', '10:30 - 11:30', '11:30 - 12:30', '12:30 - 13:30', '13:30 - 14:30',
          '15:30 - 16:30', '16:30 - 17:30', '17:30 - 18:30', '18:30 - 19:30', '19:30 - 20:30', '20:30 - 21:30']
@@ -43,9 +43,9 @@ def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours):
                     for s,c in zip(celda.subjects, celda.classrooms):
                         table += " & "
                         if i == 0:
-                            table += "\\textbf{" + s.acronym + "}"
-                        elif type(c).__name__ == "PracticeClassRoom":
-                            table += "{\\footnotesize " + c.classroom_name + "}"
+                            table += "\\textbf{" + s + "}"
+                        else:
+                            table += "{\\footnotesize " + c + "}"
             if i==1:
                 table += "\\\\ \n \\hline\n"
             else:

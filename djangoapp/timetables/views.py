@@ -8,13 +8,13 @@ def index(request):
     return render(request, 'timetables/index.html')
 
 def senddata(request):
-    days = request.POST['days']
-    hours = request.POST['hours']
+    days = int(request.POST['days'])
+    hours = int(request.POST['hours'])
     timetable = compute_timetable(days, hours)
 
     request.session['days']  = days
     request.session['hours'] = hours
-    request.session['full_timetable'] = timetable.default()
+    request.session['full_timetable'] = timetable.dict_timetable()
 
     return HttpResponseRedirect(reverse('timetables:showdata', args=('1A',)))
 
@@ -24,3 +24,10 @@ def showdata(request, groupname):
     request.session['numsubgroups'] = Groups.objects.get(name=groupname).numsubgroups
 
     return render(request, 'timetables/showdata.html', context={'groupname':groupname})
+
+def pdf(request):
+    make_pdf(request.session['full_timetable'], request.session['days'], request.session['hours'])
+    with open('timetables/src/resources/Outputs/prueba.pdf', 'rb') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'filename=prueba.pdf'
+        return response

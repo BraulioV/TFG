@@ -35,6 +35,6 @@ class PracticeCell (Cell):
     def __repr__(self):
         return str(self.subjects) + " " + str(self.classrooms)
 
-    def default(self):
+    def dict_cell(self):
         return {'classroom': [c.classroom_name if isinstance(c,PracticeClassRoom) else c for c in self.classrooms], 
                 'subject': [s.acronym for s in self.subjects], 'ispractice': True}
