@@ -26,7 +26,7 @@ def compute_timetable(days, hours, semester):
 
     return time_table
 
-def make_pdf(timetable_json, days, hours):
+def make_pdf(timetable_json, days, hours, semester):
     """
     function that prints a pdf with the final timetable
     """
@@ -36,6 +36,6 @@ def make_pdf(timetable_json, days, hours):
     subjects, dict_lab_class = subject.create_subject_from_db()
     time_table = timetable.TimeTable(n_days=int(days), n_hours=int(hours), groups=groups,
                           classrooms=classrooms, practices_classrooms=pclassrooms,
-                          subjects=subjects, semester=1, class_dict=dict_lab_class)
+                          subjects=subjects, semester=semester, class_dict=dict_lab_class)
     time_table.get_timetable_from_json(timetable_json)
     generate_pdf(timetable=time_table, name="prueba")
