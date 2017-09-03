@@ -229,7 +229,7 @@ target/
 # Pycharm stuff
 .idea
 .idea/*
-resources/Outputs/prueba.tex
+**resources/Outputs/prueba.tex
 doc/release/release/
 
 # Database
