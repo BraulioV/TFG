@@ -8,7 +8,7 @@ In `djangoapp` directory run:
 ```shellsession
 $ python manage.py makemigrations timetables
 $ python manage.py migrate
-$ python store_csv ../Dataset/classrooms.csv Classroom ../Dataset/subjects.csv Subject ../Dataset/groups.csv Groups
+$ python store_csv.py ../Dataset/classrooms.csv Classroom ../Dataset/subjects.csv Subjects ../Dataset/groups.csv Groups
 $ python manage.py runserver
 ```
 Must be runned with **Python 3**
