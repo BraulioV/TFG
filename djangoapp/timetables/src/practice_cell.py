@@ -37,4 +37,4 @@ class PracticeCell (Cell):
 
     def default(self):
         return {'classroom': [c.classroom_name if isinstance(c,PracticeClassRoom) else c for c in self.classrooms], 
-                'subject': [s.acronym for s in self.subjects]}
+                'subject': [s.acronym for s in self.subjects], 'ispractice': True}

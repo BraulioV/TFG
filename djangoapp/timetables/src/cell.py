@@ -26,4 +26,4 @@ class Cell:
         return self.subject == '-'
 
     def default(self):
-        return {'classroom': self.classroom, 'subject': self.subject}
+        return {'classroom': self.classroom, 'subject': self.subject, 'ispractice':False}

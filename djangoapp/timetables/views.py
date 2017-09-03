@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .timetable_main import *
-import sys
 
 def index(request):
     return render(request, 'timetables/index.html')
