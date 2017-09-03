@@ -1,3 +1,6 @@
+# from json import JSONEncoder
+import json
+
 class Cell:
     def __init__(self, group = "-", classroom = "-", subject = "-"):
         self.group = group
@@ -21,3 +24,6 @@ class Cell:
 
     def is_free(self, window=None, subj_name_hours=None):
         return self.subject == '-'
+
+    def default(self):
+        return {'classroom': self.classroom, 'subject': self.subject}

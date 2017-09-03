@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Django Forms Tutorial</title>
+    <meta charset="utf-8">
+    <title>TFG</title>
 </head>
 <body>
-<p>{{ hours }}</p>
-<p>{{ days }}</p>
+    {% for timetable in request.session.timetable.keys %}
+        <p>{{ timetable }}</p>
+    {% endfor %}
 </body>
 </html>

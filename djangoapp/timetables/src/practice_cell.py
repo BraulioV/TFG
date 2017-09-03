@@ -1,6 +1,8 @@
-from cell import Cell
-from subject import Subject
-from practice_classroom import PracticeClassRoom
+from .cell import Cell
+from .subject import Subject
+from .practice_classroom import PracticeClassRoom
+import json
+# from json import JSONEncoder
 """
 This class represents a lab cell in the time table, where there are
 subgroups of the original one. Each with a different subject
@@ -32,3 +34,7 @@ class PracticeCell (Cell):
 
     def __repr__(self):
         return str(self.subjects) + " " + str(self.classrooms)
+
+    def default(self):
+        return {'classroom': [c.classroom_name if isinstance(c,PracticeClassRoom) else c for c in self.classrooms], 
+                'subject': [s.acronym for s in self.subjects]}

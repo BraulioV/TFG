@@ -1,12 +1,11 @@
-from cell import Cell
-from practice_cell import PracticeCell
+from .cell import Cell
+from .practice_cell import PracticeCell
+from .subject import Subject
 import numpy as np
 from random import shuffle, choices
 from itertools import takewhile, dropwhile
-from subject import Subject
 from copy import deepcopy
 from math import ceil
-
 
 class TimeTable:
 
@@ -34,8 +33,14 @@ class TimeTable:
         self.subjects = dict(filter(lambda s: s[1].semester == semester, subjects.items()))
         self.semester = semester
         self.possible_pr_classrooms = {}
-        self.__get_possible_classrooms__()
+        # self.__get_possible_classrooms__()
         self.lab_class_dict = class_dict
+
+    # define default json encoder
+    def default(self):
+        hours = ['08:30 - 09:30', '09:30 - 10:30', '10:30 - 11:30', '11:30 - 12:30', '12:30 - 13:30', '13:30 - 14:30',
+         '15:30 - 16:30', '16:30 - 17:30', '17:30 - 18:30', '18:30 - 19:30', '19:30 - 20:30', '20:30 - 21:30']
+        return {g:{h:[c.default() for c in r] for h,r in zip(hours, t)} for g,t in zip(self.groups.keys(), self.time_table)}
 
     def __get_subj_list__(self, group):
         return list(filter(lambda x: x.year == group.year and x.speciality == group.speciality,
