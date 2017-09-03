@@ -205,11 +205,9 @@ class TimeTable:
 
         for year in years:
             th_ph_hours = [0,0]
-            # aux = list(takewhile(lambda x: x[1].year == year, subjects))
-            # subjects = list(dropwhile(lambda x: x[1].year == year, subjects))
-            aux = filter(lambda x: x.year == year, self.subjects.values())
+            aux = list(filter(lambda x: x.year == year, self.subjects.values()))
 
-            for subject in aux:
+            for subject in aux[:5]:
                 th_ph_hours[0] += subject.theoretical_hours
                 th_ph_hours[1] += subject.practical_hours
 
