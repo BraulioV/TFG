@@ -197,24 +197,23 @@ class TimeTable:
         This function compute the total theoretical hours and practical
         hours for each year of the degree. Returns a dict.
     """
-    def compute_total_hours(self):
+    def compute_total_hours(self, years):
 
-        hours_year, year = {}, 1
+        hours_year = {}
 
-        subjects = self.subjects.items()
+        # subjects = self.subjects.items()
 
-        while len(subjects) != 0:
+        for year in years:
             th_ph_hours = [0,0]
-            aux = list(takewhile(lambda x: x[1].year == year, subjects))
-            subjects = list(dropwhile(lambda x: x[1].year == year, subjects))
+            # aux = list(takewhile(lambda x: x[1].year == year, subjects))
+            # subjects = list(dropwhile(lambda x: x[1].year == year, subjects))
+            aux = filter(lambda x: x.year == year, self.subjects.values())
 
             for subject in aux:
-                th_ph_hours[0] += subject[1].theoretical_hours
-                th_ph_hours[1] += subject[1].practical_hours
-
+                th_ph_hours[0] += subject.theoretical_hours
+                th_ph_hours[1] += subject.practical_hours
 
             hours_year[year] = tuple(th_ph_hours)
-            year += 1
 
         return hours_year
 
@@ -227,7 +226,7 @@ class TimeTable:
         local_groups = dict(filter(lambda x: x[1].shift == shift, self.groups.items()))
 
         # compute total theory/lab hours for each year
-        hours = self.compute_total_hours()
+        hours = self.compute_total_hours(set(map(lambda x: x.year, local_groups.values())))
         n_groups = {}
 
         # compute total number of groups in given shift
