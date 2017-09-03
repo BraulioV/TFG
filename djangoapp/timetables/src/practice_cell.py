@@ -1,8 +1,7 @@
 from .cell import Cell
 from .subject import Subject
 from .practice_classroom import PracticeClassRoom
-import json
-# from json import JSONEncoder
+
 """
 This class represents a lab cell in the time table, where there are
 subgroups of the original one. Each with a different subject

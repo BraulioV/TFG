@@ -1,6 +1,3 @@
-# from json import JSONEncoder
-import json
-
 class Cell:
     def __init__(self, group = "-", classroom = "-", subject = "-"):
         self.group = group

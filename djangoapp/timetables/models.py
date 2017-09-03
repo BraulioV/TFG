@@ -36,26 +36,3 @@ class Groups(models.Model):
 
     def __str__(self):
         return "{}, {}".format(self.name, self.year)
-
-# class Cell(models.Model):
-#     subject   = [models.CharField(max_length=50, default='-')]
-#     classroom = [models.CharField(max_length=5, default='-')]
-
-#     def __str__(self):
-#         return "{} ({})".format(self.subject.name, self.classroom.name)
-
-# class Timetable(models.Model):
-#     group    = models.ForeignKey(Groups)
-#     table    = [models.ManyToManyField(Cell)]
-#     # row_0830 = models.ManyToManyField(Cell)
-#     # row_0930 = models.ManyToManyField(Cell)
-#     # row_1030 = models.ManyToManyField(Cell)
-#     # row_1130 = models.ManyToManyField(Cell)
-#     # row_1230 = models.ManyToManyField(Cell)
-#     # row_1330 = models.ManyToManyField(Cell)
-#     # row_1530 = models.ManyToManyField(Cell)
-#     # row_1630 = models.ManyToManyField(Cell)
-#     # row_1730 = models.ManyToManyField(Cell)
-#     # row_1830 = models.ManyToManyField(Cell)
-#     # row_1930 = models.ManyToManyField(Cell)
-#     # row_2030 = models.ManyToManyField(Cell)
