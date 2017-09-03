@@ -29,7 +29,7 @@ if __name__ == '__main__':
     # create a timetable object
     timetable = TimeTable(n_days=DAYS, n_hours=HOURS, groups=groups,
                           classrooms=classrooms, practices_classrooms=pclassrooms,
-                          subjects=subjects, semester=1, class_dict=dict_lab_class)
+                          subjects=subjects, semester=2, class_dict=dict_lab_class)
 
     timetable.__get_possible_classrooms__()
     timetable.preassignate_hour_by_year(shift='M')

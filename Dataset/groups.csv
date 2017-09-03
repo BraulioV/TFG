@@ -8,9 +8,9 @@ Name,Shift,Year,NumSubGroups,Classroom,Degree,Speciality,Semester
 2B,M,2,3,0.1,Grado en Ingeniería Informática,Troncal,1-2
 2C,T,2,3,0.7,Grado en Ingeniería Informática,Troncal,1-2
 2D,T,2,3,0.1,Grado en Ingeniería Informática,Troncal,1-2
-3A,T,3,3,1.2,Grado en Ingeniería Informática,Troncal,1-2
-3B,T,3,3,1.2,Grado en Ingeniería Informática,Troncal,1-2
-3C,T,3,2,1.1,Grado en Ingeniería Informática,Troncal,1-2
+3A,T,3,3,1.2,Grado en Ingeniería Informática,Troncal,1
+3B,T,3,3,1.2,Grado en Ingeniería Informática,Troncal,1
+3C,T,3,2,1.1,Grado en Ingeniería Informática,Troncal,1
 3IC,T,3,1,1.1,Grado en Ingeniería Informática,Ingeniería de Computadores,2
 3IS,T,3,3,1.2,Grado en Ingeniería Informática,Ingeniería del Software,2
 3CSI,T,3,3,0.2,Grado en Ingeniería Informática,Computación y Sistemas Inteligentes,2
