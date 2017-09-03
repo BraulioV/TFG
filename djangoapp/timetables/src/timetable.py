@@ -392,9 +392,10 @@ class TimeTable:
 
         return cell1, cell2
 
-    def recalculate_subjects(self, subject_list, n_groups):
+    def recalculate_subjects(self, subjects, n_groups):
         # search the subjects with odd lab hours
         ind = []
+        subject_list = list(filter(lambda x: x.practical_hours > 0, subjects))
         for i in range(len(subject_list)):
             if subject_list[i].practical_hours == 1 or subject_list[i].practical_hours == 3:
                 ind.append(i)
