@@ -16,8 +16,8 @@
 		Groups
 		</button>
 		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-			{% for group in request.session.timetable.keys %}
-				<a class="dropdown-item" href="#">{{ group }}</a>
+			{% for group in request.session.full_timetable.keys %}
+				<a class="dropdown-item" href="{% url 'timetables:showdata' group %}">{{ group }}</a>
 			{% endfor %}
 		</div>
 	</div>
@@ -26,15 +26,15 @@
 		<thead class="thead-inverse">
 			<tr>
 				<th>Hora</th>
-				<th colspan="3">Lunes</th>
-				<th colspan="3">Martes</th>
-				<th colspan="3">Miércoles</th>
-				<th colspan="3">Jueves</th>
-				<th colspan="3">Viernes</th>
+				<th colspan="{{ request.session.numsubgroups }}">Lunes</th>
+				<th colspan="{{ request.session.numsubgroups }}">Martes</th>
+				<th colspan="{{ request.session.numsubgroups }}">Miércoles</th>
+				<th colspan="{{ request.session.numsubgroups }}">Jueves</th>
+				<th colspan="{{ request.session.numsubgroups }}">Viernes</th>
 			</tr>
 		</thead>
 		<tbody>
-		{% for hour, week in request.session.timetable.1A.items %}
+		{% for hour, week in request.session.timetable.items %}
 			<tr>
 				<th scope="row" rowspan="2"> {{ hour }}</th>
 				{% for column in week %}
@@ -43,7 +43,7 @@
 							<td>{{ s }}</td>
 						{% endfor %}
 					{% else %}
-						<td colspan="3">{{ column.subject }}</td>
+						<td colspan="{{ request.session.numsubgroups }}">{{ column.subject }}</td>
 					{% endif %}
 				{% endfor %}
 			</tr>
@@ -54,7 +54,7 @@
 							<td>{{ c }}</td>
 						{% endfor %}
 					{% else %}
-						<td colspan="3">{{ column.classroom }}</td>
+						<td colspan="{{ request.session.numsubgroups }}">{{ column.classroom }}</td>
 					{% endif %}
 				{% endfor %}
 			</tr>
