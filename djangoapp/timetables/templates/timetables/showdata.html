@@ -10,8 +10,19 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="container-fluid" style="text-align: center">
-	<table class="table table-responsive table-bordered">
+<div class="container-fluid">
+	<div class="dropdown">
+		<button class="btn btn-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		Groups
+		</button>
+		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			{% for group in request.session.timetable.keys %}
+				<a class="dropdown-item" href="#">{{ group }}</a>
+			{% endfor %}
+		</div>
+	</div>
+
+	<table class="table table-responsive table-bordered" style="text-align: center">
 		<thead class="thead-inverse">
 			<tr>
 				<th>Hora</th>

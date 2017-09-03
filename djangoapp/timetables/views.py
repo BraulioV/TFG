@@ -15,8 +15,8 @@ def senddata(request):
     request.session['hours'] = hours
     request.session['timetable'] = timetable.default()
 
-    return HttpResponseRedirect(reverse('timetables:showdata'))
+    return HttpResponseRedirect(reverse('timetables:showdata', args=('1A',)))
 
 
-def showdata(request):
-    return render(request, 'timetables/showdata.html')
+def showdata(request, groupname):
+    return render(request, 'timetables/showdata.html', context={'groupname':groupname})
