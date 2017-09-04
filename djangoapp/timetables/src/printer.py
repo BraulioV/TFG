@@ -4,9 +4,10 @@ HEADER = "timetables/src/resources/header.tex"
 OUTPUT = "timetables/src/resources/Outputs/"
 WEEK   = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
 HOURS = ['8:30 - 9:30', '9:30 - 10:30', '10:30 - 11:30', '11:30 - 12:30', '12:30 - 13:30', '13:30 - 14:30',
-         '15:30 - 16:30', '16:30 - 17:30', '17:30 - 18:30', '18:30 - 19:30', '19:30 - 20:30', '20:30 - 21:30']
+         '15:30 - 16:30', '16:30 - 17:30', '17:30 - 18:30', '18:30 - 19:30', '19:30 - 20:30', '20:30 - 21:30',
+         '20:30 - 21:30']
 
-def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours):
+def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours, n_days, n_hours):
     if sm == 1:
         semester = "1er. Cuatrimestre"
     else:
@@ -20,12 +21,12 @@ def timetable_for_one(timetable, group, sm, subjects, days_of_week, hours):
     table="\\begin{minipage}{0.7\\textwidth}\n"
     # Header of the table + days of the week
     table+="\\begin{tabular}{|c|" + ("c"*group.numsubgroups + "|")*timetable.shape[1] + "}\n\\hline\n" \
-          "\\rowcolor{amarillo} \\multicolumn{" + str(5*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + \
-          title + "}}\\\\ \n\\rowcolor{amarillo}\\multicolumn{" + str(5*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + \
+          "\\rowcolor{amarillo} \\multicolumn{" + str(n_days*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + \
+          title + "}}\\\\ \n\\rowcolor{amarillo}\\multicolumn{" + str(n_days*group.numsubgroups + 1) + "}{|c|}{\\textbf{" + \
           semester + "}}\\\\ \n\\hline \n & \\multicolumn{" + str(group.numsubgroups) + "}{|c|}{" + \
-          ("} & \\multicolumn{" + str(group.numsubgroups) + "}{|c|}{").join(days_of_week) + "} \\\\ \n\\hline"
+          ("} & \\multicolumn{" + str(group.numsubgroups) + "}{|c|}{").join(days_of_week[:n_days]) + "} \\\\ \n\\hline"
 
-    for h, fila in zip(hours, timetable):
+    for h, fila in zip(hours[:n_hours], timetable):
         table += "\\multirow{2}{*}{" + h + "} "
         for i in range(2):
             for celda in fila:
@@ -72,7 +73,7 @@ def generate_pdf(timetable, name, days_of_week=WEEK, hours=HOURS):
             table = timetable_for_one(timetable=it, group=group, sm=timetable.semester,
                                       subjects=filter(lambda x: x.year == group.year and x.speciality == group.speciality,
                                                       timetable.subjects.values()),
-                                      days_of_week=days_of_week, hours=hours)
+                                      days_of_week=days_of_week, hours=hours, n_days=timetable.days, n_hours=timetable.hours)
             output.write(table)
 
         output.write("\n\\end{document}\n")
