@@ -2,6 +2,8 @@ all: doc clean
 
 doc:
 	@pdflatex -shell-escape  -output-directory ./release titulo.tex
+	@bibtex ./release/titulo.aux
+	@pdflatex -shell-escape  -output-directory ./release titulo.tex
 	@pdflatex -shell-escape  -output-directory ./release titulo.tex
 	
 
