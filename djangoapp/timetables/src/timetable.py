@@ -3,7 +3,7 @@ from .practice_cell import PracticeCell
 from .subject import Subject
 import numpy as np
 from random import shuffle, choices
-from itertools import takewhile, dropwhile
+from itertools import compress
 from copy import deepcopy
 from math import ceil
 
@@ -450,7 +450,8 @@ class TimeTable:
             for hour in range(start_range, end_range, 2):
                 for day in range(days_week):
                     # if the cell is a lab cell, let's fill it
-                    if self.structure[it, hour, day] == 'L' or self.structure[it, hour, day] == 'E':
+                    if (self.structure[it, hour, day] == 'L' or self.structure[it, hour, day] == 'E')\
+                            and sum(compress(hours, map(lambda x: x in subjects_index, range(len(hours))))) > 0:
                         cell1, cell2 = self.compute_best_cells(group, subject_list, subjects_index, hours, hour, day)
                         self.time_table[it, hour, day] = cell1
                         self.time_table[it, hour + 1, day] = cell2
