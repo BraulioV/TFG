@@ -1,12 +1,39 @@
 \chapter{Segunda aproximación Greedy}
-Para resolver los problemas de la primera aproximación realizada, se ha desarrollado un segundo algoritmo greedy. A esta segunda aproximación se le ha añadido un algoritmo previo que sirve para hacer la estructura del horario y cuyo objetivo es minimizar la ocupación de los laboratorios de prácticas.
+% Para resolver los problemas de la primera aproximación realizada, se ha desarrollado un segundo algoritmo greedy. A esta segunda aproximación se le ha añadido un algoritmo previo que sirve para hacer la estructura del horario y cuyo objetivo es minimizar la ocupación de los laboratorios de prácticas.
+
+A raíz de los problemas vistos en la versión anterior, se optó por modificar lo desarrollado hasta ahora y hacer una segunda versión del algoritmo greedy capaz de solventar estos problemas y mejorar la calidad de las soluciones. 
+
+En esta segunda aproximación se realizan varias cosas:
+
+\begin{enumerate}
+  \item Simplificación del modelo: se reestructurarán las clases, eliminando elementos innecesarios que aumentan la complejidad del algoritmo y por tanto la complejidad del problema. 
+  \item Añadir un paso previo al algoritmo: este paso previo consiste en calcular la estructura básica del horario, preasignando celdas como celdas de teoría o de prácticas, independientemente de la asignatura que se vaya a asignar para facilitar la composición del horario. Más adelante se verá esto con más detalle.
+\end{enumerate}
+
+\section{Simplificación del modelo}
+
+Una de las simplificaciones más importantes que se ha hecho del modelo es la eliminación total de los materiales que tiene cada aula y que necesita cada asignatura. Esto simplifica, aunque pueda parecer muy simple, simplifica enormemente el modelo. Pero esta modificación no se hace así sin más, sino que en vez de haber una lista de materiales posibles y necesitados y buscar posibles aulas haciendo una intersección, se cambia esto por una lista de aulas en las que se puede impartir una asignatura y se elige entre estas. A continuación, en la \hyperref[clases3]{Figura \ref*{clases3}}, se puede ver un nuevo diagrama de clases conceptual en el que se introduce la lista de posibles aulas y se eliminan los materiales.
+
+\begin{figure}
+  \input{clases3.tex}
+  \caption{Nuevo diagrama de clases conceptual.}
+  \label{clases3}
+\end{figure}
+
+Esto puede parecer un poco simple, pero añade mucha flexibilidad al modelo, ya que podemos guiar el espacio de búsqueda para las aulas de prácticas restringiendo las aulas que pueden tomar ciertas asignaturas y cuales no, lo que permite una flexibilidad enorme. Además de esto, controlar las aulas más problemáticas como las que necesita \textit{Fundamentos de Redes} o \textit{Tecnología y Organización de los Computadores}, que son aulas muy específicas, es tan sencillo como limitar las aulas posibles a esas aulas, y ya el sistema se encarga de asignarlo de forma eficiente.
 
 \section{Preasignación de horas}
-En esta fase lo único que se decide es qué horas serán de prácticas y cuáles serán de teoría sin asignar ninguna asignatura en concreto. El objetivo de esta fase de preasignación es minimizar la ocupación de los laboratorios de prácticas y evitar así que se saturen.
+En esta fase lo único que se decide es qué horas serán de prácticas y cuáles serán de teoría sin asignar ninguna asignatura en concreto. El objetivo de esta fase de preasignación es minimizar la ocupación de los laboratorios de prácticas y evitar así que se saturen tanto las aulas de prácticas como las de teoría. 
 
-Por sencillez, el algoritmo recibe como parámetro una franja horaria (mañana o tarde) por lo que antes de empezar debe filtrar los grupos que pertenecen a dicha franja horaria. Una vez filtrados empieza a iterar sobre todos los cursos. 
+A su vez, esto nos permite simplificar el algoritmo mucho, ya que aunque que haya que añadir una fase más al algoritmo, en las fases siguientes es solo rellenar ``el puzzle con pistas'' que nos ha dejado esta fase, simplificando tanto la estructura de los algoritmos, tiempos de ejecución, consumo de memoria, etc.
 
-En primer lugar, calcula las horas de teoría y de prácticas que tiene cada curso y, después, calcula el número total de horas de prácticas que hay en los laboratorios. Por ejemplo, si los laboratorios están abiertos cinco días a la semana y cuatro horas al día tendríamos un total de 20 horas. Como cada turno de prácticas tiene dos horas, nos quedarían un total de diez turnos de prácticas por asignar. Si, por ejemplo, tuviésemos que asignar doce turnos de prácticas, tendríamos que elegir de forma aleatoria dos turnos que se repetirían. Debe ser de forma aleatoria para que los turnos ``repetidos'' no coincidan en los distintos cursos y se saturen los laboratorios un día en concreto.
+Por sencillez, se ha decidido que este algoritmo sólo calcula una franja, en vez de las dos para que el algoritmo sea más simple. Esta franja se decide mediante un parámetro en el que se establece la franja horaria (mañana o tarde). Es por esto, por lo que deben filtrarse los grupos y trabajar con aquellos que pertenezcan al turno que se está calculando. Una vez filtrados estos grupos, el algoritmo irá calculando la estructura para cada uno de los cursos que corresponden.
+
+% Por sencillez, el algoritmo recibe como parámetro una franja horaria (mañana o tarde) por lo que antes de empezar debe filtrar los grupos que pertenecen a dicha franja horaria. Una vez filtrados empieza a iterar sobre todos los cursos. 
+
+El algoritmo antes de comenzar el bucle principal, realiza una serie de cálculos. Para empezar, calcula el número total de horas de teoría y prácticas que tiene para cada curso. Además de esto, hay que calcular el número de horas totales libres de laboratorio que hay, para comprobar si en algún momento en el horario habrá grupos que tengan en el mismo instante de tiempo prácticas a la vez. Por ejemplo, si los laboratorios están abiertos cinco días a la semana y cuatro horas al día tendríamos un total de 20 horas. Como cada turno de prácticas tiene dos horas, nos quedarían un total de diez turnos de prácticas por asignar. Si, por ejemplo, tuviésemos que asignar doce turnos de prácticas, tendríamos que elegir de forma aleatoria dos turnos de prácticas que se repetirían. Debe ser de forma aleatoria para que los turnos ``repetidos'' no coincidan en los distintos cursos y se saturen los laboratorios un día en concreto.
+
+% En primer lugar, calcula las horas de teoría y de prácticas que tiene cada curso y, después, calcula el número total de horas de prácticas que hay en los laboratorios. 
 
 Después, el algoritmo empieza a iterar sobre cada grupo de ese curso y va asignando horas de prácticas y teoría en los huecos ``libres''. Para saber qué huecos están libres se usa una matriz auxiliar que registra qué horas son de prácticas en cada curso.
 
@@ -23,7 +50,7 @@ final \GETS \CALL{FinalFranja}{turno}\\
 \BEGIN
     filtro\_cursos \GETS \CALL{FiltrarGruposCurso}{curso, filtro\_grupos}\\
     h\_lab \GETS \CALL{CalcularHorasPracticasCurso}{curso}\\
-    h\_week \GETS dias\_semana * n\_turnos\\
+    h\_week \GETS dias\_semana \cdot n\_turnos\\
 
     \IF h\_lab > h\_week \THEN
 	    	dias\_rep \GETS \CALL{CalcularTurnosRepetidos}{ }\\

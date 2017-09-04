@@ -566,6 +566,8 @@ El primero de estos motivos es que si existe alguna asignatura como puede ser \t
 
 El uso de esta asignatura vacía viene en que, una vez haya terminado el algoritmo de asignar aulas, es posible que alguna asignatura tenga horas aún por asignar. Por tanto, en vez de ocupar una nueva hora en el horario, el algoritmo buscará los huecos que hayan dejado las asignaturas vacías, ocupándolos con estas asignaturas que aún tienen horas por asignar.
 
+Con este cambio, se mejora la calidad de los resultados, ya que salen horarios más compactos y se optimiza el espacio del que dispone el centro. Como contrapartida tiene que los tiempos de cálculo y el consumo de recursos aumentan mucho respecto a la versión anterior.
+
 \section{Problemas con esta primera aproximación}
 A la hora de implementar esta versión nos hemos encontrado con varios problemas:
 
