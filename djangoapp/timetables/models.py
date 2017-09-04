@@ -3,7 +3,7 @@ from django.db import models
 class Classroom(models.Model):
     name       = models.CharField(max_length=50)
     capacity   = models.PositiveSmallIntegerField(default=0)
-    ispractice = models.BooleanField(default=True)
+    ispractice = models.CharField(max_length=2,default='Yes')
 
     def __str__(self):
         return "{}, {}".format(self.name, self.capacity)
