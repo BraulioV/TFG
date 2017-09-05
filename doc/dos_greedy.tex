@@ -12,11 +12,15 @@ En esta segunda aproximación se realizan varias cosas:
 
 \section{Simplificación del modelo}
 
-Una de las simplificaciones más importantes que se ha hecho del modelo es la eliminación total de los materiales que tiene cada aula y que necesita cada asignatura. Esto simplifica, aunque pueda parecer muy simple, simplifica enormemente el modelo. Pero esta modificación no se hace así sin más, sino que en vez de haber una lista de materiales posibles y necesitados y buscar posibles aulas haciendo una intersección, se cambia esto por una lista de aulas en las que se puede impartir una asignatura y se elige entre estas. Es decir, para aquellas asignaturas que tengan una fuerte restricción de materiales, se les asignará sólo las aulas en las que puedan ser impartidas, y para el resto de asignaturas, se les asignará un aula que esté libre en ese momento entre las distintas aulas de prácticas de las que dispone el centro
+Una de las simplificaciones más importantes que se ha hecho del modelo es la eliminación total de los materiales que tiene cada aula y que necesita cada asignatura. Esto aunque pueda parecer muy simple, simplifica enormemente el modelo. 
+
+Esta modificación no se hace así sin más. En vez de haber una lista de materiales posibles que ofrecen las aulas y materiales que necesitan las asignaturas, para después buscar posibles aulas haciendo una intersección, se cambia esto por una lista de aulas en las que se puede impartir una asignatura y se elige una entre las posibles que esté libre. 
+
+Es decir, para aquellas asignaturas que tengan una fuerte restricción de materiales, se les asignará sólo las aulas en las que puedan ser impartidas, y para el resto de asignaturas, se les asignará un aula que esté libre en ese momento entre las distintas aulas de prácticas de las que dispone el centro
 
 Esto sucede en el centro para asignaturas como \textit{Fundamentos Físicos y Tecnológicos}, que necesita aulas con material electrónico, o asignaturas con restricciones más fuertes aún como son \textit{Tecnología y Organización de Computadores} y \textit{Fundamentos de Redes}, que en nuestro centro, no tienen más remedio que ir asignadas al aula 3.10 y 2.7 respectivamente, por las restricciones tan fuertes de materiales que tienen.
 
-Con esto, podemos eliminar los atributos de para almacenar los materiales que necesita cada asignatura, y los materiales de los que dispone cada aula de prácticas, quedando algo como lo que podemos ver en la \hyperref[clases3]{Figura \ref*{clases3}}.
+Con esto, podemos eliminar los atributos que se usan para almacenar los materiales que necesita cada asignatura, y los materiales de los que dispone cada aula de prácticas, quedando algo como lo que podemos ver en la \hyperref[clases3]{Figura \ref*{clases3}}.
 
 \begin{figure}[H]
   \input{clases3.tex}
@@ -31,19 +35,15 @@ Otra consecuencia derivada de esta decisión es que el espacio en memoria que ne
 \section{Preasignación de horas}
 Ante la aparición de estos problemas en la primera versión del algoritmo, decidimos volver a analizar el problema y reestructurar los algoritmos, obteniendo una nueva versión del algoritmo greedy. Para llevar a cabo esta tarea, tuvimos varias reuniones con Dº Jesús García Miranda, para hablar sobre los problemas que tenía la primera versión, y discutir nuevas soluciones a este problema. 
 
-Una de las soluciones principales que nos dio, fue la de generar una estructura de datos auxiliar en la que se calculará una estructura preliminar del horario, donde se asignarán qué casillas de las que hay en el horario se asignarán a clases de teoría y cuáles se asignarán a clases de prácticas, con el fin de evitar una saturación en las aulas del centro, haciendo que si un grupo $x$ tiene una clase de teoría en el momento $(d, h)$, un grupo $x'$ tendrá en ese momento clase de prácticas, optimizando de esta forma el espacio.
+Una de las soluciones principales que nos dio, fue la de generar una estructura de datos auxiliar en la que se calculará una estructura preliminar del horario. En ella se asignarán qué casillas de las que hay en el horario se clasifican como clases de teoría y cuáles como clases de prácticas. Esto se hace con el fin de evitar una saturación en las aulas del centro, haciendo que si un grupo $x$ tiene una clase de teoría en el momento $(d, h)$, un grupo $x'$ tendrá en ese momento clase de prácticas, optimizando de esta forma el espacio.
 
-En esta fase lo único que se decide es qué horas serán de prácticas y cuáles serán de teoría sin asignar ninguna asignatura en concreto. El objetivo de esta fase de preasignación es minimizar la ocupación de los laboratorios de prácticas y evitar así que se saturen tanto las aulas de prácticas como las de teoría. 
+Esta preasignación en el horario se hace sólo teniendo en cuenta el número de horas de teoría y prácticas totales que tiene un grupo concreto para un curso, en vez de ir mirando asignatura por asignatura. De esta forma se obtiene una visión mucho más global del problema y se empieza a construir una buena solución desde el momento inicial del algoritmo, lo que hace que sea más fácil obtener buenas soluciones, a pesar de que esto suponga también limitar el espacio de búsqueda del problema. El objetivo de esta fase es simplemente minimizar la ocupación de los laboratorios de prácticas y teoría, evitando una saturación de las aulas del centro y optimizar los espacios de este.
 
-A su vez, esto nos permite simplificar el algoritmo mucho, ya que aunque que haya que añadir una fase más al algoritmo, en las fases siguientes es solo rellenar ``el puzzle con pistas'' que nos ha dejado esta fase, simplificando tanto la estructura de los algoritmos, tiempos de ejecución, consumo de memoria, etc.
+A su vez, esto nos permite simplificar mucho el algoritmo, porque aunque hay que añadir una fase más al algoritmo, las fases siguientes sólo tienen que completar ``el puzzle con pistas'' que nos ha dejado esta fase, simplificando tanto la estructura de los algoritmos, tiempos de ejecución, consumo de memoria, etc.
 
 Por sencillez, se ha decidido que este algoritmo sólo calcula una franja, en vez de las dos para que el algoritmo sea más simple. Esta franja se decide mediante un parámetro en el que se establece la franja horaria (mañana o tarde). Es por esto, por lo que deben filtrarse los grupos y trabajar con aquellos que pertenezcan al turno que se está calculando. Una vez filtrados estos grupos, el algoritmo irá calculando la estructura para cada uno de los cursos que corresponden.
 
-% Por sencillez, el algoritmo recibe como parámetro una franja horaria (mañana o tarde) por lo que antes de empezar debe filtrar los grupos que pertenecen a dicha franja horaria. Una vez filtrados empieza a iterar sobre todos los cursos. 
-
 El algoritmo antes de comenzar el bucle principal, realiza una serie de cálculos. Para empezar, calcula el número total de horas de teoría y prácticas que tiene para cada curso. Además de esto, hay que calcular el número de horas totales libres de laboratorio que hay, para comprobar si en algún momento en el horario habrá grupos que tengan en el mismo instante de tiempo prácticas a la vez. Por ejemplo, si los laboratorios están abiertos cinco días a la semana y cuatro horas al día tendríamos un total de 20 horas. Como cada turno de prácticas tiene dos horas, nos quedarían un total de diez turnos de prácticas por asignar. Si, por ejemplo, tuviésemos que asignar doce turnos de prácticas, tendríamos que elegir de forma aleatoria dos turnos de prácticas que se repetirían. Debe ser de forma aleatoria para que los turnos ``repetidos'' no coincidan en los distintos cursos y se saturen los laboratorios un día en concreto.
-
-% En primer lugar, calcula las horas de teoría y de prácticas que tiene cada curso y, después, calcula el número total de horas de prácticas que hay en los laboratorios. 
 
 Después, el algoritmo empieza a iterar sobre cada grupo de ese curso y va asignando horas de prácticas y teoría en los huecos ``libres''. Para saber qué huecos están libres se usa una matriz auxiliar que registra qué horas son de prácticas en cada curso.
 
@@ -56,18 +56,18 @@ El siguiente pseudocódigo refleja de forma más clara el funcionamiento del alg
 filtro\_grupos \GETS \CALL{FiltrarGrupos}{turno}\\
 principio \GETS \CALL{ComienzoFranja}{turno}\\
 final \GETS \CALL{FinalFranja}{turno}\\
-\FOREACH c \in cursos \DO
+\FOREACH curso \in cursos \DO
 \BEGIN
     filtro\_cursos \GETS \CALL{FiltrarGruposCurso}{curso, filtro\_grupos}\\
     h\_lab \GETS \CALL{CalcularHorasPracticasCurso}{curso}\\
     h\_week \GETS dias\_semana \cdot n\_turnos\\
 
     \IF h\_lab > h\_week \THEN
-	    	dias\_rep \GETS \CALL{CalcularTurnosRepetidos}{ }\\
+	    	dias\_rep \GETS \CALL{CalcularTurnosRepetidos}{ }
     \ELSE 
       dias\_rep \GETS \emptyset\\
 
-   	tabla\_lab \GETS \CALL{Matriz}{dias\_semana, n\_turnos}\\
+   	tabla\_lab \GETS \CALL{Matriz}{dias\_semana, n\_turnos, value=False}\\
 
    	\FOREACH g \in filtro\_cursos \DO
    	\BEGIN
