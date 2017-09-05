@@ -12,17 +12,27 @@ En esta segunda aproximación se realizan varias cosas:
 
 \section{Simplificación del modelo}
 
-Una de las simplificaciones más importantes que se ha hecho del modelo es la eliminación total de los materiales que tiene cada aula y que necesita cada asignatura. Esto simplifica, aunque pueda parecer muy simple, simplifica enormemente el modelo. Pero esta modificación no se hace así sin más, sino que en vez de haber una lista de materiales posibles y necesitados y buscar posibles aulas haciendo una intersección, se cambia esto por una lista de aulas en las que se puede impartir una asignatura y se elige entre estas. A continuación, en la \hyperref[clases3]{Figura \ref*{clases3}}, se puede ver un nuevo diagrama de clases conceptual en el que se introduce la lista de posibles aulas y se eliminan los materiales.
+Una de las simplificaciones más importantes que se ha hecho del modelo es la eliminación total de los materiales que tiene cada aula y que necesita cada asignatura. Esto simplifica, aunque pueda parecer muy simple, simplifica enormemente el modelo. Pero esta modificación no se hace así sin más, sino que en vez de haber una lista de materiales posibles y necesitados y buscar posibles aulas haciendo una intersección, se cambia esto por una lista de aulas en las que se puede impartir una asignatura y se elige entre estas. Es decir, para aquellas asignaturas que tengan una fuerte restricción de materiales, se les asignará sólo las aulas en las que puedan ser impartidas, y para el resto de asignaturas, se les asignará un aula que esté libre en ese momento entre las distintas aulas de prácticas de las que dispone el centro
 
-\begin{figure}
+Esto sucede en el centro para asignaturas como \textit{Fundamentos Físicos y Tecnológicos}, que necesita aulas con material electrónico, o asignaturas con restricciones más fuertes aún como son \textit{Tecnología y Organización de Computadores} y \textit{Fundamentos de Redes}, que en nuestro centro, no tienen más remedio que ir asignadas al aula 3.10 y 2.7 respectivamente, por las restricciones tan fuertes de materiales que tienen.
+
+Con esto, podemos eliminar los atributos de para almacenar los materiales que necesita cada asignatura, y los materiales de los que dispone cada aula de prácticas, quedando algo como lo que podemos ver en la \hyperref[clases3]{Figura \ref*{clases3}}.
+
+\begin{figure}[H]
   \input{clases3.tex}
-  \caption{Nuevo diagrama de clases conceptual.}
+  \caption{Nueva estructura de clases y atributos.}
   \label{clases3}
 \end{figure}
 
-Esto puede parecer un poco simple, pero añade mucha flexibilidad al modelo, ya que podemos guiar el espacio de búsqueda para las aulas de prácticas restringiendo las aulas que pueden tomar ciertas asignaturas y cuales no, lo que permite una flexibilidad enorme. Además de esto, controlar las aulas más problemáticas como las que necesita \textit{Fundamentos de Redes} o \textit{Tecnología y Organización de los Computadores}, que son aulas muy específicas, es tan sencillo como limitar las aulas posibles a esas aulas, y ya el sistema se encarga de asignarlo de forma eficiente.
+Esto tiene una serie de consecuencias y una de ellas es que el espacio de búsqueda para realizar una asignación de aulas crece, por lo que el problema, en la teoría, se dificulta. En la práctica sucede que al tener menos restricciones, podemos simplemente asignar una asignatura a cualquier aula que esté libre, siempre y cuando no se infrinja la condición de que las asignaturas con más restricciones de aulas como las que hemos visto anteriormente tengan asignadas las aulas esperadas.
+
+Otra consecuencia derivada de esta decisión es que el espacio en memoria que necesita la máquina para ejecutar el algoritmo se reduce enormemente al no tener que almacenar listas de materiales para todas y cada una de las asignaturas, al igual que con las distintas aulas. Esto supone que máquinas con muchas menos prestaciones que las máquinas en las que se ha desarrollado el proyecto, puedan ejecutar el algoritmo sin problemas al necesitar menos memoria. También se mejora el tiempo de ejecución, ya que no se producen tantos accesos a memoria, tanto para consultar como para escribir a las distintas listas de materiales, etc.
 
 \section{Preasignación de horas}
+Ante la aparición de estos problemas en la primera versión del algoritmo, decidimos volver a analizar el problema y reestructurar los algoritmos, obteniendo una nueva versión del algoritmo greedy. Para llevar a cabo esta tarea, tuvimos varias reuniones con Dº Jesús García Miranda, para hablar sobre los problemas que tenía la primera versión, y discutir nuevas soluciones a este problema. 
+
+Una de las soluciones principales que nos dio, fue la de generar una estructura de datos auxiliar en la que se calculará una estructura preliminar del horario, donde se asignarán qué casillas de las que hay en el horario se asignarán a clases de teoría y cuáles se asignarán a clases de prácticas, con el fin de evitar una saturación en las aulas del centro, haciendo que si un grupo $x$ tiene una clase de teoría en el momento $(d, h)$, un grupo $x'$ tendrá en ese momento clase de prácticas, optimizando de esta forma el espacio.
+
 En esta fase lo único que se decide es qué horas serán de prácticas y cuáles serán de teoría sin asignar ninguna asignatura en concreto. El objetivo de esta fase de preasignación es minimizar la ocupación de los laboratorios de prácticas y evitar así que se saturen tanto las aulas de prácticas como las de teoría. 
 
 A su vez, esto nos permite simplificar el algoritmo mucho, ya que aunque que haya que añadir una fase más al algoritmo, en las fases siguientes es solo rellenar ``el puzzle con pistas'' que nos ha dejado esta fase, simplificando tanto la estructura de los algoritmos, tiempos de ejecución, consumo de memoria, etc.
