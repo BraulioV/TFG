@@ -123,6 +123,10 @@ final \GETS \CALL{FinalFranja}{turno}\\
 \END
 \end{pseudocode}
 
+El algoritmo comienza filtrando los grupos según el turno que se esté calculando, además de caclcular el punto de partida y final para el bucle interno en función del turno, para no tener que estar constantemente calculándolo. Una vez pasado esto, pasamos al bucle principal.
+
+Dentro del bucle principal, lo que hace el algoritmo es calcular el número de horas de prácticas que tiene el grupo y el número de horas totales que hay en una semana. En caso de que las horas de prácticas del grupo sean mayores que las que hay disponibles para una asignatura, se escogerá un día aleatorio de la semana en el que se va a repetir un turno.
+
 \section{Asignación de horas de teoría}
 Esta segunda versión del algoritmo de asignación de horas de teoría utiliza como base la estructura hecha por el algoritmo de preasignación. Así, sólo tiene permitido asignar horas en los huecos que estén marcados como \texttt{T} en la matriz de estructura. Usando esto como base y un diccionario con las horas por asignar de cada asignatura, el algoritmo distingue varios casos diferentes:
 
