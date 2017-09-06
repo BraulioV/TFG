@@ -160,7 +160,7 @@ Al acceder desde el navegador a la url \texttt{http://127.0.0.1:8000}, veremos l
 
 El comando \texttt{runserver} ejecuta un servidor de desarrollo escrito en Python. Gracias a esto, el desarrollador puede centrarse en desarrollar la aplicación sin tener que estar lidiando con la configuración de un servidor de producción. Ahora bien, este servidor sólo debe usarse para desarrollo. Una ventaja de este servidor es que se reinicia sólo cuando se modifica el código Python. Una comodidad más para el programador.
 
-\subsubsection{Creando la aplicación de horarios}
+\section{Creando la aplicación de horarios}
 Una vez tenemos nuestro proyecto creado, es hora de crear la aplicación que se encargará de comunicarse con el módulo Python que hace los horarios. El lector puede preguntarse, ¿cuál es la diferencia entre una app y un proyecto? Una app debe implementar una funcionalidad pequeña (por ejemplo, crear un horario) mientras que un proyecto encapsula varias apps bajo una determinada configuración. Sí, una app \texttt{Django} se puede usar en varios proyectos sin ningún problema.
 
 Al igual que para crear el proyecto, \texttt{Django} ofrece un comando para crear apps:
@@ -183,7 +183,23 @@ timetables/
     views.py
 \end{minted}
 
-\subsubsection{Definiendo los modelos}
+Una vez hemos creado nuestra app, es muy importante añadirla a la configuración de nuestro proyecto y que éste sepa que nuestra app existe. Para ello, sólo tenemos que modificar el fichero \texttt{djangoapp/settings.py} y añadir nuestra app a la lista \texttt{INSTALLED_APPS}:
+
+\begin{minted}{python}
+INSTALLED_APPS = [
+    'timetables.apps.TimetablesConfig',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+\end{minted}
+
+Ya lo tenemos todo preparado para empezar a trabajar en nuestra app.
+
+\subsection{Definiendo los modelos}
 La verdad es que no lo tuve muy difícil para hacer los modelos: he hecho uno para cada tipo de dato que almacenábamos en CSV antes de hacer la interfaz:
 
 \begin{enumerate}[---]
@@ -238,7 +254,29 @@ class Groups(models.Model):
         return "{}, {}".format(self.name, self.year)
 \end{minted}
 
-Definiendo los cuatrimestres en los que existe un grupo he utilizado otra utilidad de \texttt{Django}, el \texttt{validate_comma_separated_integer_list}. En verdad, este campo no es más que un string del tipo 
+Definiendo los cuatrimestres en los que existe un grupo he utilizado otra utilidad de \texttt{Django}, el \texttt{validate\_comma\_separated\_integer\_list}. En verdad, este campo no es más que un string, pero que a la hora de ser guardado comprueba que encaje con la siguiente expresión regular:
+
+\mint{text}|\d+(,\d+)*|
+
+Es decir, una serie de números separados por comas. 
+
+Soy consciente de que en este caso sí que estoy rompiendo la primera forma normal de bases de datos, ya que en este caso \texttt{Django} no crea una tabla especial para albergar este tipo de relación. Aún así, debido a su poca embergadura, decidí dejarlo así. Además, desde Python me ha resultado mucho más cómoda esta solución, pues es bastante fácil extraer una lista a partir de un dato en este formato, sólo hay que llamar a la función \texttt{split}:
+
+\mint{python}|semester.split(',')|
 
 \end{enumerate}
 
+Una vez tenemos nuestros modelos definidos, pasamos a activarlos. Para ello, hacemos una migración de la base de datos:
+
+\begin{minted}{shellsession}
+$ python manage.py makemigrations timetables
+Migrations for 'timetables':
+  timetables/migrations/0001_initial.py:
+    - Create model Subjects
+    - Create model Groups
+    - Create model Classroom
+    - Add field classroom to subject
+    - Add field classroom to group
+\end{minted}
+
+Cuando se ejecuta el comando \texttt{makemigrations}
