@@ -182,3 +182,63 @@ timetables/
     tests.py
     views.py
 \end{minted}
+
+\subsubsection{Definiendo los modelos}
+La verdad es que no lo tuve muy difícil para hacer los modelos: he hecho uno para cada tipo de dato que almacenábamos en CSV antes de hacer la interfaz:
+
+\begin{enumerate}[---]
+    \item \textbf{Asignatura}: en este modelo, guardo todos los datos relativos a una asignatura, y además, las clases de prácticas en las que una asignatura puede impartirse. Su definición es la siguiente:
+
+\begin{minted}{python}
+class Subjects(models.Model):
+    name       = models.CharField(max_length=200)
+    thours     = models.PositiveSmallIntegerField(default=0)
+    phours     = models.PositiveSmallIntegerField(default=0)
+    acronym    = models.CharField(max_length=10)
+    speciality = models.CharField(max_length=200)
+    year       = models.PositiveSmallIntegerField(default=0)
+    semester   = models.PositiveSmallIntegerField(default=0)
+    degree     = models.CharField(max_length=200)
+    students   = models.PositiveSmallIntegerField(default=0)
+    classroom  = models.ManyToManyField(Classroom)
+
+    def __str__(self):
+        return "{}, {}".format(self.name, self.acronym)
+\end{minted}
+
+Todos los campos son campos SQL normales, menos el de clases. El campo en el que guardo las clases en las que puede impartirse una asignatura es un campo especial de \texttt{Django} llamado \texttt{ManyToManyField}. Este campo es, por así decirlo, una lista de \textit{foreign keys} a la tabla \texttt{Classroom}. En el SQL normal es imposible hacer algo así, de hecho, \textbf{rompe la primera forma normal} en la normalización de bases de datos: cada campo debe tener un único valor (no una lista). Entonces, ¿cómo es esto posible? En realidad \texttt{Django} no está tan mal hecho como para hacer bases de datos con mala calidad. Cuando le especificamos a \texttt{Django} que haga un \texttt{ManyToManyField}, crea por debajo una nueva tabla en la que guardar dicha relación.
+
+    \item \textbf{Clase}: en este modelo, guardo todos los datos relativos a un aula. Aunque en el modelo de clases Python inicial se separó entre clase de prácticas y clase de teoría, no tenía tanto sentido hacer esta separación en el modelo de base de datos. Tanto la clase de prácticas como la de teoría tenían los mismos campos y, lo único que he hecho para diferenciarlas es añadir un campo al modelo para indicar si una clase es de prácticas o o no. De hecho, con esta definición del modelo he podido definir clases que son a la vez de teoría y de prácticas. Por ejemplo, las prácticas de la asignatura \textit{Álgebra Lineal y Métodos Discretos} del Grado en Ingeniería Informática pueden hacerse en las aulas de la planta 1, al igual que otras tantas asignaturas. Pero todas las clases de teoría que se imparten en tercero y en cuarto curso del Grado en Ingeniería Informática son en la planta 1 también. Por tanto, el campo \texttt{ispractice} puede tomar los valores \texttt{Yes}, \texttt{No} y \texttt{Both}
+
+\begin{minted}{python}
+class Classroom(models.Model):
+    name       = models.CharField(max_length=50)
+    capacity   = models.PositiveSmallIntegerField(default=0)
+    ispractice = models.CharField(max_length=2,default='Yes')
+
+    def __str__(self):
+        return "{}, {}".format(self.name, self.capacity)
+\end{minted}
+
+    \item \textbf{Grupo}: en este modelo, guardo todos los datos relativos a un grupo, además de los cuatrimestres en los que ``existe'' un grupo. Esto es necesario debido a que hay grupos que sólo existen en un determinado cuatrimestre. Por ejemplo, los grupos de tercero del Grado en Ingeniería Informática troncales sólo existen en el primer cuatrimestre y los grupos de tercero del Grado en Ingeniería Informática sólo existen en el segundo. 
+
+\begin{minted}{python}
+class Groups(models.Model):
+    name          = models.CharField(max_length=50)
+    shift         = models.CharField(max_length=2)
+    year          = models.PositiveSmallIntegerField(default=0)
+    numsubgroups  = models.PositiveSmallIntegerField(default=0)
+    classroom     = models.ForeignKey(Classroom)
+    degree        = models.CharField(max_length=200)
+    speciality    = models.CharField(max_length=200)
+    semester      = models.CharField(max_length=200, 
+                    validators=['validate_comma_separated_integer_list'])
+
+    def __str__(self):
+        return "{}, {}".format(self.name, self.year)
+\end{minted}
+
+Definiendo los cuatrimestres en los que existe un grupo he utilizado otra utilidad de \texttt{Django}, el \texttt{validate_comma_separated_integer_list}. En verdad, este campo no es más que un string del tipo 
+
+\end{enumerate}
+
