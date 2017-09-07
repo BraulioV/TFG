@@ -50,16 +50,16 @@ Installing setuptools, pip, wheel...done.
 
 Donde \texttt{ENV} es la carpeta en la que queremos crear el \texttt{virtualenv}. 
 
-Una vez creado, veremos la siguente estructura de carpetas:
+Una vez creado, veremos los siguientes directorios:
 
-\begin{minted}{shell-session}
-$ ls -l
-total 16
-drwxr-xr-x 2 marta marta 4096 sep  5 19:57 bin
-drwxr-xr-x 2 marta marta 4096 sep  5 19:57 include
-drwxr-xr-x 3 marta marta 4096 sep  5 19:57 lib
--rw-r--r-- 1 marta marta   60 sep  5 19:57 pip-selfcheck.json
-\end{minted}
+% \begin{minted}{shell-session}
+% $ ls -l
+% total 16
+% drwxr-xr-x 2 marta marta 4096 sep  5 19:57 bin
+% drwxr-xr-x 2 marta marta 4096 sep  5 19:57 include
+% drwxr-xr-x 3 marta marta 4096 sep  5 19:57 lib
+% -rw-r--r-- 1 marta marta   60 sep  5 19:57 pip-selfcheck.json
+% \end{minted}
 
 \begin{enumerate}[---]
 \item Los directorios \texttt{lib} e \texttt{include} contienen librerías que instalamos en el \texttt{virtualenv}. Recién creado, sólo contienen el intérprete de \texttt{python}.
@@ -110,17 +110,14 @@ $ django-admin startproject NOMBRE
 
 donde \texttt{NOMBRE} es el nombre que queremos darle a nuestro proyecto.
 
-Este comando nos crea toda la estructura de directorios necesaria para empezar a trabajar:
+Este comando nos crea toda la estructura de directorios necesaria para empezar a trabajar. Dicha estructura es la que se ve en la \hyperref[djangoprojectfolders]{Figura \ref*{djangoprojectfolders}}.
 
-\begin{minted}{text}
-djangoapp/
-    manage.py
-    djangoapp/
-        __init__.py
-        settings.py
-        urls.py
-        wsgi.py
-\end{minted}
+\begin{figure}
+\centering
+\scalebox{.7}{\input{img/django_project_folders.tex}}
+\caption{Estructura de directorios inicial de Django}
+\label{djangoprojectfolders}
+\end{figure}
 
 \begin{enumerate}[---]
 	\item El directorio raíz \texttt{djangoapp} es sólo un contenedor del proyecto. Se puede cambiar de nombre sin ningún problema.
@@ -169,22 +166,18 @@ Al igual que para crear el proyecto, \texttt{Django} ofrece un comando para crea
 $ python manage.py startapp timetables
 \end{minted}
 
-Se puede crear la app en cualquier directorio, aunque por sencillez, yo la creé justo en el mismo directorio que \texttt{manage.py}. Al crear la app, \texttt{Django} crea automáticamente la siguiente estructura de directorios:
+Se puede crear la app en cualquier directorio, aunque por sencillez, yo la creé justo en el mismo directorio que \texttt{manage.py}. Al crear la app, \texttt{Django} crea automáticamente la siguiente estructura de directorios de la \hyperref[djangoappfolders]{Figura \ref*{djangoappfolders}}.
 
-\begin{minted}{text}
-timetables/
-    __init__.py
-    admin.py
-    apps.py
-    migrations/
-        __init__.py
-    models.py
-    tests.py
-    views.py
-\end{minted}
+\begin{figure}
+\centering
+\scalebox{.7}{\input{img/django_app_folders.tex}}
+\caption{Estructura de directorios inicial de una aplicación Django}
+\label{djangoappfolders}
+\end{figure}
 
-Una vez hemos creado nuestra app, es muy importante añadirla a la configuración de nuestro proyecto y que éste sepa que nuestra app existe. Para ello, sólo tenemos que modificar el fichero \texttt{djangoapp/settings.py} y añadir nuestra app a la lista \texttt{INSTALLED_APPS}:
+Una vez hemos creado nuestra app, es muy importante añadirla a la configuración de nuestro proyecto y que éste sepa que nuestra app existe. Para ello, sólo tenemos que modificar el fichero \texttt{djangoapp/settings.py} y añadir nuestra app a la lista \texttt{INSTALLED\_APPS}:
 
+\newpage
 \begin{minted}{python}
 INSTALLED_APPS = [
     'timetables.apps.TimetablesConfig',
@@ -200,59 +193,24 @@ INSTALLED_APPS = [
 Ya lo tenemos todo preparado para empezar a trabajar en nuestra app.
 
 \subsection{Definiendo los modelos}
-La verdad es que no lo tuve muy difícil para hacer los modelos: he hecho uno para cada tipo de dato que almacenábamos en CSV antes de hacer la interfaz:
+\begin{figure}
+\centering
+\scalebox{.65}{\input{img/database_models.tex}}
+\caption{Estructura de tablas en la base de datos}
+\label{djangomodels}
+\end{figure}
+
+En la \hyperref[djangomodels]{Figura \ref*{djangomodels}} La verdad es que no lo tuve muy difícil para hacer los modelos: he hecho uno para cada tipo de dato que almacenábamos en CSV antes de hacer la interfaz:
 
 \begin{enumerate}[---]
-    \item \textbf{Asignatura}: en este modelo, guardo todos los datos relativos a una asignatura, y además, las clases de prácticas en las que una asignatura puede impartirse. Su definición es la siguiente:
+    \item \textbf{Asignatura}: en este modelo, guardo todos los datos relativos a una asignatura, y además, las clases de prácticas en las que una asignatura puede impartirse.
 
-\begin{minted}{python}
-class Subjects(models.Model):
-    name       = models.CharField(max_length=200)
-    thours     = models.PositiveSmallIntegerField(default=0)
-    phours     = models.PositiveSmallIntegerField(default=0)
-    acronym    = models.CharField(max_length=10)
-    speciality = models.CharField(max_length=200)
-    year       = models.PositiveSmallIntegerField(default=0)
-    semester   = models.PositiveSmallIntegerField(default=0)
-    degree     = models.CharField(max_length=200)
-    students   = models.PositiveSmallIntegerField(default=0)
-    classroom  = models.ManyToManyField(Classroom)
-
-    def __str__(self):
-        return "{}, {}".format(self.name, self.acronym)
-\end{minted}
-
-Todos los campos son campos SQL normales, menos el de clases. El campo en el que guardo las clases en las que puede impartirse una asignatura es un campo especial de \texttt{Django} llamado \texttt{ManyToManyField}. Este campo es, por así decirlo, una lista de \textit{foreign keys} a la tabla \texttt{Classroom}. En el SQL normal es imposible hacer algo así, de hecho, \textbf{rompe la primera forma normal} en la normalización de bases de datos: cada campo debe tener un único valor (no una lista). Entonces, ¿cómo es esto posible? En realidad \texttt{Django} no está tan mal hecho como para hacer bases de datos con mala calidad. Cuando le especificamos a \texttt{Django} que haga un \texttt{ManyToManyField}, crea por debajo una nueva tabla en la que guardar dicha relación.
+Todos los campos son campos SQL normales, menos la relación con el de clases. El campo en el que guardo las clases en las que puede impartirse una asignatura es un campo especial de \texttt{Django} llamado \texttt{ManyToManyField}. Este campo es, por así decirlo, una lista de \textit{foreign keys} a la tabla \texttt{Classroom}. En el SQL normal es imposible hacer algo así, de hecho, \textbf{rompe la primera forma normal} en la normalización de bases de datos: cada campo debe tener un único valor (no una lista). Entonces, ¿cómo es esto posible? En realidad \texttt{Django} no está tan mal hecho como para hacer bases de datos con mala calidad. Cuando le especificamos a \texttt{Django} que haga un \texttt{ManyToManyField}, crea por debajo una nueva tabla en la que guardar dicha relación.
 
     \item \textbf{Clase}: en este modelo, guardo todos los datos relativos a un aula. Aunque en el modelo de clases Python inicial se separó entre clase de prácticas y clase de teoría, no tenía tanto sentido hacer esta separación en el modelo de base de datos. Tanto la clase de prácticas como la de teoría tenían los mismos campos y, lo único que he hecho para diferenciarlas es añadir un campo al modelo para indicar si una clase es de prácticas o o no. De hecho, con esta definición del modelo he podido definir clases que son a la vez de teoría y de prácticas. Por ejemplo, las prácticas de la asignatura \textit{Álgebra Lineal y Métodos Discretos} del Grado en Ingeniería Informática pueden hacerse en las aulas de la planta 1, al igual que otras tantas asignaturas. Pero todas las clases de teoría que se imparten en tercero y en cuarto curso del Grado en Ingeniería Informática son en la planta 1 también. Por tanto, el campo \texttt{ispractice} puede tomar los valores \texttt{Yes}, \texttt{No} y \texttt{Both}
 
-\begin{minted}{python}
-class Classroom(models.Model):
-    name       = models.CharField(max_length=50)
-    capacity   = models.PositiveSmallIntegerField(default=0)
-    ispractice = models.CharField(max_length=2,default='Yes')
-
-    def __str__(self):
-        return "{}, {}".format(self.name, self.capacity)
-\end{minted}
 
     \item \textbf{Grupo}: en este modelo, guardo todos los datos relativos a un grupo, además de los cuatrimestres en los que ``existe'' un grupo. Esto es necesario debido a que hay grupos que sólo existen en un determinado cuatrimestre. Por ejemplo, los grupos de tercero del Grado en Ingeniería Informática troncales sólo existen en el primer cuatrimestre y los grupos de tercero del Grado en Ingeniería Informática sólo existen en el segundo. 
-
-\begin{minted}{python}
-class Groups(models.Model):
-    name          = models.CharField(max_length=50)
-    shift         = models.CharField(max_length=2)
-    year          = models.PositiveSmallIntegerField(default=0)
-    numsubgroups  = models.PositiveSmallIntegerField(default=0)
-    classroom     = models.ForeignKey(Classroom)
-    degree        = models.CharField(max_length=200)
-    speciality    = models.CharField(max_length=200)
-    semester      = models.CharField(max_length=200, 
-                    validators=['validate_comma_separated_integer_list'])
-
-    def __str__(self):
-        return "{}, {}".format(self.name, self.year)
-\end{minted}
 
 Definiendo los cuatrimestres en los que existe un grupo he utilizado otra utilidad de \texttt{Django}, el \texttt{validate\_comma\_separated\_integer\_list}. En verdad, este campo no es más que un string, pero que a la hora de ser guardado comprueba que encaje con la siguiente expresión regular:
 
@@ -266,9 +224,11 @@ Soy consciente de que en este caso sí que estoy rompiendo la primera forma norm
 
 \end{enumerate}
 
+Un último detalle sobre la definición de la base de datos. \texttt{Django} añade las claves primarias numéricas (IDs) automáticamente. Aunque el usuario puede añadir una clave primaria a mano, lo mejor es abstraerse de eso y dejar que el ORM de \texttt{Django} se encargue. Así, las definiciones de nuestros modelos se parecerán más aún a una clase Python que a una tabla SQL.
+
 Una vez tenemos nuestros modelos definidos, pasamos a activarlos. Para ello, hacemos una migración de la base de datos:
 
-\begin{minted}{shellsession}
+\begin{minted}{shell-session}
 $ python manage.py makemigrations timetables
 Migrations for 'timetables':
   timetables/migrations/0001_initial.py:
@@ -279,4 +239,24 @@ Migrations for 'timetables':
     - Add field classroom to group
 \end{minted}
 
-Cuando se ejecuta el comando \texttt{makemigrations}
+Cuando se ejecuta el comando \texttt{makemigrations}, \texttt{Django} toma nota de los cambios que hemos hecho en la base de datos (en este caso, hemos añadido nuevos modelos) y guarda dichos cambios como una \textit{migración}. Tal y como se ha dicho antes, las migraciones son los cambios que se van haciendo a la base de datos. Lo bueno de estas migraciones es que se pueden modificar y leer de forma clara. Pero no vamos a entrar en eso ahora.
+
+Una vez hemos guardado los cambios en la base de datos, ahora hay que hacer efectivos dichos cambios:
+
+\begin{minted}{shell-session}
+$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, timetables, sessions
+Running migrations:
+  Rendering model states... DONE
+  Applying timetables.0001_initial... OK
+\end{minted}
+
+El comando \texttt{migrate} toma todos las migraciones que no se hayan aplicado aún (\texttt{Django} controla esto usando una tabla especial en la base de datos llamada \texttt{django\_migrations}) y las aplica a la base de datos.
+
+La ventaja de usar migraciones es que permiten al usuario hacer cambios en la estructura de la base de datos sin la necesidad de eliminar la base de datos o tablas y sin perder datos. El lector puede preguntarse, ¿por qué son comandos separados? Sencillo, las migraciones (es decir, el historial de cambios en la base de datos) pueden subirse a un sistema de control de versiones y pueden ser usadas por otros desarrolladores y en producción.
+
+\subsection{Guardando información en la base de datos}
+A la hora de decidir cómo el usuario iba a almacenar en la base de datos toda esta información, me estuve planteando varias alternativas. Desde el primer momento descarté que el usuario lo hiciera a mano, ya que esto puede llegar a ser una tarea muy engorrosa. Lo ideal hubiera sido que el sistema se pudiera conectar a la base de datos de la Universidad de Granada para importar de ahí información actualizada. Esta opción fue rápidamente descartada por el tutor, ya que no es fácil conseguir acceso a una base de datos con información tan valiosa. Otra opción que tuve en mente fue importar en la base de datos del programa los datos exportados desde las bases de datos de la Universidad de Granada en un formato estándar, como por ejemplo; XML, JSON o CSV. Al igual que antes, esta y cualquier otra opción que supusiera conectarse o pedir datos a la Universidad de Granada se descartó.
+
+
