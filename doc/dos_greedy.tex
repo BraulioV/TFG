@@ -126,6 +126,42 @@ El algoritmo comienza filtrando los grupos según el turno que se esté calculan
 
 Dentro del bucle principal, lo que hace el algoritmo es calcular el número de horas de prácticas que tiene el grupo y el número de horas totales que hay en una semana. En caso de que las horas de prácticas del grupo sean mayores que las que hay disponibles para una asignatura, se escogerá un día aleatorio de la semana en el que se va a repetir un turno.
 
+Este algoritmo, genera una salida como la que podemos ver en la \hyperref[estructura1]{Figura \ref*{estructura1}}. En ella podemos ver qué celdas han sido asignadas a prácticas (coloreadas en color naranja), cuáles a teoría (coloreadas en color azul) y cuáles de las restantes no tienen nada asignado (que se encuentran en color blanco).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/estructura1}
+\caption{Estructura del horario generada para el primer cuatrimestre del grupo 1ºA del Grado en Ingeniería Informática.}
+\label{estructura1}
+\end{figure}
+
+En la imagen podemos ver cómo siguiendo las condicones del algoritmo, se han asignado primero las 8 horas de prácticas y cómo al quedarse sin horas de práctica por asignar y la matriz de ocupación está libre, pues comienza a asignar celdas de teoría hasta que ya no quedan ninguna hora por asignar. 
+
+Este es el funcionamiento del primer caso, cuando comienza el algoritmo y no hay ningún problema en asignar unas horas u otras. A continuación, en la \hyperref[estrucura2]{Figura \ref*{estructura2}} podemos ver cómo ha quedado la estructura para los cursos 1ºA y 1ºB.
+
+\begin{figure}[H]
+    \centering
+    \mbox {
+        \subfigure[Estructura generada para 1ºA.]{
+            \includegraphics[width=1\textwidth]{img/estructura1}
+            \label{estructura11}
+        }
+        
+    }\\~\mbox{
+        
+        \subfigure[Estructura generada para 1ºB.] {
+            \includegraphics[width=1\textwidth]{img/estructura2}
+            \label{estructura12}
+        }
+    }
+    \caption{Comparativa de la estructura generada para 1ºA y 1ºB}
+    \label{estructura2}
+\end{figure}
+
+Al haber generado ya la estructura para el grupo 1ºA, el algoritmo comienza a generar una estructura para 1ºB a partir de la que ha generado para 1ºA. De esta forma, como podemos ver en \hyperref[estructura12]{Figura \ref*{estructura12}}, la estructura es ``casi'' complementaria de la que hay para 1ºA, haciendo que donde antes había prácticas, ahora hay teoría y viceversa casi en la totalidad de la estructura.
+
+De esta forma, se va generando la estructura para todos y cada uno de los grupos, optimizando el espacio de una forma más global y haciendo que las aulas estén menos saturadas. Una vez que finalice el algoritmo, devolverá como salida la matriz en la que se almacena la estructura de los horarios para cada uno de los cursos, cosa que toman como entrada los siguientes algoritmos greedy para completar la tarea de hacer un horario útil.
+
 \section{Asignación de horas de teoría}
 Esta segunda versión del algoritmo de asignación de horas de teoría utiliza como base la estructura hecha por el algoritmo de preasignación. Así, sólo tiene permitido asignar horas en los huecos que estén marcados como \texttt{T} en la matriz de estructura. Usando esto como base y un diccionario con las horas por asignar de cada asignatura, el algoritmo distingue varios casos diferentes:
 
