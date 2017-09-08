@@ -195,12 +195,14 @@ Ya lo tenemos todo preparado para empezar a trabajar en nuestra app.
 \subsection{Definiendo los modelos}
 \begin{figure}
 \centering
-\scalebox{.65}{\input{img/database_models.tex}}
+\scalebox{.7}{\input{img/database_models.tex}}
 \caption{Estructura de tablas en la base de datos}
 \label{djangomodels}
 \end{figure}
 
-En la \hyperref[djangomodels]{Figura \ref*{djangomodels}} La verdad es que no lo tuve muy difícil para hacer los modelos: he hecho uno para cada tipo de dato que almacenábamos en CSV antes de hacer la interfaz:
+En la \hyperref[djangomodels]{Figura \ref*{djangomodels}} podemos ver el modelo de de base de datos que he diseñado. El diseño que muestro es el de tablas SQL final, pero del diseño a la implementación en \texttt{Django} hay algunas cosas que cambian, ya que \texttt{Django} dispone de un \textit{Object-Relational Mapping} (ORM) \cite{orm}. Un \textit{Object-Relational Mapping} es una herramienta que convierte clases de objectos en tablas SQL. Así, nos abstraemos del concepto de tabla y la concebimos e implementamos como objetos. Por debajo, el \textit{Object-Relational Mapping} crea las tablas y relaciones SQL.
+
+Respecto al modelo de bases de datos definido, la verdad es que no lo tuve muy difícil: he hecho una tabla para cada tipo de dato que almacenábamos en CSV antes de hacer la interfaz.
 
 \begin{enumerate}[---]
     \item \textbf{Asignatura}: en este modelo, guardo todos los datos relativos a una asignatura, y además, las clases de prácticas en las que una asignatura puede impartirse.
@@ -257,6 +259,97 @@ El comando \texttt{migrate} toma todos las migraciones que no se hayan aplicado 
 La ventaja de usar migraciones es que permiten al usuario hacer cambios en la estructura de la base de datos sin la necesidad de eliminar la base de datos o tablas y sin perder datos. El lector puede preguntarse, ¿por qué son comandos separados? Sencillo, las migraciones (es decir, el historial de cambios en la base de datos) pueden subirse a un sistema de control de versiones y pueden ser usadas por otros desarrolladores y en producción.
 
 \subsection{Guardando información en la base de datos}
-A la hora de decidir cómo el usuario iba a almacenar en la base de datos toda esta información, me estuve planteando varias alternativas. Desde el primer momento descarté que el usuario lo hiciera a mano, ya que esto puede llegar a ser una tarea muy engorrosa. Lo ideal hubiera sido que el sistema se pudiera conectar a la base de datos de la Universidad de Granada para importar de ahí información actualizada. Esta opción fue rápidamente descartada por el tutor, ya que no es fácil conseguir acceso a una base de datos con información tan valiosa. Otra opción que tuve en mente fue importar en la base de datos del programa los datos exportados desde las bases de datos de la Universidad de Granada en un formato estándar, como por ejemplo; XML, JSON o CSV. Al igual que antes, esta y cualquier otra opción que supusiera conectarse o pedir datos a la Universidad de Granada se descartó.
+A la hora de decidir cómo el usuario iba a almacenar en la base de datos toda esta información me estuve planteando varias alternativas. Desde el primer momento descarté que el usuario lo hiciera a mano, ya que esto puede llegar a ser una tarea muy engorrosa. Lo ideal hubiera sido que el sistema se pudiera conectar a la base de datos de la Universidad de Granada para importar de ahí información actualizada. Esta opción fue rápidamente descartada por el tutor, ya que no es fácil conseguir acceso a una base de datos con información tan valiosa. Otra opción que tuve en mente fue importar en la base de datos del programa los datos exportados desde las bases de datos de la Universidad de Granada en un formato estándar, como por ejemplo; XML, JSON o CSV. Al igual que antes, esta y cualquier otra opción que supusiera conectarse o pedir datos a la Universidad de Granada se descartó.
 
+Así que finalmente decidí hacer un script que, usando la API de \texttt{Django} leyera información de los CSVs que hicimos con los datos y los guardase en la base de datos. Esto tiene ciertas ventajas, como por ejemplo, la \textbf{flexibilidad} que da. Permite al usuario guardar los datos de forma muy sencilla: con un simple CSV. Y si el usuario, por cualquier razón, tiene los datos en otro formato, bastaría con modificar dicho script o hacer uno propio. Incluso, si finalmente este proyecto es usado por la \textit{Universidad de Granada}, se podría hacer un script propio que guardase la información. 
 
+Lo más importante de todo es no obligar al usuario a guardar los datos en un determinado formato, sino dejarlo elegir. 
+
+Por supuesto, soy consciente de que esto de hacer un script que lea los datos desde un CSV y los guarde en una base de datos usando la API de \texttt{Django} no es algo que cualquier usuario pueda comprender o modificar. Sino que el proceso de instalación y de importación de los datos debe ser hecho por un usuario avanzado o un técnico, que le deje al usuario todo listo para empezar a trabajar. Como estos datos no es algo que se suela cambiar mucho (no todos los días se añaden nuevas clases a un edificio ni nuevas asignaturas a un plan de estudios), se puede usar el \textbf{Administrador de \texttt{Django}} para hacer pequeñas modificaciones. Sobre ésto último hablaremos más adelante.
+
+\subsubsection{Sobre el script para guardar la información}
+Antes he hablado sobre un script que he hecho para importar datos desde unos CSVs. Me gustaría detallar más sobre dicho script, pues seguro que resultará de utilidad al lector. Dicho script es dinámico, es decir, no tiene escrito en ninguna línea de su código los nombres de las clases \texttt{Django} que tiene que instanciar. El script recibe como parámetro dichos nombres. Así, nos serviría el mismo script para guardar sólo las asignaturas o para guardar tanto las asignaturas como las clases. De hecho, hice el script con la intención de usarlo en futuros proyectos.
+
+Aunque sea muy práctico el hecho de que el script instancie las clases que el usuario le pasa por parámetro de forma dinámica, lo cierto es que hace que el código sea poco legible. No se sabe muy bien qué clase está instanciando ni qué variables está añadiendo a dicha clase en cada momento. Esto puede hacer que, cuando un usuario se disponga a modificar el script, tenga que emplear algo más de esfuerzo en dicha tarea. Por ello, me gustaría dejar documentado su funcionamiento.
+
+Para llamar al script y poder guardar todos los datos (clases, asignaturas y grupos) hay que ejecutar el siguiente comando:
+
+\begin{minted}[breaklines, breakafter=d]{shell-session}
+$ python store_csv.py ../Dataset/classrooms.csv Classroom ../Dataset/subjects.csv Subjects ../Dataset/groups.csv Groups
+\end{minted}
+
+Es decir, recibe como parámetros una lista donde el primer elemento es el archivo CSV con los datos y, el segundo, el modelo \texttt{Django} que instancia.
+
+Nada más empezar el script tiene una lista de parámetros con la siguiente estructura:
+
+\begin{displaymath}
+    \Bigg[path\_csv\_class_1, class_1, \ldots, path\_csv\_class_n, class_n \Bigg]
+\end{displaymath}
+
+Pero, por comodidad, lo primero que hace es tranformarla en una lista de tuplas:
+
+\begin{displaymath}
+    \Bigg[(path\_csv\_class_1, class_1), \ldots, (path\_csv\_class_n, class_n) \Bigg]
+\end{displaymath}
+
+A partir de ahí, itera sobre la lista resultante. En primer lugar, guarda los datos del CSV en un \texttt{pandas} \textit{Dataframe} (\cite{dataframe}). A continuación, itera sobre cada fila de la tabla e instancia un objeto de la clase $class_i$. Es importante recalcar, que el objeto se instancia a partir de un string con su nombre. Una vez instanciado, se le dan valor a cada uno de sus atributos usando los nombres de las columnas de la tabla del \textit{Dataframe}. Por tanto, si el usuario tiene intención de modificar esta estructura, debe tener en cuenta que las variables del CSV deben llamarse igual que los atributos del modelo.
+
+\subsection{El administrador de \texttt{Django}}
+Previamente se ha comentado que, en caso de que alguna pequeña modificación en algún dato fuese necesaria, se puede hacer a través del administrador de \texttt{Django}. Dicho administrador, permite borrar, modificar y añadir nuevos datos a través de una interfaz web muy amigable.
+
+Para ello, hay que seguir varios pasos muy sencillos:
+\begin{enumerate}
+\item En primer lugar, hay que crear un superusuario para poder acceder al panel de administración. Esto se hace a través del siguiente comando:
+
+\begin{minted}{shell-session}
+$ python manage.py createsuperuser       
+Username (leave blank to use 'marta'): 
+Email address: 
+Password: 
+Password (again): 
+Superuser created successfully.
+\end{minted}
+
+Si tratamos de poner una contraseña demasiado común, se producirá un error y tendremos que elegir otra:
+
+\begin{minted}{shell-session}
+$ python manage.py createsuperuser
+Username: admin
+Email address: 
+Password: 
+Password (again): 
+This password is too short. It must contain at least 8 characters.
+This password is too common.
+Password: ^C
+Operation cancelled.
+\end{minted}
+
+\item Una vez creado un usuario, debemos indicarle al administrador los modelos que hemos hecho. Para ello, modificamos el fichero \texttt{timetables/admin.py} y registramos los modelos \texttt{Django} que hemos definido. Por ejemplo, para registrar el modelo de asignaturas bastaría con añadir la siguiente línea de código:
+
+\mint{python}|admin.site.register(Subjects)|
+
+\item A continuación, arrancamos el servidor de desarrollo (con el que se hizo el \textit{hola mundo} anteriormente):
+
+\begin{minted}{shell-session}
+$ python manage.py runserver
+\end{minted}
+
+\item Y, por último, accedemos en nuestro navegador a la URL \texttt{http://127.0.0.1:8000/admin/}. Al acceder, veremos la pantalla de la \hyperref[djangoadminpanel]{Figura \ref*{djangoadminpanel}}.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{img/djangoadminpanel}
+\caption{Pantalla inicial del panel de administración}
+\label{djangoadminpanel}
+\end{figure}
+
+\end{enumerate} 
+
+Por ejemplo, si a la asignatura \textit{Nuevos Paradigmas de Interacción} del \textit{Grado en Ingeniería Informática} se le añadiese una hora más de prácticas, se podría modificar tal y como se ve en la \hyperref[djangoadminmodify]{Figura \ref*{djangoadminmodify}}.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{img/djangoadminmodify}
+\caption{Panel para modificar la información de una asignatura}
+\label{djangoadminmodify}
+\end{figure}
