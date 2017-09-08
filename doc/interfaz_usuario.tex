@@ -1,6 +1,27 @@
 \chapter{Desarrollo de la interfaz de usuario}
 En Ingeniería del Software nos enseñaron que para añadir una interfaz de usuario a un sistema ya hecho no había que modificar el sistema ya existente. Hay metodologías que empiezan haciendo una interfaz de usuario ``vacía'' y, a partir de ahí, van añadiéndole funcionalidad a sus botones. En nuestro caso hemos optado por el primer principio, ya que nos pareció la forma más natural de hacerlo. A continuación, explicaré cómo hice para conectar la aplicación web que he desarrollado como interfaz de usuario con el programa \texttt{Python} que calcula el horario.
 
+\section{Diseño de la interfaz}
+Antes de empezar a programar, estuve pensando cómo debería ser la interfaz. Mi objetivo era hacerla lo más sencilla posible. Lo ideal hubiese sido que el programa funcionase simplemente con pulsar un botón, pero por desgracia tuve que ponerle algunas cosas más debido a su complejidad.
+
+En primer lugar, diseñé una primera pantalla de bienvenida en la que se le solicititaban al usuario los datos necesarios para hacer el horario: días, horas y cuatrimestre. No quise añadir nada más a esta pantalla para hacerlo lo más sencillo posible. En la \hyperref[init]{Figura \ref*{init}} se puede ver un esquema sencillo de esta idea. Es un simple formulario con tres campos y un botón para subir dichos datos al servidor. ¿Para qué más?
+
+\begin{figure}
+\centering
+\scalebox{.7}{\input{img/pantalla_inicial.tex}}
+\caption{Pantalla inicial del programa}
+\label{init}
+\end{figure}
+
+Después, diseñé la pantalla en la que se presentaría el horario final al usuario. En este caso, quise que el horario fuera lo más importante de la pantalla y el elemento que ocupase toda la atención. Para cambiar entre los horarios de cada grupo, decidí poner un menú \textit{dropdown}, pues era lo más disimulado. Me pareció que un sidebar ocupaba demasiado espacio y, un sidebar que se oculta y se muestra dinámicamente me pareció poco intuitivo. También añadí un botón para exportar el horario a PDF. En la \hyperref[horario]{Figura \ref*{horario}} se puede ver un esquema de esta pantalla.
+
+\begin{figure}
+\centering
+\scalebox{.6}{\input{img/pantalla_horario.tex}}
+\caption{Pantalla para mostrar el horario en el programa}
+\label{horario}
+\end{figure}
+
 \section{Herramienta usada}
 Actualmente, hay un montón de tecnologías o herramientas para hacer todo tipo de interfaces de usuario. Me limité a buscar herramientas para \texttt{Python}, pues así podía integrar de forma muy sencilla todo el trabajo previo ya realizado en este lenguaje. Si hubiese usado otras herramientas, tendría que haber un puente para intercambiar información entre ambas, lo que podría suponer un cuello de botella. Por ejemplo, para conectar Python con un servidor NodeJS, se tienen que hacer JSON que reciben como parámetro y devuelven ambas partes para intercambiar información. Hay herramientas en el mercado que están así implementadas, como por ejemplo, la Restful API de Wazuh (\url{https://github.com/wazuh/wazuh-api}). 
 
@@ -353,3 +374,24 @@ Por ejemplo, si a la asignatura \textit{Nuevos Paradigmas de Interacción} del \
 \caption{Panel para modificar la información de una asignatura}
 \label{djangoadminmodify}
 \end{figure}
+
+Soy consciente de que sería una buena idea personalizar un poco la interfaz del administrador, para que sea más parecida a la del horario. Esto le daría al usuario la sensación de seguir dentro del programa y no la sensación de estar usando uno diferente. De hecho, una de las cosas a mejorar en el fururo sería esta interfaz, simplificándola más aún y dándole una estética más acorde al resto del proyecto.
+
+\subsection{Definiendo las funciones del servidor: las urls de \texttt{Django}}
+Cuando uno hace un programa en C, define en un archivo las cabeceras de las distintas funciones que funciones que componen su programa. Este proceso requiere haber definido previamente qué funciones se necesitan y, declarándolas de esta forma, el programador puede abstraerse y quedarse sólo en la definición de la misma.
+
+Algo parecido pasa en \texttt{Django}, con la diferencia de que en nuestro caso no tenemos unas funciones que implementar y una cabecera. Tenemos un sitio web plagado de enlaces en los que el usuario va a hacer click. Cada enlace, representa una funcionalidad de la aplicación que necesita su respectiva implementación.
+
+Ahí es donde entran en juego las URLs de \texttt{Django}. Dichas URLs se definen en el archivo \texttt{urls.py}. Hay dos archivos \texttt{urls.py} diferentes:
+\begin{enumerate}[---]
+    \item El archivo de URLs del proyecto.
+    \item El archivo de URLs de la app.
+\end{enumerate}
+
+El primero, corresponde al archivo de URLs del proyecto en concreto y el segundo, al de la app. Este último no se crea por defecto cuando ejecutamos el comando \texttt{startapp} sino que hay que crearlo a mano.
+
+La forma correcta de trabajar con ambos ficheros es definir todas las URLs relativas a la app dentro del fichero \texttt{urls.py} de la app y, una vez definidas, importarlas dichas URLs en el ficheo \texttt{urls.py} del proyecto. Así, si tenemos varias apps que se ejecutan en un mismo proyecto, nuestro código será mucho más legible y organizado.
+
+Vamos a empezar primero definiendo las URLs de nuestra aplicación. Para ello, en primer lugar me hice unos dibujos esquema para representar cómo iba a ser la interfaz de usuario. 
+
+\subsection{Definiendo el servidor: las vistas de \texttt{Django}}
