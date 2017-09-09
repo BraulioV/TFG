@@ -37,7 +37,8 @@ def senddata(request):
     request.session['semester'] = semester
     request.session['full_timetable'] = timetable.dict_timetable()
 
-    return HttpResponseRedirect(reverse('timetables:showdata', args=('1A',)))
+    return HttpResponseRedirect(reverse('timetables:showdata', args=(
+                    list(timetable.groups.keys())[0],)))
 
 
 def showdata(request, groupname):
