@@ -45,7 +45,7 @@ Por sencillez, se ha decidido que este algoritmo sólo calcula una franja, en ve
 
 El algoritmo antes de comenzar el bucle principal, realiza una serie de cálculos. Para empezar, calcula el número total de horas de teoría y prácticas que tiene para cada curso. Además de esto, hay que calcular el número de horas totales libres de laboratorio que hay, para comprobar si en algún momento en el horario habrá grupos que tengan en el mismo instante de tiempo prácticas a la vez. Por ejemplo, si los laboratorios están abiertos cinco días a la semana y cuatro horas al día tendríamos un total de 20 horas. Como cada turno de prácticas tiene dos horas, nos quedarían un total de diez turnos de prácticas por asignar. Si, por ejemplo, tuviésemos que asignar doce turnos de prácticas, tendríamos que elegir de forma aleatoria dos turnos de prácticas que se repetirían. Debe ser de forma aleatoria para que los turnos ``repetidos'' no coincidan en los distintos cursos y se saturen los laboratorios un día en concreto.
 
-Después, el algoritmo empieza a iterar sobre cada grupo de ese curso y va asignando horas de prácticas y teoría en los huecos ``libres''. Para saber qué huecos están libres se usa una matriz auxiliar que registra qué horas son de prácticas en cada curso.
+Después, el algoritmo empieza a iterar sobre cada grupo de ese curso y va asignando horas de prácticas y teoría en los huecos ``libres''. Para saber qué huecos están libres se usa una matriz auxiliar que registra qué horas son de prácticas en cada curso, común para todos los grupos de ese curso.
 
 \subsection{Pseudocódigo del algoritmo}
 El siguiente pseudocódigo refleja de forma más clara el funcionamiento de este algoritmo:
@@ -122,9 +122,23 @@ final \GETS \CALL{FinalFranja}{turno}\\
 \END
 \end{pseudocode}
 
-El algoritmo comienza filtrando los grupos según el turno que se esté calculando, además de caclcular el punto de partida y final para el bucle interno en función del turno, para no tener que estar constantemente calculándolo. Una vez pasado esto, pasamos al bucle principal.
+El algoritmo comienza filtrando los grupos según el turno que se esté calculando, además de calcular el punto de partida y final para el bucle interno en función del turno, para no tener que estar constantemente calculándolo. Una vez pasado esto, pasamos al bucle principal.
 
-Dentro del bucle principal, lo que hace el algoritmo es calcular el número de horas de prácticas que tiene el grupo y el número de horas totales que hay en una semana. En caso de que las horas de prácticas del grupo sean mayores que las que hay disponibles para una asignatura, se escogerá un día aleatorio de la semana en el que se va a repetir un turno.
+Dentro del bucle principal, lo que hace el algoritmo es calcular el número de horas de prácticas que tiene cada curso y el número de horas totales que hay en una semana. En caso de que las horas de prácticas del curso sean mayores que las que hay disponibles para una asignatura, se escogerá un día (o días, dependiendo del curso) aleatorio de la semana en el que se va a repetir un turno.
+
+Una vez hecho esto, el algoritmo pasa a asignar horas de teoría y prácticas a cada grupo perteneciente al grupo según las siguientes condiciones:
+
+\begin{enumerate}
+  \item Si la celda está libre, y el número de horas de prácticas restantes es mayor que dos, se asigna la celda como celda de prácticas.
+  \item Si la celda no está libre, el número de horas de prácticas restantes es mayor que dos y, además, la hora y el día coinciden con alguno de los elementos de la lista de repetidos, se asigna como celda de prácticas.
+  \item Si la celda no está libre, el número de horas de teoría restantes es mayor que dos, se asigna como celda de teoría.
+  \item Si las horas de teoría son mayores que dos, se asigna teoría.
+  \item Si las horas de prácticas son mayores que dos, se asigna prácticas.
+  \itme Si sólo queda una hora de teoría, se asigna teoría.
+  \itme Si sólo queda una hora de prácticas, se asigna prácticas.
+\end{enumerate}
+
+Con esto se van alternando clases de teoría y de prácticas, haciendo estructuras menos saturadas. Como podemos ver en la \hyperref[estructura1]{Figura \ref*{estructura1}}
 
 \section{Asignación de horas de teoría}
 Esta segunda versión del algoritmo de asignación de horas de teoría utiliza como base la estructura hecha por el algoritmo de preasignación. Así, sólo tiene permitido asignar horas en los huecos que estén marcados como \texttt{T} en la matriz de estructura. Usando esto como base y un diccionario con las horas por asignar de cada asignatura, el algoritmo distingue varios casos diferentes:
