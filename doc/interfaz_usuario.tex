@@ -378,7 +378,7 @@ Por ejemplo, si a la asignatura \textit{Nuevos Paradigmas de Interacción} del \
 Soy consciente de que sería una buena idea personalizar un poco la interfaz del administrador, para que sea más parecida a la del horario. Esto le daría al usuario la sensación de seguir dentro del programa y no la sensación de estar usando uno diferente. De hecho, una de las cosas a mejorar en el fururo sería esta interfaz, simplificándola más aún y dándole una estética más acorde al resto del proyecto.
 
 \subsection{Definiendo las funciones del servidor: las urls de \texttt{Django}}
-Cuando uno hace un programa en C, define en un archivo las cabeceras de las distintas funciones que funciones que componen su programa. Este proceso requiere haber definido previamente qué funciones se necesitan y, declarándolas de esta forma, el programador puede abstraerse y quedarse sólo en la definición de la misma.
+Cuando uno hace un programa en C, define en un archivo las cabeceras de las distintas funciones que componen su programa. Este proceso requiere haber definido previamente qué funciones se necesitan y, declarándolas de esta forma, el programador puede abstraerse y quedarse sólo en la definición de la misma.
 
 Algo parecido pasa en \texttt{Django}, con la diferencia de que en nuestro caso no tenemos unas funciones que implementar y una cabecera. Tenemos un sitio web plagado de enlaces en los que el usuario va a hacer click. Cada enlace, representa una funcionalidad de la aplicación que necesita su respectiva implementación.
 
@@ -388,10 +388,61 @@ Ahí es donde entran en juego las URLs de \texttt{Django}. Dichas URLs se define
     \item El archivo de URLs de la app.
 \end{enumerate}
 
-El primero, corresponde al archivo de URLs del proyecto en concreto y el segundo, al de la app. Este último no se crea por defecto cuando ejecutamos el comando \texttt{startapp} sino que hay que crearlo a mano.
+El primero, corresponde al archivo de URLs del proyecto en concreto y el segundo, al de la app. Este último no se crea por defecto cuando ejecutamos el comando \texttt{startapp} sino que hay que crearlo a mano. La forma correcta de trabajar con ambos ficheros es definir todas las URLs relativas a la app dentro del fichero \texttt{urls.py} de la app y, una vez definidas, importarlas dichas URLs en el fichero \texttt{urls.py} del proyecto. Así, si tenemos varias apps que se ejecutan en un mismo proyecto, nuestro código será mucho más legible y organizado. 
 
-La forma correcta de trabajar con ambos ficheros es definir todas las URLs relativas a la app dentro del fichero \texttt{urls.py} de la app y, una vez definidas, importarlas dichas URLs en el ficheo \texttt{urls.py} del proyecto. Así, si tenemos varias apps que se ejecutan en un mismo proyecto, nuestro código será mucho más legible y organizado.
+También es importante hablar sobre el formato en el que se definen las URLs. Se definen como \textbf{expresiones regulares}. Así, dentro de una misma acción podemos englobar muchos enlaces. Por ejemplo, imaginemos por un momento que estamos haciendo un blog. En un blog, hay un enlace para cada entrada que se está escribiendo, en dicho enlace suele incluirse información como el ID de la entrada, su fecha o el título para diferenciar cada enlace a cada entrada del blog de las otras entradas. ¿Se tendría que definir entonces un enlace para cada entrada? ¡No! (¡Vaya locura!) Simplemente sería necesario definir una expresión regular con el formato de dicha URL. Si nuestro blog incluyese por ejemplo una parte para escribir nuevas entradas, el formato de la URL para acceder a esta parte sería diferente al formato de URL para acceder a una entrada ya escrita. Así de sencillo se definen las ``cabeceras'' de funciones en \texttt{Django}. Por último, cuando definimos una expresión regular, el text que haga \textit{matching} con la expresión regular se pasará como parámetro a nuestro servidor.
 
-Vamos a empezar primero definiendo las URLs de nuestra aplicación. Para ello, en primer lugar me hice unos dibujos esquema para representar cómo iba a ser la interfaz de usuario. 
+Vamos a detallar el funcionamiento de las URLs poniendo de ejemplo el proyecto del horario realizado. Para ello, debemos recordar los esquemas iniciales que hice sobre la interfaz. 
+
+\subsubsection{La pantalla inicial}
+Nada más iniciar la app, se muestra un pequeño formulario con tres campos. Este es el \texttt{index.html} de toda la vida. En este caso, no quiero poner nada más que la URL del servidor en el navegador para acceder a esta pantalla inicial. Por tanto, la primera URL a definir es la URL vacía.
+
+\begin{minted}{python}
+url(r'^$', views.index, name='index'),
+\end{minted}
+
+El símbolo $\land$ se utiliza para indicar el comienzo de la expresión regular y el símbolo $\$$, para indicar el final. Por tanto, en este caso al estar ambos símbolos juntos, se indica que entre el comienzo y el final no hay nada más que vacío.
+
+¿Qué significa lo que hay justo detrás de la expresión regular? \texttt{views.index} es la llamada que se ejecutará en el servidor cuando se reciba una petición en dicha URL y el parámetro \texttt{name}, define el nombre de la URL. Este nombre es el que se utilizará para hacer referencia a la URL desde cualquier parte del proyecto pero, en especial, desde las plantillas de \texttt{Django} que se explicarán más adelante.
+
+En la pantalla inicial, había un botón para enviar al servidor los parámetros del horario que se desea realizar. Y nada más. Por tanto, para esta pantalla inicial debemos definir una acción o botón (URL) que al ser pulsado, mande al servidor los parámetros. Por ejemplo, como lo que hacemos en este caso es enviar información al servidor, podemos definir una URL llamada \texttt{senddata}:
+
+\begin{minted}{python}
+url(r'^senddata/$', views.senddata, name='senddata'),
+\end{minted}
+
+En este caso, no se ha definido ninguna expresión regular dentro de la URL porque la función \texttt{views.senddata} no recibe ningún parámetro. Los datos que se introducen en el formulario inicial, se envían al servidor sí pero el cómo se detallará más adelante. Por ahora sólo debemos saber que no se envían en forma de parámetro en la URL.
+
+\subsubsection{La pantalla para mostrar los horarios}
+En esta pantalla tenemos dos enlaces: el primero, es un botón que genera el horario en PDF y el segundo, es un \textit{dropdown} que permite seleccionar el grupo que queramos y ver su horario.
+
+El enlace para generar el horario en PDF se define exactamente igual que el enlace para enviar los parámetros del horario al servidor, ya que no recibe ningún parámetro especial que necesite ser definido en forma de expresión regular:
+
+\begin{minted}{python}
+url(r'^pdf/$', views.pdf, name='pdf')
+\end{minted}
+
+Ahora bien, el \textit{dropdown} que permite elegir grupo sí: 
+
+\begin{minted}{python}
+url(r'^showdata/(?P<groupname>\w+)$', views.showdata, name='showdata'),
+\end{minted}
+
+En este ejemplo, se ve bastante claro cómo se define una expresión regular en una URL. En primer lugar, debemos señalar que dicha expresión regular es un parámetro, para ello, usamos los carácteres \texttt{?P}. A continuación, debemos indicar el nombre del parámetro que en este caso es el nombre del grupo \texttt{<groupname>} y, por último, la expresión regular que define dicho parámetro. En este caso, como el nombre de un grupo puede estar formado tanto por carácteres como por números, he usado la expresión regular \texttt{$\setminus$w+} (\textit{word}). 
+
+Así, para ver el horario del grupo $1^{\circ}$ A, tendríamos que acceder a la siguiente URL \texttt{<URL\_SERVIDOR>/showdata/1A} y para ver el horario del grupo $3^{\circ}$ C, \texttt{<URL\_SERVIDOR>/showdata/3C}.
+
+\subsubsection{Importando las URLs en de la app en el proyecto}
+Como se dijo anteriormente, hay dos tipos de ficheros \texttt{urls.py}: el que define las URLs de la app y el que define las URLs del proyecto. Acabamos de definir el fichero de URLs de nuestra app pero, ¿cómo se importa ese fichero a nuestro proyecto? ¡En una sola línea de código!
+
+\begin{minted}{python}
+url(r'^', include('timetables.urls', namespace="timetables")),
+\end{minted}
+
+En este caso, le indicamos a nuestro proyecto una expresión regular que abarca el resto de expresiones regulares de la app. Como se dijo antes, cuando se definió la URL de la pantalla inicial, queremos que con poner la URL del servidor en el navegador ya nos aparezca la pantalla inicial. Por eso, también aquí se usa una expresión regular vacía, pero con una diferencia, en este caso no se añade el símbolo $\$$. ¿Por qué? Porque la URL aún no ha acabado, sino que a esta expresión regular se le concatenarán las expresiones regulares que se importan ejecutando la función \texttt{include}. 
+
+Esto tiene una gran comodidad: si tuviésemos varias apps, podríamos englobar toda su funcionalidad bajo una URL común. En este caso, todas las URLs de nuestra aplicación se engloban en una URL vacía y todas las URLs del panel de administración de \texttt{Django} se engloban bajo la URL \texttt{admin/}. 
+
+Además, si en el futuro añadimos más funcionalidad al proyecto y la parte del horario pasase a ser algo secundario, con sólo cambiar una expresión regular podríamos cambiar la URL para acceder a la funcionalidad del proyecto y dejar libre el \texttt{index.html}.
 
 \subsection{Definiendo el servidor: las vistas de \texttt{Django}}
