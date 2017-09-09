@@ -1,3 +1,5 @@
+import re
+from django.core.exceptions import ValidationError
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -8,9 +10,26 @@ def index(request):
     return render(request, 'timetables/index.html')
 
 def senddata(request):
+    input_val = re.compile('^\d')
+    if not input_val.match(request.POST['days']) and \
+       not input_val.match(request.POST['hours']) and \
+       not input_val.match(request.POST['semester']):
+       raise ValidationError("Incorrect input format")
+
     days = int(request.POST['days'])
     hours = int(request.POST['hours'])
     semester = int(request.POST['semester'])
+
+    if (hours - days) > 5:
+        raise ValidationError("It is physically imposible to make a timetable " +
+            "with such a little number of hours.")
+
+    if days < 4 or days > 5:
+        raise ValidationError("Specify a valid number of days")
+
+    if hours < 10 or hours > 13:
+        raise ValidationError("Specify a valid number of hours")
+
     timetable = compute_timetable(days, hours, semester)
 
     request.session['days']  = days
