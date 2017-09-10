@@ -585,6 +585,10 @@ En la \hyperref[pantallainicialfinal]{Figura \ref*{pantallainicialfinal}} vemos 
 
   Es importante destacar que \textbf{esto no es una medida de seguridad, sino de usabilidad}. Es decir, a pesar de tener esta validación de la entrada en el \textit{frontend}, es obligatorio validar la entrada en el \textit{backend}. ¿Por qué? Porque desde el editor de HTML de cualquier navegador es posible eliminar la validación, tal y como se ve en la \hyperref[seguridad0]{Figura \ref*{seguridad0}}. Si esto ocurriese, el servidor tendría que detectarlo y dar una excepción como la que se ve en la \hyperref[seguridadback]{Figura \ref*{seguridadback}}. Por tanto, esta validación en el formulario sólo se hace para ayudar al usuario a saber qué datos tiene que introducir pero no es, ni de lejos, una medida de seguridad.
 
+  \begin{displayquote}
+    ``En el \textit{frontend}, no hay seguridad.''
+  \end{displayquote}
+
   \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{img/seguridad0}
@@ -601,4 +605,90 @@ En la \hyperref[pantallainicialfinal]{Figura \ref*{pantallainicialfinal}} vemos 
 \end{enumerate}
 
 \subsubsection{La plantilla \texttt{showdata.html}}
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{img/pantalla_horario_final}
+  \caption{Resultado final de la pantalla para mostrar los horarios}
+  \label{finalhorarios}
+\end{figure}
 
+En la \hyperref[finalhorarios]{Figura \ref*{finalhorarios}} vemos el resultado final de la pantalla para mostrar horarios. En este caso, la pantalla tiene tres partes:
+
+\begin{enumerate}[---]
+  \item La más importante de todas, es una tabla en la cual se muestra el horario del grupo seleccionado.
+  \item Para seleccionar grupo, hay un \textit{dropdown} que permite seleccionar el grupo deseado.
+  \item Y, por último, un botón para imprimir el horario en PDF.
+\end{enumerate}
+
+Como dije antes, la tabla se envía a la plantilla en forma de diccionario JSON. Dicho diccionario JSON tiene como claves las distintas horas del día (``$8:30\;-\;9:30$'', ``$9:30\;-\;10:30$''$\ldots$) y como valores, la lista de asignaturas y aulas para cada día. Es importante tener clara esta estructura para poder comprender mejor cómo se genera la tabla. Para generar la tabla, itero usando una etiqueta \texttt{for} por todo el diccionario:
+
+\mint{django}|{% for hour, week in request.session.timetable.items %}|
+
+Dentro de cada hora de la semana, es importante distinguir si es de teoría o de prácticas. Ya que una hora de prácticas ocupa una única celda mientras que una de teoría ocupa tantas celdas como subgrupos de prácticas haya. Esto es así debido a que en HTML, al igual que en \LaTeX, no es posible dividir una celda pero sí es posible agrupar $n$ celdas. Para ello, he usado el atributo HTML \texttt{colspan}:
+
+\begin{minted}{django}
+<tr>
+  {% for column in week %}
+    {% if column.ispractice %}
+      {% for s in column.subject %}
+        <td>{{ s }}</td>
+      {% endfor %}
+    {% else %}
+      <td colspan="{{ request.session.numsubgroups }}">{{ column.subject }}</td>
+    {% endif %}
+  {% endfor %}
+</tr>
+\end{minted}
+
+Otro detalle importante es el de las filas: al igual que en el PDF de horarios que hay actualmente, la clase en la que se imparte una asignatura se coloca justo debajo de su nombre. Para hacer esto en HTML, he tenido que hacer que la celda que indica las horas ocupe dos filas: una fila para indicar el nombre de la asignatura y otra, para indicar la clase en la que se imparte. Para ello, he usado el atributo HTML \texttt{rowspan}:
+
+\mint{html}|<th scope="row" rowspan="2"> {{ hour }}</th>|
+
+Finalmente, los días de la semana son parte de la cabecera de la tabla. Al igual que con las celdas de teoría, ocuparán tantas celdas como subgrupos de prácticas haya:
+
+\begin{minted}{html}
+<thead class="thead-inverse">
+  <tr>
+    <th>Hour</th>
+    <th colspan="{{ request.session.numsubgroups }}">Monday</th>
+    <th colspan="{{ request.session.numsubgroups }}">Tuesday</th>
+    <th colspan="{{ request.session.numsubgroups }}">Wednesday</th>
+    <th colspan="{{ request.session.numsubgroups }}">Thursday</th>
+    <th colspan="{{ request.session.numsubgroups }}">Friday</th>
+  </tr>
+</thead>
+\end{minted}
+
+Para generar el \textit{dropdown}, lo único que he hecho ha sido iterar una lista que contiene los nombres de todos los grupos. \texttt{Django} automáticamente genera un enlace por cada elemento de la lista.
+
+\begin{minted}[breaklines, breakafter=d]{html}
+<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+  {% for group in request.session.full_timetable.keys %}
+    <a class="dropdown-item" href="{% url 'timetables:showdata' group %}">{{ group }}</a>
+  {% endfor %}
+</div>
+\end{minted}
+
+En la \hyperref[dropdowngrupos]{Figura \ref*{dropdowngrupos}} se ve cómo queda al final este elemento. Es muy importante destacar cómo con tres líneas de código, \texttt{Django} es capaz de generar dinámicamente toda la lista de enlaces.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{img/horario_horario_grupos}
+  \caption{Pantalla para mostrar los horarios, con el \textit{dropdown} de grupos desplegado}
+  \label{dropdowngrupos}
+\end{figure}
+
+Por último, para generar el botón de imprimir en PDF, lo único que he tenido que hacer ha sido añadir un enlace con la URL que definimos para generar los PDFs:
+
+\begin{minted}[breaklines, breakafter=d]{html}
+<div class="col" style="text-align: right">
+  <a href="{% url 'timetables:pdf' %}"><button type="button" class="btn btn-primary">Generate PDF</button></a>
+</div>
+\end{minted}
+
+\subsubsection{Usando el framework \textit{Bootstrap} para definir el estilo de la página}
+Para hacer que la página tenga un estilo más moderno y actual, he utilizado \textbf{Bootstrap} (\url{https://getbootstrap.com/}). \textit{Bootstrap} permite construir sitios web \textit{responsive} y con un toque moderno de forma rápida y sencilla. Tiene predefinidos un montón de estilos para diferentes elementos HTML como formularios, tablas, botones, barras de navegación...
+
+Me decidí a usar \textit{Bootstrap} para poder centrarme en los aspectos más importantes del sistema, seguridad y usabilidad, y no estar perdiendo el tiempo con el CSS. Yo soy partidaria de usar herramientas ya hechas, en lugar de perder el tiempo haciendo una herramienta desde 0. Entiendo que haya sistemas en los que sea necesario hacer un desarrollo completo, ya que no disponen de conexión a internet para descargar dependencias externas pero, en este caso, no se daba esa condición. 
+
+Para usar \textit{Bootstrap}, lo único que hay que hacer es importar el framework en la cabecera del HTML y usar en los elementos HTML las clases CSS definidas por \textit{Bootstrap}, utilizando la etiqueta \texttt{class}. De esta forma, en un breve espacio de tiempo hemos conseguido lo que nos podría llevar perfectamente una semana entera.
