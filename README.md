@@ -1,6 +1,9 @@
 # TFG
 Repositorio del Trabajo de Fin de Grado sobre la automatización de horarios
 
+![user_interface](user_interface.gif)
+
+
 ## How to use
 Fill your data in Dataset directory (classrooms, groups and subjects).
 

@@ -378,7 +378,7 @@ Por ejemplo, si a la asignatura \textit{Nuevos Paradigmas de Interacción} del \
 Soy consciente de que sería una buena idea personalizar un poco la interfaz del administrador, para que sea más parecida a la del horario. Esto le daría al usuario la sensación de seguir dentro del programa y no la sensación de estar usando uno diferente. De hecho, una de las cosas a mejorar en el fururo sería esta interfaz, simplificándola más aún y dándole una estética más acorde al resto del proyecto.
 
 \subsection{Definiendo las funciones del servidor: las urls de \texttt{Django}}
-Cuando uno hace un programa en C, define en un archivo las cabeceras de las distintas funciones que funciones que componen su programa. Este proceso requiere haber definido previamente qué funciones se necesitan y, declarándolas de esta forma, el programador puede abstraerse y quedarse sólo en la definición de la misma.
+Cuando uno hace un programa en C, define en un archivo las cabeceras de las distintas funciones que componen su programa. Este proceso requiere haber definido previamente qué funciones se necesitan y, declarándolas de esta forma, el programador puede abstraerse y quedarse sólo en la definición de la misma.
 
 Algo parecido pasa en \texttt{Django}, con la diferencia de que en nuestro caso no tenemos unas funciones que implementar y una cabecera. Tenemos un sitio web plagado de enlaces en los que el usuario va a hacer click. Cada enlace, representa una funcionalidad de la aplicación que necesita su respectiva implementación.
 
@@ -388,10 +388,307 @@ Ahí es donde entran en juego las URLs de \texttt{Django}. Dichas URLs se define
     \item El archivo de URLs de la app.
 \end{enumerate}
 
-El primero, corresponde al archivo de URLs del proyecto en concreto y el segundo, al de la app. Este último no se crea por defecto cuando ejecutamos el comando \texttt{startapp} sino que hay que crearlo a mano.
+El primero, corresponde al archivo de URLs del proyecto en concreto y el segundo, al de la app. Este último no se crea por defecto cuando ejecutamos el comando \texttt{startapp} sino que hay que crearlo a mano. La forma correcta de trabajar con ambos ficheros es definir todas las URLs relativas a la app dentro del fichero \texttt{urls.py} de la app y, una vez definidas, importarlas dichas URLs en el fichero \texttt{urls.py} del proyecto. Así, si tenemos varias apps que se ejecutan en un mismo proyecto, nuestro código será mucho más legible y organizado. 
 
-La forma correcta de trabajar con ambos ficheros es definir todas las URLs relativas a la app dentro del fichero \texttt{urls.py} de la app y, una vez definidas, importarlas dichas URLs en el ficheo \texttt{urls.py} del proyecto. Así, si tenemos varias apps que se ejecutan en un mismo proyecto, nuestro código será mucho más legible y organizado.
+También es importante hablar sobre el formato en el que se definen las URLs. Se definen como \textbf{expresiones regulares}. Así, dentro de una misma acción podemos englobar muchos enlaces. Por ejemplo, imaginemos por un momento que estamos haciendo un blog. En un blog, hay un enlace para cada entrada que se está escribiendo, en dicho enlace suele incluirse información como el ID de la entrada, su fecha o el título para diferenciar cada enlace a cada entrada del blog de las otras entradas. ¿Se tendría que definir entonces un enlace para cada entrada? ¡No! (¡Vaya locura!) Simplemente sería necesario definir una expresión regular con el formato de dicha URL. Si nuestro blog incluyese por ejemplo una parte para escribir nuevas entradas, el formato de la URL para acceder a esta parte sería diferente al formato de URL para acceder a una entrada ya escrita. Así de sencillo se definen las ``cabeceras'' de funciones en \texttt{Django}. Por último, cuando definimos una expresión regular, el text que haga \textit{matching} con la expresión regular se pasará como parámetro a nuestro servidor.
 
-Vamos a empezar primero definiendo las URLs de nuestra aplicación. Para ello, en primer lugar me hice unos dibujos esquema para representar cómo iba a ser la interfaz de usuario. 
+Cuando nuestro servidor recibe una solicitud, por ejemplo ``/showdata/1A'', \texttt{Django} va a cargar el archivo \texttt{djangoapp.urls} y va a comprobar todos los \texttt{urlpatterns} que tengamos definidos, en orden, hasta que encuentre uno que haga \textit{matching}. Una vez haya encontrado la URL correcta, llamará a su vista correspondiente pasándole varios argumentos que se explicarán a continuación.
+
+Vamos a detallar el funcionamiento de las URLs poniendo de ejemplo el proyecto del horario realizado. Para ello, debemos recordar los esquemas iniciales que hice sobre la interfaz. 
+
+\subsubsection{La pantalla inicial}
+Nada más iniciar la app, se muestra un pequeño formulario con tres campos. Este es el \texttt{index.html} de toda la vida. En este caso, no quiero poner nada más que la URL del servidor en el navegador para acceder a esta pantalla inicial. Por tanto, la primera URL a definir es la URL vacía.
+
+\begin{minted}{python}
+url(r'^$', views.index, name='index'),
+\end{minted}
+
+El símbolo $\land$ se utiliza para indicar el comienzo de la expresión regular y el símbolo $\$$, para indicar el final. Por tanto, en este caso al estar ambos símbolos juntos, se indica que entre el comienzo y el final no hay nada más que vacío.
+
+¿Qué significa lo que hay justo detrás de la expresión regular? \texttt{views.index} es la llamada que se ejecutará en el servidor cuando se reciba una petición en dicha URL y el parámetro \texttt{name}, define el nombre de la URL. Este nombre es el que se utilizará para hacer referencia a la URL desde cualquier parte del proyecto pero, en especial, desde las plantillas de \texttt{Django} que se explicarán más adelante.
+
+En la pantalla inicial, había un botón para enviar al servidor los parámetros del horario que se desea realizar. Y nada más. Por tanto, para esta pantalla inicial debemos definir una acción o botón (URL) que al ser pulsado, mande al servidor los parámetros. Por ejemplo, como lo que hacemos en este caso es enviar información al servidor, podemos definir una URL llamada \texttt{senddata}:
+
+\begin{minted}{python}
+url(r'^senddata/$', views.senddata, name='senddata'),
+\end{minted}
+
+En este caso, no se ha definido ninguna expresión regular dentro de la URL porque la función \texttt{views.senddata} no recibe ningún parámetro. Los datos que se introducen en el formulario inicial, se envían al servidor sí pero el cómo se detallará más adelante. Por ahora sólo debemos saber que no se envían en forma de parámetro en la URL.
+
+\subsubsection{La pantalla para mostrar los horarios}
+En esta pantalla tenemos dos enlaces: el primero, es un botón que genera el horario en PDF y el segundo, es un \textit{dropdown} que permite seleccionar el grupo que queramos y ver su horario.
+
+El enlace para generar el horario en PDF se define exactamente igual que el enlace para enviar los parámetros del horario al servidor, ya que no recibe ningún parámetro especial que necesite ser definido en forma de expresión regular:
+
+\begin{minted}{python}
+url(r'^pdf/$', views.pdf, name='pdf')
+\end{minted}
+
+Ahora bien, el \textit{dropdown} que permite elegir grupo sí: 
+
+\begin{minted}{python}
+url(r'^showdata/(?P<groupname>\w+)$', views.showdata, name='showdata'),
+\end{minted}
+
+En este ejemplo, se ve bastante claro cómo se define una expresión regular en una URL. En primer lugar, debemos señalar que dicha expresión regular es un parámetro, para ello, usamos los carácteres \texttt{?P}. A continuación, debemos indicar el nombre del parámetro que en este caso es el nombre del grupo \texttt{<groupname>} y, por último, la expresión regular que define dicho parámetro. En este caso, como el nombre de un grupo puede estar formado tanto por carácteres como por números, he usado la expresión regular \texttt{$\setminus$w+} (\textit{word}). 
+
+Así, para ver el horario del grupo $1^{\circ}$ A, tendríamos que acceder a la siguiente URL \texttt{<URL\_SERVIDOR>/showdata/1A} y para ver el horario del grupo $3^{\circ}$ C, \texttt{<URL\_SERVIDOR>/showdata/3C}.
+
+\subsubsection{Importando las URLs en de la app en el proyecto}
+Como se dijo anteriormente, hay dos tipos de ficheros \texttt{urls.py}: el que define las URLs de la app y el que define las URLs del proyecto. Acabamos de definir el fichero de URLs de nuestra app pero, ¿cómo se importa ese fichero a nuestro proyecto? ¡En una sola línea de código!
+
+\begin{minted}{python}
+url(r'^', include('timetables.urls', namespace="timetables")),
+\end{minted}
+
+En este caso, le indicamos a nuestro proyecto una expresión regular que abarca el resto de expresiones regulares de la app. Como se dijo antes, cuando se definió la URL de la pantalla inicial, queremos que con poner la URL del servidor en el navegador ya nos aparezca la pantalla inicial. Por eso, también aquí se usa una expresión regular vacía, pero con una diferencia, en este caso no se añade el símbolo $\$$. ¿Por qué? Porque la URL aún no ha acabado, sino que a esta expresión regular se le concatenarán las expresiones regulares que se importan ejecutando la función \texttt{include}. 
+
+Esto tiene una gran comodidad: si tuviésemos varias apps, podríamos englobar toda su funcionalidad bajo una URL común. En este caso, todas las URLs de nuestra aplicación se engloban en una URL vacía y todas las URLs del panel de administración de \texttt{Django} se engloban bajo la URL \texttt{admin/}. 
+
+Además, si en el futuro añadimos más funcionalidad al proyecto y la parte del horario pasase a ser algo secundario, con sólo cambiar una expresión regular podríamos cambiar la URL para acceder a la funcionalidad del proyecto y dejar libre el \texttt{index.html}.
 
 \subsection{Definiendo el servidor: las vistas de \texttt{Django}}
+A la hora de definir una URL, se incluía en la definición el nombre de una función Python. Dicha función se ejecutará cuando el servidor reciba una petición a esa determinada URL. Así, podemos asociar botones y acciones en la interfaz de usuario a funciones. Una vista sirve generalmente una función o petición específica y tiene un template asociado. Volviendo al ejemplo del blog, podríamos tener una vista para mostrar una lista con las útimas entradas, otra para mostrar una entrada completa, otra para crear nuevas entradas, etc.
+
+Dichas funciones reciben un parámetro llamado \texttt{request} que contiene información sobre la petición HTTP que se le ha realizado al servidor. Este parámetro es un \textbf{diccionario} (JSON), por lo que se puede acceder a sus variables a partir de su nombre.
+
+Cada vista es responsable de hacer una cosa: o bien devolver un objeto \texttt{HttpResponse} que contiene la página solicitada o bien lanzar una excepción (por ejemplo, un error 404). Mientras una vista haga eso, podemos programar cualquier otra cosa: leer archivos, cargar registros de la base de datos, crear un zip...
+
+Las vistas están definidas en el archivo \texttt{views.py} de nuestra aplicación. A diferencia del archivo \texttt{urls.py}, no hay un archivo de vistas para el proyecto, sino que cada aplicación define sus propias vistas.
+
+El nombre que reciben estas funciones es \textbf{vistas}. ¿De dónde viene este nombre? Del modelo \textbf{MVT} (\textit{Model, View, Template}) en el que \texttt{Django} está basado.
+
+A continuación voy a explicar de forma breve las distintas vistas que componen el modelo.
+
+\subsubsection{La pantalla inicial}
+En la pantalla inicial habíamos definido previamente dos URLs: una para cargar la página y otra para enviar.
+
+La vista para cargar la página \texttt{index} lo único que hace es renderizar la plantilla \texttt{Django} en la que está definida la página inicial. Sobre las plantillas hablaremos a continuación.
+
+La vista para enviar al servidor los parámetros del horario sí que tiene más contenido. En primer lugar porque no es una petición \texttt{GET} sino que, al ser un formulario, es una petición \texttt{POST}. En dicha petición \texttt{POST} se incluyen los parámetros que el usuario ha especificado. 
+
+\textbf{Es muy importante asegurar que los parámetros especificados por el usuario son correctos}, ya que éste puede escribir cualquier cosa en el formulario. Por ejemplo, en vez de escribir ``\textit{5}'' puede escribir ``\textit{cinco}''. Incluso, puede que algún listo intente hacer un ataque \textbf{SQL Inyection}, escribiendo algo así como ``\textit{; DELETE * FROM Subjects}''. No podemos permitir que eso suceda. 
+
+¿Cómo hacer esta comprobación? Usando \textbf{expresiones regulares}. Por ejemplo, si lo que queremos asegurar que el usuario ha introducido un número de una cifra, usaremos la expresión regular \texttt{$\setminus$d} (\textit{digit}). Podemos hacer también otro tipo de comprobaciones, por ejemplo, en el problema de hacer horarios, el número de días no puede ser mayor que cinco, ni puede haber más de 13 horas de clase. Tampoco hay asignaturas un tercer cuatrimestre. Todo esto también se tiene que controlar mediante excepciones, porque si no, el programa no funcionará y el usuario se quedará sin saber por qué. Todo este proceso de comprobaciones se denomina \textbf{\textit{input validation}}.
+
+En la \hyperref[exception]{Figura \ref*{exception}} vemos un ejemplo. ¿Qué pasa si un usuario nos da una relación días-horas demasiado baja? En algún momento la tabla de horario se quedará sin espacio para poder almacenar una asignatura más y en ese momento saltará un error del tipo \textit{Index out of range}. El usuario se quedará extrañado pues no sabrá muy bien qué significa eso. En su lugar, es mejor añadir un error algo más claro: ``es físicamente imposible hacer un horario con un número tan bajo de horas''. 
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{img/ValidationError}
+\caption{Excepción controlada: es físicamente imposible hacer un horario con un número tan bajo de horas}
+\label{exception}
+\end{figure}
+
+Una vez que se ha comprobado que los datos proporcionados por el usuario son correctos, pasamos a generar el horario en sí. Para ello, he hecho una especie de \textit{main} que comunica el servidor con la vista. Así, se consigue un código mucho más organizado y legible.
+
+Una vez tuve el horario calculado, me enfrenté a uno de los mayores retos en este proyecto: ¿cómo le envío al template HTML un \texttt{numpy array}? Una tabla no puede meterse como parámetro en una URL y tampoco puede guardarse en una base de datos. 
+
+Después de un tiempo investigando, encontré algo llamado \textbf{sesiones} \cite{sessions}. Las sesiones permiten guardar información ``en \textit{cache}'' sobre la sesión del usuario actual. En el caso de \texttt{Django}, esta información se guarda en el propio servidor. Más concretamente, se guarda en la base de datos usando un modelo especial, aunque se pueden configurar distintos otros tipos de sesiones fácilmente.
+
+Para enviar información a la plantilla HTML usando este mecanismo, es necesario convertir la tabla (de tipo \texttt{numpy array}) a un JSON (es decir, un diccionario). Para ello, añadí una nueva función a la clase \texttt{Timetable} que devolvía la tabla convertida a JSON. Con esto además, pude añadirle las distintas horas del día como primera columna para que me fuese más sencillo hacer la tabla en la plantilla HTML.
+
+Una vez tenía hecho el horario y listo para ser mostrado al usuario, esta función termina redireccionando toda esta información a la vista encargada de mostrar la información al usuario: \texttt{showdata}.
+
+\subsubsection{La pantalla para mostrar los horarios}
+En esta pantalla había dos vistas principales: la que mostraba el horario de cada grupo (\texttt{showdata}) y la que exportaba el horario final a PDF (\texttt{pdf}).
+
+Esta primera vista, se carga automáticamente cuando envíamos al servidor los parámetros para hacer un horario. Como parámetro recibe el nombre de un grupo. Como parámetro ``por defecto'', recibe el nombre del primer grupo registrado (por ejemplo, $1^{\circ} A$).
+
+Cuando en la interfaz se hace click en cualquiera de los elementos del \textit{dropdown}, se hace una nueva petición a \texttt{showdata} con el grupo elegido como parámetro. En la vista, se selecciona el grupo deseado del diccionario JSON previamente generado y se muestra formateado en forma de tabla.
+
+En cuanto a la vista \texttt{pdf}, en primer lugar llama a la función para generar un PDF. Dicha función necesita trabajar con una tabla de numpy, por lo que antes de nada vuelve a transformar el objeto JSON en un objeto Python de la clase \texttt{Timetable} definida. Una vez el objeto ha sido transformado, se llama a las funciones definidas en el capítulo de impresión en PDF.
+
+Por último, una vez el fichero PDF ha sido creado, lo abro con python y lo muestro en el navegador, indicando que el contenido que se va a mostrar es un PDF. Así, el usuario no necesita ni descargar el fichero ni tener instalado un visor de PDF. Desde el propio navegador puede verlo, tal y como se ve en la \hyperref[pdf]{Figura \ref*{pdf}}.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{img/pdf}
+\caption{Vista del PDF generado, desde el navegador}
+\label{pdf}
+\end{figure}
+
+\subsection{Creando el \textit{frontend}, lo que el usuario va a ver}
+Ya tenemos toda la infraestructura software necesaria en el \textit{backend} (en el lado del servidor), pero aún no hemos dicho nada sobre el \textit{frontend} (en el lado del cliente). Con \texttt{Django} es bastante fácil definir un \textit{frontend}: utilizando el sistema de  \textbf{plantillas} de \texttt{Django}. De esta forma, podemos separar el diseño de la página del código Python, es decir, no hacer que la vista cree un HTML.
+
+Las plantillas de \texttt{Django} permiten generar HTML de forma dinámica. Una plantilla contiene las partes estáticas del HTML de salida y también tienen una sintaxis especial para indicar cómo se va a insertar el contenido generado de forma dinámica. 
+
+
+En la \hyperref[djangotemplates]{Figura \ref*{djangotemplates}} se ve la estructura de directorios recomendada para los templates de \texttt{Django}. El directorio \texttt{templates} no se crea por defecto cuando se ejecuta el comando \texttt{startapp} sino que, al igual que el fichero \texttt{urls.py}, hay que crearlo. Dentro de dicho directorio, lo recomendable es crear otro directorio llamado igual que nuestra aplicación (en este caso, \texttt{timetables}) y ya dentro de éste último es donde se colocan las plantillas. 
+
+\begin{figure}
+\centering
+\scalebox{.7}{\input{img/directorio_templates.tex}}
+\caption{Estructura de directorios de las plantillas de \texttt{Django}}
+\label{djangotemplates}
+\end{figure}
+
+Las plantillas podrían colocarse directamente dentro del directorio \texttt{templates}, pero esto no es una buena práctica. ¿Por qué no? Si tenemos varias aplicaciones en nuestro proyecto y dos de ellas tienen un template con el mismo nombre, \texttt{Django} puede equivocarse de template y seleccionar uno incorrecto. Esto ocurre porque \texttt{Django} escoge el primer template que tenga el nombre deseado. Por eso, una buena forma de diferenciar ambos templates es colocarlos dentro de una carpeta que se llame igual que la aplicación, para hacer que ambos templates estén en \textit{namespaces} diferentes.
+
+\subsubsection{¿Cómo son las plantillas de \texttt{Django}?} 
+Una plantilla es simplemente un archivo de texto que puede generar archivos en cualquier tipo de formato (HTML, XML, CSV...). Una plantilla contiene \textbf{\textit{variables}}, que se reemplazan por sus respectivos valores cuando se procesa la plantilla, y \textbf{\textit{etiquetas}}, que controlan la lógica de la plantilla.
+
+Las variables se definen entre dos llaves: \texttt{\{\{ variable \}\}}. Cuando el sistema de plantillas se encuentra con una variable, la evalúa y reemplaza con el resultado de dicha evaluación. Es importante destacar que no puede utilizarse el símbolo ``.'' en los nombres de las variables. Sí que se puede usar el símbolo ``\_''. El punto (``.'') se utliza para acceder a los atributos de una variable 
+
+Por otro lado, las etiquetas se definen entre una llave y un símbolo de porcentaje: \texttt{\{\% etiqueta \%\}}. Pueden controlar el flujo de la plantilla a través de bucles y condiciones, entre otras cosas.
+
+Ahora que ya sabemos cómo funcionan de forma muy básica las plantillas de \texttt{Django}, vamos a pasar a explicar las plantillas realizadas para el proyecto.
+
+\subsubsection{La plantilla \texttt{index.html}}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{img/pantalla_inicial_final}
+\caption{Resultado final de la pantalla inicial}
+\label{pantallainicialfinal}
+\end{figure}
+
+En la \hyperref[pantallainicialfinal]{Figura \ref*{pantallainicialfinal}} vemos el resultado final de la pantalla de inicio. Es un simple formulario con tres campos, los parámetros necesarios para generar un horario: número de días, número de horas por día y el cuatrimestre. ¿Cómo se genera esta página usando las plantillas? En este caso, he definido un formulario normal con HTML pero teniendo en cuenta los siguientes detalles:
+
+\begin{enumerate}[$\bullet$]
+  \item A la hora de definir la acción del formulario (es decir, a qué URL se va a llamar cuando se presione el botón de \textit{submit}), he usado una etiqueta para que \texttt{Django} escriba la URL correspondiente, en lugar de escribirla yo misma.
+
+  \mint{html}|<form action="{% url 'timetables:senddata' %}" method="post">|
+
+  \item Cuando definimos un campo en el formulario, debemos tener claro que ese nombre es el que vamos a usar en la vista en la que procesemos el formulario. Por ejemplo, en el caso del número de días, lo he definido en el formulario de la siguiente forma:
+
+  \mint{html}|<label for="days">Number of days</label>|
+
+  Y a la hora de procesarlo en la vista, lo he hecho de la siguiente forma:
+
+  \mint{python}|days = int(request.POST['days'])|
+
+  Como se ve, el mismo nombre que se le asigna en el HTML es el que se tiene que usar después para consultar su valor.
+
+  \item Para hacer la interfaz más usable, he añadido al formulario una validación de la entrada \cite{validatorform}. Para ello, he usado las etiquetas HTML \texttt{type}, \texttt{min} y \texttt{max} para especificar el tipo de dato (número), el valor mínimo que puede tener y el máximo:
+
+  \begin{minted}[breaklines, breakafter=d]{html}
+  <input type="number" max="5" min="4" class="form-control" name="days" placeholder="Number of days of the timetable">  
+  \end{minted}
+
+  Así, si el usuario intenta introducir ``cinco'' días a la semana, el campo erróneo del formulario se pondrá en rojo indicando que el dato introducido es erróneo, tal y como se ve en la \hyperref[validationerrornumber]{Figura \ref*{validationerrornumber}}.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/validationerrornumber}
+    \caption{Error al intentar introducir el número de días de forma errónea}
+    \label{validationerrornumber}
+  \end{figure}
+
+  Además, si tratamos de introducir un número demasiado alto de días el formulario también se quejará, tal y como se aprecia en la \hyperref[validationerrormax]{Figura \ref*{validationerrormax}}, porque en una semana hay, como mucho, cinco días. 
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/validationerrormax}
+    \caption{Error al intentar introducir un número demasiado alto de días}
+    \label{validationerrormax}
+  \end{figure}
+
+  Es importante destacar que \textbf{esto no es una medida de seguridad, sino de usabilidad}. Es decir, a pesar de tener esta validación de la entrada en el \textit{frontend}, es obligatorio validar la entrada en el \textit{backend}. ¿Por qué? Porque desde el editor de HTML de cualquier navegador es posible eliminar la validación, tal y como se ve en la \hyperref[seguridad0]{Figura \ref*{seguridad0}}. Si esto ocurriese, el servidor tendría que detectarlo y dar una excepción como la que se ve en la \hyperref[seguridadback]{Figura \ref*{seguridadback}}. Por tanto, esta validación en el formulario sólo se hace para ayudar al usuario a saber qué datos tiene que introducir pero no es, ni de lejos, una medida de seguridad.
+
+  \begin{displayquote}
+    ``En el \textit{frontend}, no hay seguridad.''
+  \end{displayquote}
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/seguridad0}
+    \caption{Desde el editor HTML de cualquier navegador es posible cambiar el campo \texttt{type="number"} a \texttt{type="text"} y saltar así la validación}
+    \label{seguridad0}
+  \end{figure}
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/seguridadback}
+    \caption{Excepción en el backend cuando se introduce un número de días no válido}
+    \label{seguridadback}
+  \end{figure}
+\end{enumerate}
+
+\subsubsection{La plantilla \texttt{showdata.html}}
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{img/pantalla_horario_final}
+  \caption{Resultado final de la pantalla para mostrar los horarios}
+  \label{finalhorarios}
+\end{figure}
+
+En la \hyperref[finalhorarios]{Figura \ref*{finalhorarios}} vemos el resultado final de la pantalla para mostrar horarios. En este caso, la pantalla tiene tres partes:
+
+\begin{enumerate}[---]
+  \item La más importante de todas, es una tabla en la cual se muestra el horario del grupo seleccionado.
+  \item Para seleccionar grupo, hay un \textit{dropdown} que permite seleccionar el grupo deseado.
+  \item Y, por último, un botón para imprimir el horario en PDF.
+\end{enumerate}
+
+Como dije antes, la tabla se envía a la plantilla en forma de diccionario JSON. Dicho diccionario JSON tiene como claves las distintas horas del día (``$8:30\;-\;9:30$'', ``$9:30\;-\;10:30$''$\ldots$) y como valores, la lista de asignaturas y aulas para cada día. Es importante tener clara esta estructura para poder comprender mejor cómo se genera la tabla. Para generar la tabla, itero usando una etiqueta \texttt{for} por todo el diccionario:
+
+\mint{django}|{% for hour, week in request.session.timetable.items %}|
+
+Dentro de cada hora de la semana, es importante distinguir si es de teoría o de prácticas. Ya que una hora de prácticas ocupa una única celda mientras que una de teoría ocupa tantas celdas como subgrupos de prácticas haya. Esto es así debido a que en HTML, al igual que en \LaTeX, no es posible dividir una celda pero sí es posible agrupar $n$ celdas. Para ello, he usado el atributo HTML \texttt{colspan}:
+
+\begin{minted}{django}
+<tr>
+  {% for column in week %}
+    {% if column.ispractice %}
+      {% for s in column.subject %}
+        <td>{{ s }}</td>
+      {% endfor %}
+    {% else %}
+      <td colspan="{{ request.session.numsubgroups }}">{{ column.subject }}</td>
+    {% endif %}
+  {% endfor %}
+</tr>
+\end{minted}
+
+Otro detalle importante es el de las filas: al igual que en el PDF de horarios que hay actualmente, la clase en la que se imparte una asignatura se coloca justo debajo de su nombre. Para hacer esto en HTML, he tenido que hacer que la celda que indica las horas ocupe dos filas: una fila para indicar el nombre de la asignatura y otra, para indicar la clase en la que se imparte. Para ello, he usado el atributo HTML \texttt{rowspan}:
+
+\mint{html}|<th scope="row" rowspan="2"> {{ hour }}</th>|
+
+Finalmente, los días de la semana son parte de la cabecera de la tabla. Al igual que con las celdas de teoría, ocuparán tantas celdas como subgrupos de prácticas haya:
+
+\begin{minted}{html}
+<thead class="thead-inverse">
+  <tr>
+    <th>Hour</th>
+    <th colspan="{{ request.session.numsubgroups }}">Monday</th>
+    <th colspan="{{ request.session.numsubgroups }}">Tuesday</th>
+    <th colspan="{{ request.session.numsubgroups }}">Wednesday</th>
+    <th colspan="{{ request.session.numsubgroups }}">Thursday</th>
+    <th colspan="{{ request.session.numsubgroups }}">Friday</th>
+  </tr>
+</thead>
+\end{minted}
+
+Para generar el \textit{dropdown}, lo único que he hecho ha sido iterar una lista que contiene los nombres de todos los grupos. \texttt{Django} automáticamente genera un enlace por cada elemento de la lista.
+
+\begin{minted}[breaklines, breakafter=d]{html}
+<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+  {% for group in request.session.full_timetable.keys %}
+    <a class="dropdown-item" href="{% url 'timetables:showdata' group %}">{{ group }}</a>
+  {% endfor %}
+</div>
+\end{minted}
+
+En la \hyperref[dropdowngrupos]{Figura \ref*{dropdowngrupos}} se ve cómo queda al final este elemento. Es muy importante destacar cómo con tres líneas de código, \texttt{Django} es capaz de generar dinámicamente toda la lista de enlaces.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{img/horario_horario_grupos}
+  \caption{Pantalla para mostrar los horarios, con el \textit{dropdown} de grupos desplegado}
+  \label{dropdowngrupos}
+\end{figure}
+
+Por último, para generar el botón de imprimir en PDF, lo único que he tenido que hacer ha sido añadir un enlace con la URL que definimos para generar los PDFs:
+
+\begin{minted}[breaklines, breakafter=d]{html}
+<div class="col" style="text-align: right">
+  <a href="{% url 'timetables:pdf' %}"><button type="button" class="btn btn-primary">Generate PDF</button></a>
+</div>
+\end{minted}
+
+\subsubsection{Usando el framework \textit{Bootstrap} para definir el estilo de la página}
+Para hacer que la página tenga un estilo más moderno y actual, he utilizado \textbf{Bootstrap} (\url{https://getbootstrap.com/}). \textit{Bootstrap} permite construir sitios web \textit{responsive} y con un toque moderno de forma rápida y sencilla. Tiene predefinidos un montón de estilos para diferentes elementos HTML como formularios, tablas, botones, barras de navegación...
+
+Me decidí a usar \textit{Bootstrap} para poder centrarme en los aspectos más importantes del sistema, seguridad y usabilidad, y no estar perdiendo el tiempo con el CSS. Yo soy partidaria de usar herramientas ya hechas, en lugar de perder el tiempo haciendo una herramienta desde 0. Entiendo que haya sistemas en los que sea necesario hacer un desarrollo completo, ya que no disponen de conexión a internet para descargar dependencias externas pero, en este caso, no se daba esa condición. 
+
+Para usar \textit{Bootstrap}, lo único que hay que hacer es importar el framework en la cabecera del HTML y usar en los elementos HTML las clases CSS definidas por \textit{Bootstrap}, utilizando la etiqueta \texttt{class}. De esta forma, en un breve espacio de tiempo hemos conseguido lo que nos podría llevar perfectamente una semana entera.
