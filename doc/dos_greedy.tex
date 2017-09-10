@@ -544,7 +544,7 @@ Una vez visto, esto, podemos ver el flujo de trabajo y llamadas a funciones que 
 
 Para hacer un diagrama más simple, se han omitido las condidciones para asignar una celda en el diagrama de la \hyperref[d1]{Figura \ref*{d1}}, ya que estas condiciones las podemos encontrar en el \hyperref[greedyestructura]{Pseudocódigo \ref*{greedyestructura}}.
 
-\subsubsection{Flujo del algoritmo para asignar las clases de teoría.}
+\subsubsection{Flujo del algoritmo para asignar las horas de teoría}
 
 \begin{figure}[H]
 \centering
@@ -552,3 +552,87 @@ Para hacer un diagrama más simple, se han omitido las condidciones para asignar
 \caption{Diagrama de flujo del algoritmo de las horas de teoría.}
 \label{d2}
 \end{figure}
+
+\subsubsection{Flujo del algoritmo para asignar las horas de prácticas}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{img/d3}
+\caption{Diagrama de flujo del algoritmo de las horas de prácticas.}
+\label{d3}
+\end{figure}
+
+\section{Resultados del algoritmo}
+
+En esta sección vamos a ver los resultados que da la concatenación de los tres algoritmos voraces. Los resultados que ofrece este algoritmo son de una muy alta calidad, tanto son muy parecidos a los que hay ahora mismo hechos a mano en la escuela, mejorando incluso varios aspectos como la ocupación de las aulas.
+
+En la \hyperref[resultado1]{Tabla \ref*{resultado1}} podemos ver el horario generado para el grupo 1ºA del Grado en Ingeniería Informática y el grupo 3ºA en la \hyperref[resultado2]{Tabla \ref*{resultado2}}, ambos del primer cuatrimestre que es donde más problemas aparecen a la hora de formar el horario por las horas de prácticas tan dispares que tienen las asignaturas.
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+FS, FFT, FP  & FFT, FP, CA  & FP, CA, FS  & CA, FS, FFT  & CA  \\
+3.1, 3.6, 2.8 & 3.10, 2.1, 2.2 & 2.8, 2.7, 3.2 & 3.5, 3.1, 3.6 & 0.2 \\
+\hline
+FS, FFT, FP & FFT, FP, ALEM & FP, ALEM, FS & ALEM, FS, FFT & CA \\
+3.1, 3.6, 2.8 & 3.10, 2.1, 2.2 & 2.8, 2.7, 3.2 & 3.5, 3.1, 3.6 & 0.2 \\
+\hline
+ALEM & FFT & FS & ALEM & FP \\
+0.2 & 0.2 & 0.2 & 0.2 & 0.2 \\
+\hline
+ALEM & FFT & FS & CA & FP \\
+0.2 & 0.2 & 0.2 & 0.2 & 0.2 \\
+\hline
+ & & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Horarios para el grupo 1ºA.}
+\label{resultado1}
+\end{table}
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+ & & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+ISE,  MC,  IG & MC, IG,  FR & IG, FR,  DDSI & FR, DDSI,  DDSI & DDSI, DDSI,  ISE \\
+2.2,  2.1,  3.5 & 2.6,  3.3,  3.7 & 3.2,  3.7,  3.5 & 3.7,  2.3,  3.5 & 3.5,  2.7,  2.2 \\
+\hline
+ISE,  MC,  IG & MC, IG, FR & IG, FR, DDSI & FR, DDSI, - & DDSI, -, ISE \\
+2.2,  2.1,  3.5 & 2.6,  3.3,  3.7 & 3.2,  3.7,  3.5 & 3.7,  2.3,  - & 3.5,  -,  2.2 \\
+\hline
+DDSI, ISE, MC & IG & MC & FR & ISE\\
+2.4, 2.6, 2.1  & 1.2 & 1.2 & 1.2 & 1.2 \\
+\hline
+-, ISE, MC & IG & MC & FR & ISE\\
+-, 2.6, 2.1  & 1.2 & 1.2 & 1.2 & 1.2 \\
+\hline
+DDSI & & & &\\
+1.2 & & & & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Horarios para el grupo 3ºA.}
+\label{resultado2}
+\end{table}
+
+Como podemos ver, los horarios son bastante compactos y muy similares a los que hay ahora mismo en la escuela, siendo muy compactos y aprovechando el espacio.
