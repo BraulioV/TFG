@@ -392,6 +392,8 @@ El primero, corresponde al archivo de URLs del proyecto en concreto y el segundo
 
 También es importante hablar sobre el formato en el que se definen las URLs. Se definen como \textbf{expresiones regulares}. Así, dentro de una misma acción podemos englobar muchos enlaces. Por ejemplo, imaginemos por un momento que estamos haciendo un blog. En un blog, hay un enlace para cada entrada que se está escribiendo, en dicho enlace suele incluirse información como el ID de la entrada, su fecha o el título para diferenciar cada enlace a cada entrada del blog de las otras entradas. ¿Se tendría que definir entonces un enlace para cada entrada? ¡No! (¡Vaya locura!) Simplemente sería necesario definir una expresión regular con el formato de dicha URL. Si nuestro blog incluyese por ejemplo una parte para escribir nuevas entradas, el formato de la URL para acceder a esta parte sería diferente al formato de URL para acceder a una entrada ya escrita. Así de sencillo se definen las ``cabeceras'' de funciones en \texttt{Django}. Por último, cuando definimos una expresión regular, el text que haga \textit{matching} con la expresión regular se pasará como parámetro a nuestro servidor.
 
+Cuando nuestro servidor recibe una solicitud, por ejemplo ``/showdata/1A'', \texttt{Django} va a cargar el archivo \texttt{djangoapp.urls} y va a comprobar todos los \texttt{urlpatterns} que tengamos definidos, en orden, hasta que encuentre uno que haga \textit{matching}. Una vez haya encontrado la URL correcta, llamará a su vista correspondiente pasándole varios argumentos que se explicarán a continuación.
+
 Vamos a detallar el funcionamiento de las URLs poniendo de ejemplo el proyecto del horario realizado. Para ello, debemos recordar los esquemas iniciales que hice sobre la interfaz. 
 
 \subsubsection{La pantalla inicial}
@@ -446,7 +448,11 @@ Esto tiene una gran comodidad: si tuviésemos varias apps, podríamos englobar t
 Además, si en el futuro añadimos más funcionalidad al proyecto y la parte del horario pasase a ser algo secundario, con sólo cambiar una expresión regular podríamos cambiar la URL para acceder a la funcionalidad del proyecto y dejar libre el \texttt{index.html}.
 
 \subsection{Definiendo el servidor: las vistas de \texttt{Django}}
-A la hora de definir una URL, se incluía en la definición el nombre de una función Python. Dicha función se ejecutará cuando el servidor reciba una petición a esa determinada URL. Así, podemos asociar botones y acciones en la interfaz de usuario a funciones. Dichas funciones reciben un parámetro llamado \texttt{request} que contiene información sobre la petición HTTP que se le ha realizado al servidor. Este parámetro es un \textbf{diccionario} (JSON), por lo que se puede acceder a sus variables a partir de su nombre.
+A la hora de definir una URL, se incluía en la definición el nombre de una función Python. Dicha función se ejecutará cuando el servidor reciba una petición a esa determinada URL. Así, podemos asociar botones y acciones en la interfaz de usuario a funciones. Una vista sirve generalmente una función o petición específica y tiene un template asociado. Volviendo al ejemplo del blog, podríamos tener una vista para mostrar una lista con las útimas entradas, otra para mostrar una entrada completa, otra para crear nuevas entradas, etc.
+
+Dichas funciones reciben un parámetro llamado \texttt{request} que contiene información sobre la petición HTTP que se le ha realizado al servidor. Este parámetro es un \textbf{diccionario} (JSON), por lo que se puede acceder a sus variables a partir de su nombre.
+
+Cada vista es responsable de hacer una cosa: o bien devolver un objeto \texttt{HttpResponse} que contiene la página solicitada o bien lanzar una excepción (por ejemplo, un error 404). Mientras una vista haga eso, podemos programar cualquier otra cosa: leer archivos, cargar registros de la base de datos, crear un zip...
 
 Las vistas están definidas en el archivo \texttt{views.py} de nuestra aplicación. A diferencia del archivo \texttt{urls.py}, no hay un archivo de vistas para el proyecto, sino que cada aplicación define sus propias vistas.
 
@@ -461,7 +467,7 @@ La vista para cargar la página \texttt{index} lo único que hace es renderizar 
 
 La vista para enviar al servidor los parámetros del horario sí que tiene más contenido. En primer lugar porque no es una petición \texttt{GET} sino que, al ser un formulario, es una petición \texttt{POST}. En dicha petición \texttt{POST} se incluyen los parámetros que el usuario ha especificado. 
 
-\textbf{Es muy importante asegurar que los parámetros especificados por el usuario son correctos}, ya que éste puede escribir cualquier cosa en el formulario. Por ejemplo, en vez de escribir ``\textit{5}'' puede escribir ``\textit{cinco}''. Incluso, puede que algún listo intente hacer un ataque \textbf{SQL Inyection}, escribiendo algo así como ``\textit{; DELETE * FROM Subjects}''. No podemos permitir que eso pase. 
+\textbf{Es muy importante asegurar que los parámetros especificados por el usuario son correctos}, ya que éste puede escribir cualquier cosa en el formulario. Por ejemplo, en vez de escribir ``\textit{5}'' puede escribir ``\textit{cinco}''. Incluso, puede que algún listo intente hacer un ataque \textbf{SQL Inyection}, escribiendo algo así como ``\textit{; DELETE * FROM Subjects}''. No podemos permitir que eso suceda. 
 
 ¿Cómo hacer esta comprobación? Usando \textbf{expresiones regulares}. Por ejemplo, si lo que queremos asegurar que el usuario ha introducido un número de una cifra, usaremos la expresión regular \texttt{$\setminus$d} (\textit{digit}). Podemos hacer también otro tipo de comprobaciones, por ejemplo, en el problema de hacer horarios, el número de días no puede ser mayor que cinco, ni puede haber más de 13 horas de clase. Tampoco hay asignaturas un tercer cuatrimestre. Todo esto también se tiene que controlar mediante excepciones, porque si no, el programa no funcionará y el usuario se quedará sin saber por qué. Todo este proceso de comprobaciones se denomina \textbf{\textit{input validation}}.
 
@@ -469,7 +475,7 @@ En la \hyperref[exception]{Figura \ref*{exception}} vemos un ejemplo. ¿Qué pas
 
 \begin{figure}
 \centering
-\includegraphics[width=0.7\textwidth]{img/ValidationError}
+\includegraphics[width=\textwidth]{img/ValidationError}
 \caption{Excepción controlada: es físicamente imposible hacer un horario con un número tan bajo de horas}
 \label{exception}
 \end{figure}
@@ -485,6 +491,114 @@ Para enviar información a la plantilla HTML usando este mecanismo, es necesario
 Una vez tenía hecho el horario y listo para ser mostrado al usuario, esta función termina redireccionando toda esta información a la vista encargada de mostrar la información al usuario: \texttt{showdata}.
 
 \subsubsection{La pantalla para mostrar los horarios}
-En esta pantalla había dos vistas principales: la que mostraba el horario de cada grupo y la que exportaba el horario final a PDF.
+En esta pantalla había dos vistas principales: la que mostraba el horario de cada grupo (\texttt{showdata}) y la que exportaba el horario final a PDF (\texttt{pdf}).
 
-Esta primera vista, se carga automáticamente cuando envíamos al servidor los parámetros para hacer un horario. Como parámetro recibe el nombre de un grupo. Como parámetro ``por defecto'', recibe el nombre del primer grupo registrado (por ejemplo, $1^{\circ} A$)
+Esta primera vista, se carga automáticamente cuando envíamos al servidor los parámetros para hacer un horario. Como parámetro recibe el nombre de un grupo. Como parámetro ``por defecto'', recibe el nombre del primer grupo registrado (por ejemplo, $1^{\circ} A$).
+
+Cuando en la interfaz se hace click en cualquiera de los elementos del \textit{dropdown}, se hace una nueva petición a \texttt{showdata} con el grupo elegido como parámetro. En la vista, se selecciona el grupo deseado del diccionario JSON previamente generado y se muestra formateado en forma de tabla.
+
+En cuanto a la vista \texttt{pdf}, en primer lugar llama a la función para generar un PDF. Dicha función necesita trabajar con una tabla de numpy, por lo que antes de nada vuelve a transformar el objeto JSON en un objeto Python de la clase \texttt{Timetable} definida. Una vez el objeto ha sido transformado, se llama a las funciones definidas en el capítulo de impresión en PDF.
+
+Por último, una vez el fichero PDF ha sido creado, lo abro con python y lo muestro en el navegador, indicando que el contenido que se va a mostrar es un PDF. Así, el usuario no necesita ni descargar el fichero ni tener instalado un visor de PDF. Desde el propio navegador puede verlo, tal y como se ve en la \hyperref[pdf]{Figura \ref*{pdf}}.
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{img/pdf}
+\caption{Vista del PDF generado, desde el navegador}
+\label{pdf}
+\end{figure}
+
+\subsection{Creando el \textit{frontend}, lo que el usuario va a ver}
+Ya tenemos toda la infraestructura software necesaria en el \textit{backend} (en el lado del servidor), pero aún no hemos dicho nada sobre el \textit{frontend} (en el lado del cliente). Con \texttt{Django} es bastante fácil definir un \textit{frontend}: utilizando el sistema de  \textbf{plantillas} de \texttt{Django}. De esta forma, podemos separar el diseño de la página del código Python, es decir, no hacer que la vista cree un HTML.
+
+Las plantillas de \texttt{Django} permiten generar HTML de forma dinámica. Una plantilla contiene las partes estáticas del HTML de salida y también tienen una sintaxis especial para indicar cómo se va a insertar el contenido generado de forma dinámica. 
+
+
+En la \hyperref[djangotemplates]{Figura \ref*{djangotemplates}} se ve la estructura de directorios recomendada para los templates de \texttt{Django}. El directorio \texttt{templates} no se crea por defecto cuando se ejecuta el comando \texttt{startapp} sino que, al igual que el fichero \texttt{urls.py}, hay que crearlo. Dentro de dicho directorio, lo recomendable es crear otro directorio llamado igual que nuestra aplicación (en este caso, \texttt{timetables}) y ya dentro de éste último es donde se colocan las plantillas. 
+
+\begin{figure}
+\centering
+\scalebox{.7}{\input{img/directorio_templates.tex}}
+\caption{Estructura de directorios de las plantillas de \texttt{Django}}
+\label{djangotemplates}
+\end{figure}
+
+Las plantillas podrían colocarse directamente dentro del directorio \texttt{templates}, pero esto no es una buena práctica. ¿Por qué no? Si tenemos varias aplicaciones en nuestro proyecto y dos de ellas tienen un template con el mismo nombre, \texttt{Django} puede equivocarse de template y seleccionar uno incorrecto. Esto ocurre porque \texttt{Django} escoge el primer template que tenga el nombre deseado. Por eso, una buena forma de diferenciar ambos templates es colocarlos dentro de una carpeta que se llame igual que la aplicación, para hacer que ambos templates estén en \textit{namespaces} diferentes.
+
+\subsubsection{¿Cómo son las plantillas de \texttt{Django}?} 
+Una plantilla es simplemente un archivo de texto que puede generar archivos en cualquier tipo de formato (HTML, XML, CSV...). Una plantilla contiene \textbf{\textit{variables}}, que se reemplazan por sus respectivos valores cuando se procesa la plantilla, y \textbf{\textit{etiquetas}}, que controlan la lógica de la plantilla.
+
+Las variables se definen entre dos llaves: \texttt{\{\{ variable \}\}}. Cuando el sistema de plantillas se encuentra con una variable, la evalúa y reemplaza con el resultado de dicha evaluación. Es importante destacar que no puede utilizarse el símbolo ``.'' en los nombres de las variables. Sí que se puede usar el símbolo ``\_''. El punto (``.'') se utliza para acceder a los atributos de una variable 
+
+Por otro lado, las etiquetas se definen entre una llave y un símbolo de porcentaje: \texttt{\{\% etiqueta \%\}}. Pueden controlar el flujo de la plantilla a través de bucles y condiciones, entre otras cosas.
+
+Ahora que ya sabemos cómo funcionan de forma muy básica las plantillas de \texttt{Django}, vamos a pasar a explicar las plantillas realizadas para el proyecto.
+
+\subsubsection{La plantilla \texttt{index.html}}
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{img/pantalla_inicial_final}
+\caption{Resultado final de la pantalla inicial}
+\label{pantallainicialfinal}
+\end{figure}
+
+En la \hyperref[pantallainicialfinal]{Figura \ref*{pantallainicialfinal}} vemos el resultado final de la pantalla de inicio. Es un simple formulario con tres campos, los parámetros necesarios para generar un horario: número de días, número de horas por día y el cuatrimestre. ¿Cómo se genera esta página usando las plantillas? En este caso, he definido un formulario normal con HTML pero teniendo en cuenta los siguientes detalles:
+
+\begin{enumerate}[$\bullet$]
+  \item A la hora de definir la acción del formulario (es decir, a qué URL se va a llamar cuando se presione el botón de \textit{submit}), he usado una etiqueta para que \texttt{Django} escriba la URL correspondiente, en lugar de escribirla yo misma.
+
+  \mint{html}|<form action="{% url 'timetables:senddata' %}" method="post">|
+
+  \item Cuando definimos un campo en el formulario, debemos tener claro que ese nombre es el que vamos a usar en la vista en la que procesemos el formulario. Por ejemplo, en el caso del número de días, lo he definido en el formulario de la siguiente forma:
+
+  \mint{html}|<label for="days">Number of days</label>|
+
+  Y a la hora de procesarlo en la vista, lo he hecho de la siguiente forma:
+
+  \mint{python}|days = int(request.POST['days'])|
+
+  Como se ve, el mismo nombre que se le asigna en el HTML es el que se tiene que usar después para consultar su valor.
+
+  \item Para hacer la interfaz más usable, he añadido al formulario una validación de la entrada \cite{validatorform}. Para ello, he usado las etiquetas HTML \texttt{type}, \texttt{min} y \texttt{max} para especificar el tipo de dato (número), el valor mínimo que puede tener y el máximo:
+
+  \begin{minted}[breaklines, breakafter=d]{html}
+  <input type="number" max="5" min="4" class="form-control" name="days" placeholder="Number of days of the timetable">  
+  \end{minted}
+
+  Así, si el usuario intenta introducir ``cinco'' días a la semana, el campo erróneo del formulario se pondrá en rojo indicando que el dato introducido es erróneo, tal y como se ve en la \hyperref[validationerrornumber]{Figura \ref*{validationerrornumber}}.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/validationerrornumber}
+    \caption{Error al intentar introducir el número de días de forma errónea}
+    \label{validationerrornumber}
+  \end{figure}
+
+  Además, si tratamos de introducir un número demasiado alto de días el formulario también se quejará, tal y como se aprecia en la \hyperref[validationerrormax]{Figura \ref*{validationerrormax}}, porque en una semana hay, como mucho, cinco días. 
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/validationerrormax}
+    \caption{Error al intentar introducir un número demasiado alto de días}
+    \label{validationerrormax}
+  \end{figure}
+
+  Es importante destacar que \textbf{esto no es una medida de seguridad, sino de usabilidad}. Es decir, a pesar de tener esta validación de la entrada en el \textit{frontend}, es obligatorio validar la entrada en el \textit{backend}. ¿Por qué? Porque desde el editor de HTML de cualquier navegador es posible eliminar la validación, tal y como se ve en la \hyperref[seguridad0]{Figura \ref*{seguridad0}}. Si esto ocurriese, el servidor tendría que detectarlo y dar una excepción como la que se ve en la \hyperref[seguridadback]{Figura \ref*{seguridadback}}. Por tanto, esta validación en el formulario sólo se hace para ayudar al usuario a saber qué datos tiene que introducir pero no es, ni de lejos, una medida de seguridad.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/seguridad0}
+    \caption{Desde el editor HTML de cualquier navegador es posible cambiar el campo \texttt{type="number"} a \texttt{type="text"} y saltar así la validación}
+    \label{seguridad0}
+  \end{figure}
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{img/seguridadback}
+    \caption{Excepción en el backend cuando se introduce un número de días no válido}
+    \label{seguridadback}
+  \end{figure}
+\end{enumerate}
+
+\subsubsection{La plantilla \texttt{showdata.html}}
+
