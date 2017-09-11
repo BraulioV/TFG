@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{report}
+\documentclass[a4paper,11pt]{book}
 
 \usepackage[spanish]{babel}
 %\usepackage[math,light]{iwona}
@@ -53,6 +53,8 @@
 
 \tableofcontents
 
+\input{./prefacio.tex}
+
 % Descripción del sistema
 
 \input{./descripcion.tex}
@@ -69,6 +71,9 @@
 
 % Interfaz de usuario
 \input{./interfaz_usuario.tex}
+
+% Despliegue
+\input{./despliegue.tex}
 
 %% Bibliografía y referencias
 \bibliography{bibliografia.bib} %archivo citas.bib que contiene las entradas 
