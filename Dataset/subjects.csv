@@ -9,19 +9,19 @@ Estadística;3;1;Ordenadores;False;ES;Troncal;1;2;GII;0;2.1,2.2
 Lógica y Métodos Discretos;3;1;Ordenadores;False;LMD;Troncal;1;2;GII;0;2.1,2.2
 Metodología de la Programación;2;2;Ordenadores;False;MP;Troncal;1;2;GII;0;3.1,2.2
 Tecnología y Organización de los Computadores;2;2;Ordenadores-Placas;False;TOC;Troncal;1;2;GII;0;3.8
-Estructura de Computadores;2;2;Ordenadores;False;EC;Troncal;2;1;GII;165;2.3,3.7,2.9,2.4
+Estructura de Computadores;2;2;Ordenadores;False;EC;Troncal;2;1;GII;165;2.3,2.9,2.4
 Estructura de Datos;3;1;Ordenadores;False;ED;Troncal;2;1;GII;165;2.2,3.1,3.2,3.9,3.3,2.4,3.3,2.9
 Programación y Diseño Orientado a Objetos;2;2;Ordenadores;False;PDOO;Troncal;2;1;GII;164;2.4,3.1,3.2,2.6
 Sistemas Concurrentes y Distribuidos;2;2;Ordenadores;False;SCD;Troncal;2;1;GII;127;2.4,2.2,2.6,2.3,2.7
 Sistemas Operativos;2;2;Ordenadores;False;SO;Troncal;2;1;GII;177;2.2,2.3,3.2,2.1,2.7,3.3
-Arquitectura de Computadores;2;2;Ordenadores;False;AC;Troncal;2;2;GII;0;3.7,2.3,2.4,2.9,2.1
-Algorítmica;2;2;Ordenadores;False;ALG;Troncal;2;2;GII;0;3.7,2.6,3.5,2.1,2.2,2.3,2.4
+Arquitectura de Computadores;2;2;Ordenadores;False;AC;Troncal;2;2;GII;0;3.5,2.3,2.4,2.9,2.1
+Algorítmica;2;2;Ordenadores;False;ALG;Troncal;2;2;GII;0;2.6,3.5,2.1,2.2,2.3,2.4,3.2,3.3,3.4
 Inteligencia Artificial;2;2;Ordenadores;False;IA;Troncal;2;2;GII;0;2.7,2.6,2.5,2.4,2.5
-Fundamentos de Bases de Datos;2;2;Ordenadores;False;FBD;Troncal;2;2;GII;0;2.6,3.7,2.2,2.3,2.4,2.5,2.1,2.7
-Fundamentos de Ingeniería del Software;2;2;Ordenadores;False;FIS;Troncal;2;2;GII;0;2.7,3.7,3.5,2.3,2.6
-Ingeniería de Servidores;2;2;Ordenadores;False;ISE;Troncal;3;1;GII;165;2.4,2.3
+Fundamentos de Bases de Datos;2;2;Ordenadores;False;FBD;Troncal;2;2;GII;0;2.6,2.2,2.3,2.4,2.5,2.1,2.7
+Fundamentos de Ingeniería del Software;2;2;Ordenadores;False;FIS;Troncal;2;2;GII;0;2.7,3.5,2.3,2.6
+Ingeniería de Servidores;2;2;Ordenadores;False;ISE;Troncal;3;1;GII;165;2.4,2.3,2.2,2.1,2.5,2.6,2.7
 Fundamentos de Redes;2;2;Ordenadores-Routers;False;FR;Troncal;3;1;GII;125;3.7
-Modelos de Computación;2;2;Nada;False;MC;Troncal;3;1;GII;22;3.2,2.6,2.2
+Modelos de Computación;2;2;Nada;False;MC;Troncal;3;1;GII;22;3.2,2.6,2.2,2.1,2.3,2.4,2.5,2.6,2.7
 Informática Gráfica;2;2;Ordenadores;False;IG;Troncal;3;1;GII;118;3.3,2.4,3.2,3.5
 Diseño y Desarrollo de Sistemas de Información;1;3;Ordenadores;False;DDSI;Troncal;3;1;GII;20;3.5,2.4,2.7,3.3,2.3
 Desarrollo de Hardware Digital;2;2;Ordenadores;False;DHD;Ingeniería de Computadores;3;2;GII;0;2.2

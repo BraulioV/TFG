@@ -45,7 +45,7 @@ Por sencillez, se ha decidido que este algoritmo sólo calcula una franja, en ve
 
 El algoritmo antes de comenzar el bucle principal, realiza una serie de cálculos. Para empezar, calcula el número total de horas de teoría y prácticas que tiene para cada curso. Además de esto, hay que calcular el número de horas totales libres de laboratorio que hay, para comprobar si en algún momento en el horario habrá grupos que tengan en el mismo instante de tiempo prácticas a la vez. Por ejemplo, si los laboratorios están abiertos cinco días a la semana y cuatro horas al día tendríamos un total de 20 horas. Como cada turno de prácticas tiene dos horas, nos quedarían un total de diez turnos de prácticas por asignar. Si, por ejemplo, tuviésemos que asignar doce turnos de prácticas, tendríamos que elegir de forma aleatoria dos turnos de prácticas que se repetirían. Debe ser de forma aleatoria para que los turnos ``repetidos'' no coincidan en los distintos cursos y se saturen los laboratorios un día en concreto.
 
-Después, el algoritmo empieza a iterar sobre cada grupo de ese curso y va asignando horas de prácticas y teoría en los huecos ``libres''. Para saber qué huecos están libres se usa una matriz auxiliar que registra qué horas son de prácticas en cada curso.
+Después, el algoritmo empieza a iterar sobre cada grupo de ese curso y va asignando horas de prácticas y teoría en los huecos ``libres''. Para saber qué huecos están libres se usa una matriz auxiliar que registra qué horas son de prácticas en cada curso, común para todos los grupos de ese curso.
 
 \subsection{Pseudocódigo del algoritmo}
 El siguiente pseudocódigo refleja de forma más clara el funcionamiento de este algoritmo:
@@ -122,9 +122,21 @@ final \GETS \CALL{FinalFranja}{turno}\\
 \END
 \end{pseudocode}
 
-El algoritmo comienza filtrando los grupos según el turno que se esté calculando, además de caclcular el punto de partida y final para el bucle interno en función del turno, para no tener que estar constantemente calculándolo. Una vez pasado esto, pasamos al bucle principal.
+El algoritmo comienza filtrando los grupos según el turno que se esté calculando, además de calcular el punto de partida y final para el bucle interno en función del turno, para no tener que estar constantemente calculándolo. Una vez pasado esto, pasamos al bucle principal.
 
-Dentro del bucle principal, lo que hace el algoritmo es calcular el número de horas de prácticas que tiene el grupo y el número de horas totales que hay en una semana. En caso de que las horas de prácticas del grupo sean mayores que las que hay disponibles para una asignatura, se escogerá un día aleatorio de la semana en el que se va a repetir un turno.
+Dentro del bucle principal, lo que hace el algoritmo es calcular el número de horas de prácticas que tiene cada curso y el número de horas totales que hay en una semana. En caso de que las horas de prácticas del curso sean mayores que las que hay disponibles para una asignatura, se escogerá un día (o días, dependiendo del curso) aleatorio de la semana en el que se va a repetir un turno.
+
+Una vez hecho esto, el algoritmo pasa a asignar horas de teoría y prácticas a cada grupo perteneciente al grupo según las siguientes condiciones:
+
+\begin{enumerate}
+  \item Si la celda está libre, y el número de horas de prácticas restantes es mayor que dos, se asigna la celda como celda de prácticas.
+  \item Si la celda no está libre, el número de horas de prácticas restantes es mayor que dos y, además, la hora y el día coinciden con alguno de los elementos de la lista de repetidos, se asigna como celda de prácticas.
+  \item Si la celda no está libre, el número de horas de teoría restantes es mayor que dos, se asigna como celda de teoría.
+  \item Si las horas de teoría son mayores que dos, se asigna teoría.
+  \item Si las horas de prácticas son mayores que dos, se asigna prácticas.
+  \item Si sólo queda una hora de teoría, se asigna teoría.
+  \item Si sólo queda una hora de prácticas, se asigna prácticas.
+\end{enumerate}
 
 Este algoritmo, genera una salida como la que podemos ver en la \hyperref[estructura1]{Figura \ref*{estructura1}}. En ella podemos ver qué celdas han sido asignadas a prácticas (coloreadas en color naranja), cuáles a teoría (coloreadas en color azul) y cuáles de las restantes no tienen nada asignado (que se encuentran en color blanco).
 
@@ -161,6 +173,21 @@ Este es el funcionamiento del primer caso, cuando comienza el algoritmo y no hay
 Al haber generado ya la estructura para el grupo 1ºA, el algoritmo comienza a generar una estructura para 1ºB a partir de la que ha generado para 1ºA. De esta forma, como podemos ver en \hyperref[estructura12]{Figura \ref*{estructura12}}, la estructura es ``casi'' complementaria de la que hay para 1ºA, haciendo que donde antes había prácticas, ahora hay teoría y viceversa casi en la totalidad de la estructura.
 
 De esta forma, se va generando la estructura para todos y cada uno de los grupos, optimizando el espacio de una forma más global y haciendo que las aulas estén menos saturadas. Una vez que finalice el algoritmo, devolverá como salida la matriz en la que se almacena la estructura de los horarios para cada uno de los cursos, cosa que toman como entrada los siguientes algoritmos greedy para completar la tarea de hacer un horario útil.
+
+Hay que tener en cuenta que las imágenes que podemos ver en la \hyperref[estructura2]{Figura \ref*{estructura2}}, es algo para ayudar a entender lo que devuelve el algoritmo, ya que este en realidad devuelve una matriz tridimensional del mismo tamaño que el horario que vamos a calcular, pero con las casillas marcadas con una $T$ para la teoría, una $L$ para las horas de prácticas y una $E$ en caso de vacío (\textit{empty}). A continuación podemos ver el resultado para que devuelve para el grupo 1ºA visto en la \hyperref[estructura1]{Figura \ref*{estructura1}}:
+
+\begin{minted}{python}
+                        [['L' 'L' 'L' 'L' 'T']
+                         ['L' 'L' 'L' 'L' 'T']
+                         ['T' 'T' 'T' 'T' 'T']
+                         ['T' 'T' 'T' 'T' 'T']
+                         ['E' 'E' 'E' 'E' 'E']
+                         ['E' 'E' 'E' 'E' 'E']
+                         ['E' 'E' 'E' 'E' 'E']
+                         ['E' 'E' 'E' 'E' 'E']
+                         ['E' 'E' 'E' 'E' 'E']
+                         ['E' 'E' 'E' 'E' 'E']]
+\end{minted}
 
 \section{Asignación de horas de teoría}
 Esta segunda versión del algoritmo de asignación de horas de teoría utiliza como base la estructura hecha por el algoritmo de preasignación. Así, sólo tiene permitido asignar horas en los huecos que estén marcados como \texttt{T} en la matriz de estructura. Usando esto como base y un diccionario con las horas por asignar de cada asignatura, el algoritmo distingue varios casos diferentes:
@@ -245,6 +272,55 @@ El siguiente pseudocódigo refleja de forma más clara el funcionamiento del alg
 \END
 \end{pseudocode}
 
+Este algoritmo lo que hace es, para cada uno de los grupos, se obtiene su lista de asignaturas y se obtiene una permutación aleatoria de estas. Además de esto, se calcula un diccionario que contiene las horas de teoría. El porqué de usar un diccionario, se debe a que para acceder a elementos, es mucho más rápido que una lista.
+
+Tras esto, se empieza a recorrer el horario día por día intentando asignar las horas de teoría. En caso de que las horas de teoría sean iguales o mayores que dos, se asigna un bloque de dos horas par ala misma asignatura, pero, en caso de que la asignatura solo tenga una hora de prácticas, la función \texttt{AsignarCelda}, buscará asignaturas que se puedan juntar para hacer un bloque de dos y aprovechar espacios, y en caso de que no quede más remedio, asignará un bloque de una asignatura y una asignatura vacía, que no afecta al funcionamiento del algoritmo. Esta función \texttt{AsignarCelda}, la podemos ver a continuación:
+
+\begin{minted}{python}
+def __assign_th_cell__(self, it, h, d, group, acronym, 
+    subj_name_hours, n_hours=2):
+    if n_hours == 2:
+        self.time_table[it, h, d] = Cell(group.name, 
+                          group.classroom.classroom_name, acronym)
+        self.time_table[it, h + 1, d] = Cell(group.name, 
+                          group.classroom.classroom_name, acronym)
+        block = None
+    else:
+        # filter subjects with just one hour left 
+        # to assign to make a block of two
+        if any(self.__is_odd__(x[1]) and \
+                x[0] != acronym for x in subj_name_hours.items()):
+            
+            odd_subjects = list(filter(lambda x: 
+                self.__is_odd__(x[1]) and \
+                x[0] != acronym, subj_name_hours.items()))
+        else:
+            odd_subjects = list(filter(lambda x: x[1] > 0 and \
+               x[0] != acronym, subj_name_hours.items()))
+
+        # is there's more subjects, we make a block of two
+        if odd_subjects != [] and self.time_table[it, h + 1, d] == Cell():
+            
+            block = odd_subjects[0][0]
+            self.time_table[it, h + 1, d] = Cell(group.name, 
+                            group.classroom.classroom_name, 
+                              odd_subjects[0][0])
+            subj_name_hours[odd_subjects[0][0]] -= 1
+        else:
+            block = None
+
+        self.time_table[it, h, d] = Cell(group.name, 
+                  group.classroom.classroom_name, acronym)
+
+    subj_name_hours[acronym] -= n_hours
+    if subj_name_hours[acronym] == 0:
+        return True, block
+    else:
+        return False, block
+
+__is_odd__ = lambda self, x: bool(x&1)
+\end{minted}
+
 \section{Asignación de horas de prácticas}
 
 \subsection{Análisis de la versión anterior}
@@ -290,3 +366,273 @@ La elección de qué asignaturas van a cada día, se realizará con la misma ide
 
 La diferencia más básica es que ya no se genera una lista con ternas de asignaturas, sino lo que se mantiene es una lista de índices, que marcan qué asignatura va para cada grupo, y se va sumando uno módulo número de asignaturas del grupo, para ese cuatrimestre. Esto reduce la memoria y simplifica mucho el código.
 
+El siguiente cambio más importante es la forma en que se asignan las horas de prácticas. La idea de la ventana deslizante sobre una permutación de asignaturas se mantiene, pero esta permutación se hace de forma más inteligente. 
+
+En vez de tomar todas las asignaturas como tal y deslizar la ventana como se hacía antes, se preprocesan las asignaturas para crear una nueva permutación de asignaturas que facilite la tarea. En este preprocesamiento, se buscan las asignaturas que tengan un número de horas impar y, a partir de ellas, se genera una ``asignatura'' que consiste en una tupla formada por estas dos asignaturas. Esto hace que el asignar las asignaturas correspondientes a los subgrupos de prácticas se facilite muchísimo, y no genere huecos en el horario.
+
+Un ejemplo de esto, lo podemos tener con las asignaturas del primer cuatrimestre del primer curso del Grado en Ingeniería Informática. En este primer cuatrimestre, tenemos las siguientes asignaturas con sus respectivas horas de prácticas:
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{c|c}
+  Asignatura & Horas \\
+  \hline
+  FFT & 2 \\
+  FS & 2 \\
+  FP & 2 \\
+  CA & 1 \\
+  ALEM & 1 \\
+\end{tabular}
+\caption{Asignaturas del primer cuatrimestre de primer curso del Grado en Ingeniería Informática.}
+\label{asigs1}
+\end{center}
+\end{table}
+
+En la versión anterior, ya vimos que se generaría una permutación como la siguiente:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+FFT & CA & ALEM & FS & FP\\
+\hline
+\end{tabular}
+\end{center}
+
+A partir de aquí, en la versión anterior, el algoritmo generaría la ventana y empezará a iterar, cometiendo los errores ya comentados. Sin embargo, esta versión analizaría la permutación generada y buscaría las asignaturas con un número de horas impar, que en este caso, son CA y ALEM y formaría una tupla $(CA, ALEM)$. Con esto ya tenemos el bloque de dos horas de prácticas y se formaría una permutación como la siguiente:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+FFT & FS & FP & (CA, ALEM)\\
+\hline
+\end{tabular}
+\end{center}
+
+Al tener esta permutación, se reduce en uno el número de ``asignaturas'' y generamos un nuevo bloque de dos horas, por lo que podemos empezar a asignar fácilmente las horas de prácticas utilizando el mecanismo de la ventana.
+
+El algoritmo de generación de los horarios de prácticas lo podemos ver a continuación:
+
+\begin{pseudocode}{GreedyPracticas}{ }
+\label{greedypracticas}
+\FOREACH g, it \in G
+\BEGIN
+  subjs \GETS \CALL{ObtenerListaAsignaturas}{g}\\
+  \CALL{Barajar}{subjs}\\
+  subjs \GETS \CALL{RecalcularPermutación}{subjs}\\
+
+  \IF g.turno = M \THEN
+  \BEGIN
+    empezar \GETS 0 \\
+    acabar \GETS \frac{horas\_dia}{2}\\
+  \END
+  \ELSE 
+  \BEGIN
+    empezar \GETS \frac{horas\_dia}{2}\\
+    acabar \GETS horas\_dia\\
+  \END\\
+
+  subj_i \GETS \CALL{CalculaIndices}{g} \\
+
+  \FOR h \GETS empezar \TO acabar; h+=2\\
+  \BEGIN
+    \FOR d \GETS 0 \TO W_d
+    \BEGIN
+      \IF (estructura[it, h, d] = L \OR estructura[it, h, d] = E) \\
+        \AND \CALL{CalcularHorasRestantes}{} > 0 \THEN
+      \BEGIN
+        c_1, c_2 \GETS \CALL{GetCells}{g, subjs, subj_i, hours, h,d}\\
+        time\_table[it,h,d] \GETS c_1\\
+        time\_table[it,h + 1,d] \GETS c_2\\
+
+        subj_i \GETS \CALL{GetIndexes}{subj_i}\\
+      \END
+    \END\\
+    \IF \CALL{sum}{hours} = 0 \THEN \BREAK\\
+  \END 
+\END
+\end{pseudocode}
+
+En este pseudocódigo se pueden ver los pasos que sigue el algoritmo para generar un horario, aunque se han omitido algunos pasos para que se vea de una forma más simple. Un ejemplo de esto es la función \texttt{CalcularHorasRestantes}, que corresponde con el siguiente código:
+
+\begin{minted}[frame=single]{python}
+sum(compress(hours, map(lambda x: x in subj_i, range(len(hours)))))  
+\end{minted}
+
+Otro ejemplo de esto es la función \texttt{GetCells}, que es donde se calcula la mejor celda posible para el horario y además se asigna el aula al subgrupo de prácticas. Es por esto,  por lo que veremos esta función en la siguiente sección.
+
+\section{Asignación de aulas}
+
+Con todo lo anterior, el algoritmo funciona y crea horarios de una alta calidad, pero aún falta una cosa por hacer, y es asignar las aulas a los distintos grupos de prácticas. Si recordamos los problemas que había en la versión anterior, surgían muchas dificultades a la hora de asignar aulas a los grupos de prácticas si se tenían en cuenta los materiales que necesitaban las asignaturas y los que tenían las aulas.
+
+En este caso, esto se ha simplificado haciendo que el usuario escoja libremente en qué aulas se puede cursar una asignatura, haciendo que las asignaturas con más restricciones sólo tengan como posibles aulas aquellas en las que se puedan cursar.
+
+Esta asignación de aulas se hace a la misma vez que se está calculando el horario de prácticas, por lo que no añade ninguna fase adicional, y se hace en la función \texttt{GetCells} vista en el pseudocódigo de la versión anterior.
+
+Esta función se encarga de calcular el mejor bloque de dos celdas posibles para el horario, y de obtener las aulas para cada uno de los subgrupos de prácticas. A continuación, podemos ver el pseudocódigo de la función:
+
+\begin{pseudocode}{GetCells}{g, subjs, subj_i, hours, h, d}
+\label{getcells}
+
+c_1 \GETS \CALL{PracticeCell}{g.name}\\
+c_2 \GETS \CALL{PracticeCell}{g.name}\\
+
+subjs_1 \GETS \CALL{list}{size=g.numsubgroups}\\
+subjs_2 \GETS \CALL{list}{size=g.numsubgroups}\\
+
+labs_1 \GETS \CALL{list}{size=g.numsubgroups}\\
+labs_2 \GETS \CALL{list}{size=g.numsubgroups}\\
+
+it \GETS 0\\
+
+\FOREACH i \in subj_i
+\BEGIN
+  \IF \CALL{type}{subjs[i]} = tuple \THEN
+  \BEGIN
+    subjs_1[it] \GETS \CALL{GetSubject}{subjs[i][0], i}\\
+    subjs_2[it] \GETS \CALL{GetSubject}{subjs[i][1], i}\\
+  
+    \IF subjs[i][1] = \CALL{Subject}{} \THEN
+    
+      lab \GETS \CALL{SearchLab}{subjs[i][0], h, d, False}\\
+    \ELSE
+      lab \GETS \CALL{SearchLab}{subjs[i][0], h, d}\\
+
+    labs_1[it]\GETS lab\\
+
+    \IF subjs[i][1] \neq \CALL{Subject}{} \THEN
+      labs_2[it]\GETS lab\\      
+  \END
+  \ELSE 
+  \BEGIN
+    subjs_1[it] \GETS \CALL{GetSubject}{subjs[i], i}\\
+    subjs_2[it] \GETS \CALL{GetSubject}{subjs[i], i}\\
+    lab \GETS \CALL{SearchLab}{subjs[i], h, d}
+    labs_1[it]\GETS lab\\
+    labs_2[it]\GETS lab\\    
+  \END\\
+  it \GETS it + 1\\
+\END\\
+
+c_1.subjects \GETS subjs_1\\
+c_2.subjects \GETS subjs_2\\
+c_1.classrooms \GETS labs_1\\
+c_2.classrooms \GETS labs_2\\
+
+\RETURN{c_1, c_2}
+\end{pseudocode}
+
+En esta función, se calcula la mejor celda posible para el horario, y a su vez, se calcula el aula para el subgrupo de prácticas, con la función \texttt{SearchLab}. Esta función busca un aula entre las posibles aulas en las que se puede cursar la asignatura, y busca aquella que se encuentre libre el día $d$ a la hora $h$.
+
+Una vez que ha encontrado el aula adecuada, la marca como ocupada para ese momento, para evitar que otro curso intente ocuparla a ese instante.
+
+Con la concatenación de los tres algoritmos, se genera un horario completo de calidad para todos los grupos en un mismo cuatrimestre. Para obtener el horario completo, se necesita una ejecución nueva cambiando el parámetro del cuatrimestre.
+
+Esta decisión se tomó así por simplificar los algoritmos y reducir los tiempos de ejecución y el consumo de recursos.
+
+\subsection{Flujo del algoritmo}
+
+Una vez visto, esto, podemos ver el flujo de trabajo y llamadas a funciones que sigue el algorimo para generar un nuevo horario. Hay que tener en cuenta que principalmente son tres algoritmos, por lo que vamos a ver el flujo de estos tres algoritmos por separado, en vez de uno global en el que se ven todas las funciones, donde la información que se recibe de un vistazo es inútil.
+
+\subsubsection{Flujo del algoritmo para la generación de la estructura}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{img/d1}
+\caption{Diagrama de flujo del algoritmo para la estructura.}
+\label{d1}
+\end{figure}
+
+Para hacer un diagrama más simple, se han omitido las condidciones para asignar una celda en el diagrama de la \hyperref[d1]{Figura \ref*{d1}}, ya que estas condiciones las podemos encontrar en el \hyperref[greedyestructura]{Pseudocódigo \ref*{greedyestructura}}.
+
+\subsubsection{Flujo del algoritmo para asignar las horas de teoría}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{img/d2}
+\caption{Diagrama de flujo del algoritmo de las horas de teoría.}
+\label{d2}
+\end{figure}
+
+\subsubsection{Flujo del algoritmo para asignar las horas de prácticas}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{img/d3}
+\caption{Diagrama de flujo del algoritmo de las horas de prácticas.}
+\label{d3}
+\end{figure}
+
+\section{Resultados del algoritmo}
+
+En esta sección vamos a ver los resultados que da la concatenación de los tres algoritmos voraces. Los resultados que ofrece este algoritmo son de una muy alta calidad, tanto son muy parecidos a los que hay ahora mismo hechos a mano en la escuela, mejorando incluso varios aspectos como la ocupación de las aulas.
+
+En la \hyperref[resultado1]{Tabla \ref*{resultado1}} podemos ver el horario generado para el grupo 1ºA del Grado en Ingeniería Informática y el grupo 3ºA en la \hyperref[resultado2]{Tabla \ref*{resultado2}}, ambos del primer cuatrimestre que es donde más problemas aparecen a la hora de formar el horario por las horas de prácticas tan dispares que tienen las asignaturas.
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+FS, FFT, FP  & FFT, FP, CA  & FP, CA, FS  & CA, FS, FFT  & CA  \\
+3.1, 3.6, 2.8 & 3.10, 2.1, 2.2 & 2.8, 2.7, 3.2 & 3.5, 3.1, 3.6 & 0.2 \\
+\hline
+FS, FFT, FP & FFT, FP, ALEM & FP, ALEM, FS & ALEM, FS, FFT & CA \\
+3.1, 3.6, 2.8 & 3.10, 2.1, 2.2 & 2.8, 2.7, 3.2 & 3.5, 3.1, 3.6 & 0.2 \\
+\hline
+ALEM & FFT & FS & ALEM & FP \\
+0.2 & 0.2 & 0.2 & 0.2 & 0.2 \\
+\hline
+ALEM & FFT & FS & CA & FP \\
+0.2 & 0.2 & 0.2 & 0.2 & 0.2 \\
+\hline
+ & & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Horarios para el grupo 1ºA.}
+\label{resultado1}
+\end{table}
+
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+ & & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+& & & & \\
+\hline
+ISE,  MC,  IG & MC, IG,  FR & IG, FR,  DDSI & FR, DDSI,  DDSI & DDSI, DDSI,  ISE \\
+2.2,  2.1,  3.5 & 2.6,  3.3,  3.7 & 3.2,  3.7,  3.5 & 3.7,  2.3,  3.5 & 3.5,  2.7,  2.2 \\
+\hline
+ISE,  MC,  IG & MC, IG, FR & IG, FR, DDSI & FR, DDSI, - & DDSI, -, ISE \\
+2.2,  2.1,  3.5 & 2.6,  3.3,  3.7 & 3.2,  3.7,  3.5 & 3.7,  2.3,  - & 3.5,  -,  2.2 \\
+\hline
+DDSI, ISE, MC & IG & MC & FR & ISE\\
+2.4, 2.6, 2.1  & 1.2 & 1.2 & 1.2 & 1.2 \\
+\hline
+-, ISE, MC & IG & MC & FR & ISE\\
+-, 2.6, 2.1  & 1.2 & 1.2 & 1.2 & 1.2 \\
+\hline
+DDSI & & & &\\
+1.2 & & & & \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Horarios para el grupo 3ºA.}
+\label{resultado2}
+\end{table}
+
+Como podemos ver, los horarios son bastante compactos y muy similares a los que hay ahora mismo en la escuela, siendo muy compactos y aprovechando el espacio.
