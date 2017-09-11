@@ -8,14 +8,15 @@ FROM httpd:2.4
 #COPY ./public-html/ /usr/local/apache2/htdocs/
 
 # Install python3 
-RUN apt update && apt install -y git wget make build-essential zlib1g-dev \
-	libbz2-dev libreadline-dev libsqlite3-dev libncurses5-dev  libncursesw5-dev \
-	xz-utils tk-dev && \
+RUN apt-get update && apt-get install -y git wget build-essential checkinstall libreadline-gplv2-dev libncursesw5-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev && \
 	git clone https://github.com/BraulioV/TFG.git && \
 	wget https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz && \
 	tar xvf Python-3.6.1.tgz && rm Python-3.6.1.tgz && \
 	wget https://github.com/GrahamDumpleton/mod_wsgi/archive/4.5.18.tar.gz && \
 	tar xvfz 4.5.18.tar.gz && rm 4.5.18.tar.gz
+
+RUN apt install aptitude -y
+RUN aptitude install libssl-dev=1.0.2l-1~bpo8+1 -y
 
 WORKDIR Python-3.6.1
 
@@ -30,7 +31,7 @@ RUN ./configure --with-python=/usr/local/bin/python3.6 && make install
 WORKDIR ../TFG
 
 # Install the python requeriments
-RUN pip3.6 install -r requirements.txt
+RUN pip3.6 install django numpy pandas
 
 # Create database
 WORKDIR djangoapp
