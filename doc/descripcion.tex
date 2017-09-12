@@ -119,6 +119,41 @@ A partir del diagrama de interacción (\hyperref[interaccion]{Figura \ref*{inter
     % Respecto a esto, hemos decidido hacer una mezcla de ambas opciones. En cada asignatura de un grupo determinado habrá un número de alumnos matriculados que no tiene que ser igual al número de alumnos matriculados en otra asignatura en ese mismo grupo. Por tanto, será el grupo quién decida, para cada asignatura, el número de subgrupos de prácticas que tendrá.
 \end{enumerate} 
 
+\section{Planificación y desarrollo del proyecto}
+
+Para el desarrollo del proyecto, planificamos una serie de objetivos y la realización de dichos objetivos, para llevar un control más exhaustivo del desarrollo del proyecto. A continuación, en la \hyperref[desarrollo]{Tabla \ref*{desarrollo}} podemos ver un diagrama de la planificación que seguimos para el desarrollo del proyecto.
+\begin{table}[H]
+\begin{center}
+\begin{tabular}{c | c | c}
+\textbf{Mes} & \textbf{Tarea} & \textbf{Tiempo estimado} \\
+\hline
+Noviembre & Primeras reuniones para definir & Dos reuniones \\
+& el sistema y sus requisitos &  un mes \\
+Diciembre & Diseño de un primer prototipo & Dos meses \\
+Febrero & Reuniones mostrando el prototipo  & Tres reuniones\\
+& para pulir detalles & un mes \\
+Marzo & Implementación del primer prototipo & Dos meses \\
+Mayo & Reunión mostrando el prototipo  & Una reunión \\
+& implementado para pulir detalles & dos semanas \\
+Mayo & Implementación de una primera & Un mes \\
+& versión sin interfaz de usuario & \\
+Junio & Diseño de la interfaz de usuario & Un mes \\
+Julio & Implementación de la interfaz de usuario & Un mes \\
+Agosto & Despliegue de la aplicación y primeras pruebas & Un mes \\
+\end{tabular}
+\end{center}
+\caption{Planificación del proyecto}
+\label{desarrollo}
+\end{table}
+
+Esta es la planificación que fijamos para ir desarrollando el proyecto. Como se puede ver en la \hyperref[desarrollo]{Tabla \ref*{desarrollo}}, la planificación llega hasta el mes de Agosto. Esto se decidió así debido a que el desarrollo del proyecto del proyecto había que hacerlo en paralelo al desarrollo del curso, y en las últimas etapas del proyecto, se relajó un poco la planificación debido a que había que compaginar el trabajo con el desarrollo del proyecto.
+
+Otra parte importante del desarrollo del proyecto fue la decisión de usar un sistema de control, como es \textbf{\textit{git}}, junto con \textit{GitHub}, que es donde se encuentra alojado el proyecto. Esto se debe a que al utilizar un sistema de control de versiones, podemos tener una rama principal de desarrollo, en este caso conocida como la rama \textit{master}, donde decidimos alojar las versiones estables del proyecto. A su vez, permite trabajar desde una a tantas personas como se quieran en el mismo proyecto, con un gran control del proyecto gracias a que cada usuario va haciendo \textit{commits} y esto queda registrado en el desarrollo del proyecto.
+
+A su vez, permite la existencia de varias ramas, además de la rama master. Esto permite que cada una de las personas involucradas en el proyecto puedan crear una rama del proyecto y desarrollar libremente en ella, sin molestar al resto de compañeros en su desarrollo, lo que permite que varias personas trabajen al mismo tiempo sobre distintos temas, sin ``fastidiar'' el trabajo de otros.
+
+A su vez, gracias a \textit{GitHub}, todo el desarrollo del código queda abierto al mundo, haciendo el proyecto visible y convirtiéndolo en un proyecto de Software Libre. Esto permite que cualquier persona que quiera ver cómo está implementado el proyecto lo pueda ver, sea libre de usarlo y además, cualquier persona puede sentirse libre de realizar colaboraciones al proyecto, ya sean de código, sugerencias, creación de \textit{issues} para notificiar de problemas, mejoras... o hasta correciones ortográficas si las hubier
+
 \section{Función de evaluación}
 La calidad de un horario depende de la calidad del horario obtenido para cada grupo de teoría. Por tanto, para simplificar el cálculo de la misma, hemos decidido \textbf{hacer una función de evaluación a nivel individual para cada grupo} y que la \textbf{función de evaluación final sea una combinación de estas} funciones de evaluación:
 
