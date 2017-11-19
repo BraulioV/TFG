@@ -3,5 +3,8 @@ python:
   - 3.6
 before_script:
   - cd djangoapp
+  - python manage.py makemigrations timetables
+  - python manage.py migrate
+  - python store_csv.py ../Dataset/classrooms.csv Classroom ../Dataset/subjects.csv Subjects ../Dataset/groups.csv Groups
 script:
   - pytest
