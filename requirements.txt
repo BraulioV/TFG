@@ -1,3 +1,4 @@
 Django==1.11.2
 numpy==1.13.1
 pandas==0.20.3
+pytest-django==3.1.2
